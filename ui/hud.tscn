@@ -1,0 +1,119 @@
+[gd_scene format=3 uid="uid://c7ltvs5te3onl"]
+
+[ext_resource type="Script" uid="uid://8f8lny64t5hf" path="res://ui/hud.gd" id="1_3dnit"]
+[ext_resource type="Texture2D" uid="uid://8krwtbql3iuu" path="res://ui/cursor.png" id="3_bqox4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_276te"]
+bg_color = Color(0.08208982, 0.082089834, 0.082089774, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_546lt"]
+bg_color = Color(0.5426282, 0.773501, 0.98604196, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ihmi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_en2x2"]
+bg_color = Color(0.24835697, 0.6065302, 0.3192812, 1)
+
+[node name="hud" type="CanvasLayer" unique_id=1071044547]
+script = ExtResource("1_3dnit")
+
+[node name="fps" type="RichTextLabel" parent="." unique_id=972726535]
+offset_left = 5.0
+offset_right = 227.0
+offset_bottom = 104.0
+text = "00"
+
+[node name="stamina_view_bob" type="Control" parent="." unique_id=370245485]
+visible = false
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="stamina" type="TextureProgressBar" parent="stamina_view_bob" unique_id=1763387432]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = -16.0
+grow_vertical = 0
+scale = Vector2(16, 1)
+value = 64.0
+tint_under = Color(0.0352941, 0.239216, 0, 0.780392)
+tint_progress = Color(0, 1, 0.756863, 1)
+
+[node name="snapped" type="TextureProgressBar" parent="stamina_view_bob" unique_id=1151134643]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = -16.0
+grow_vertical = 0
+scale = Vector2(16, 1)
+value = 50.0
+tint_under = Color(1, 1, 1, 0)
+tint_over = Color(1, 1, 1, 0)
+tint_progress = Color(0.129412, 1, 0, 1)
+
+[node name="crosshair" type="TextureRect" parent="." unique_id=1111072082]
+modulate = Color(1, 1, 1, 0.376471)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+pivot_offset = Vector2(8, 8)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("3_bqox4")
+stretch_mode = 3
+
+[node name="stam_true" type="ProgressBar" parent="." unique_id=1272918589]
+texture_filter = 2
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -43.0
+offset_right = 32.0
+offset_bottom = -16.0
+grow_vertical = 0
+scale = Vector2(16, 1)
+theme_override_styles/background = SubResource("StyleBoxFlat_276te")
+theme_override_styles/fill = SubResource("StyleBoxFlat_546lt")
+value = 0.64
+show_percentage = false
+
+[node name="stam_round" type="ProgressBar" parent="." unique_id=331318818]
+texture_filter = 2
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -43.0
+offset_right = 32.0
+offset_bottom = -16.0
+grow_vertical = 0
+scale = Vector2(16, 1)
+theme_override_styles/background = SubResource("StyleBoxEmpty_7ihmi")
+theme_override_styles/fill = SubResource("StyleBoxFlat_en2x2")
+value = 0.5
+show_percentage = false

@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://mcf5q7je246w"]
+
+[ext_resource type="Theme" uid="uid://bg5liorxv7qwu" path="res://ui/ui_theme.tres" id="1_nmq56"]
+[ext_resource type="Script" uid="uid://m1lsv5fjakiv" path="res://ui/lobby.gd" id="2_hgmly"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hgmly"]
+bg_color = Color(0.48160386, 0.11818024, 0.0089514535, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4sfkc"]
+bg_color = Color(0, 0.8466972, 0.44542181, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lyjxk"]
+bg_color = Color(0, 0.7243575, 0.23463443, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pars8"]
+bg_color = Color(0.86838174, 0.80392957, 0.034967184, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ienge"]
+bg_color = Color(0.0768358, 0.07683582, 0.076835774, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_egjv3"]
+bg_color = Color(0.95422524, 0.9033869, 0.661774, 1)
+
+[node name="lobby" type="MarginContainer" unique_id=784178573]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_nmq56")
+script = ExtResource("2_hgmly")
+
+[node name="split" type="BoxContainer" parent="." unique_id=1442783811]
+layout_mode = 2
+
+[node name="playereditor" type="VBoxContainer" parent="split" unique_id=1548676380]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="name" type="LineEdit" parent="split/playereditor" unique_id=1844632006]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+placeholder_text = "Player Name"
+max_length = 16
+emoji_menu_enabled = false
+
+[node name="color" type="ColorPicker" parent="split/playereditor" unique_id=2075745020]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+edit_alpha = false
+edit_intensity = false
+picker_shape = 1
+can_add_swatches = false
+sampler_visible = false
+presets_visible = false
+
+[node name="ready" type="Button" parent="split/playereditor" unique_id=82439138]
+process_mode = 3
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme = ExtResource("1_nmq56")
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_hgmly")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_4sfkc")
+theme_override_styles/hover = SubResource("StyleBoxFlat_lyjxk")
+toggle_mode = true
+text = "READY"
+
+[node name="start" type="Button" parent="split/playereditor" unique_id=1852924677]
+process_mode = 3
+visible = false
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme = ExtResource("1_nmq56")
+theme_override_colors/font_color = Color(0.03686098, 0.036860984, 0.036860954, 1)
+theme_override_colors/font_pressed_color = Color(0.948659, 0.9486591, 0.948659, 1)
+theme_override_colors/font_hover_color = Color(0.036860913, 0.036860976, 0.03686115, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_pars8")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ienge")
+theme_override_styles/hover = SubResource("StyleBoxFlat_egjv3")
+text = "START GAME"
+
+[node name="playerlist" type="VFlowContainer" parent="split" unique_id=179132721]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_nmq56")

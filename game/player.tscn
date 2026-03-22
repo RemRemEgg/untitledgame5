@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://c2wfggr4eiia1"]
+
+[ext_resource type="PackedScene" uid="uid://c7ltvs5te3onl" path="res://ui/hud.tscn" id="1_dadds"]
+[ext_resource type="Script" uid="uid://yeplb42dhx0e" path="res://shaders/pannini/pannini_projection.gd" id="1_w5y0b"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
+radius = 0.35
+height = 1.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
+resource_local_to_scene = true
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
+radius = 0.35
+height = 1.9
+
+[sub_resource type="Environment" id="Environment_onrkg"]
+background_energy_multiplier = 0.02
+ambient_light_energy = 0.0
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_w5y0b"]
+dof_blur_far_distance = 150.0
+dof_blur_far_transition = 150.0
+dof_blur_amount = 0.05
+
+[sub_resource type="CompositorEffect" id="CompositorEffect_du4nq"]
+resource_local_to_scene = false
+resource_name = ""
+enabled = true
+effect_callback_type = 4
+needs_motion_vectors = false
+needs_normal_roughness = false
+script = ExtResource("1_w5y0b")
+distance = 2.0
+image_zoom = 0.7799999999999999
+metadata/_custom_type_script = "uid://yeplb42dhx0e"
+
+[sub_resource type="Compositor" id="Compositor_p0vpi"]
+compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_du4nq")])
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4flbx"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("camera_root:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("camera_root/camera:rotation")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_onrkg"]
+length = 0.6
+
+[node name="player" type="CharacterBody3D" unique_id=541339310]
+collision_layer = 2
+collision_mask = 3
+
+[node name="collider" type="CollisionShape3D" parent="." unique_id=1996107302]
+shape = SubResource("CapsuleShape3D_sh265")
+
+[node name="mesh" type="MeshInstance3D" parent="." unique_id=357712946]
+material_override = SubResource("StandardMaterial3D_4flbx")
+mesh = SubResource("CapsuleMesh_4flbx")
+
+[node name="camera_root" type="Node3D" parent="." unique_id=1963262605]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+
+[node name="camera" type="Camera3D" parent="camera_root" unique_id=1844707478]
+environment = SubResource("Environment_onrkg")
+attributes = SubResource("CameraAttributesPractical_w5y0b")
+compositor = SubResource("Compositor_p0vpi")
+current = true
+fov = 130.0
+size = 38.13
+
+[node name="flashlight" type="SpotLight3D" parent="camera_root/camera" unique_id=1712767520]
+light_energy = 2.0
+shadow_enabled = true
+shadow_bias = 2.0
+shadow_normal_bias = 2.0
+spot_range = 256.0
+spot_attenuation = 1.67
+spot_angle = 75.0
+
+[node name="hud" parent="camera_root/camera" unique_id=1071044547 instance=ExtResource("1_dadds")]
+
+[node name="nametag" type="Label3D" parent="." unique_id=673160830]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+billboard = 1
+text = "<name?>"
+
+[node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1011191566]
+replication_config = SubResource("SceneReplicationConfig_4flbx")
+
+[node name="light_med" type="OmniLight3D" parent="." unique_id=1635548757]
+light_energy = 0.5
+shadow_enabled = true
+omni_range = 32.0
+
+[node name="light_large" type="OmniLight3D" parent="." unique_id=1045662762]
+light_energy = 0.2
+omni_range = 128.0
+omni_attenuation = 0.5
+omni_shadow_mode = 0
+
+[node name="ray" type="CollisionShape3D" parent="." unique_id=479628766]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.4, -0.6)
+shape = SubResource("SeparationRayShape3D_onrkg")
+disabled = true

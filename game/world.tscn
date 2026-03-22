@@ -1,0 +1,122 @@
+[gd_scene format=3 uid="uid://bninn4jr1in7u"]
+
+[ext_resource type="Script" uid="uid://bo6xcf3euvm31" path="res://game/world.gd" id="1_aseec"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_vn0wg"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_vn0wg"]
+size = Vector3(50, 1, 50)
+
+[sub_resource type="BoxMesh" id="BoxMesh_aseec"]
+flip_faces = true
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_aseec"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_tvmmn"]
+plane = Plane(0, -1, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_4xpgs"]
+plane = Plane(1, 0, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_805w3"]
+plane = Plane(-1, 0, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_fhh06"]
+plane = Plane(0, 0, 1, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_m4twg"]
+plane = Plane(0, 0, -1, 0)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vn0wg"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_aseec"]
+
+[node name="world" type="Node3D" unique_id=1617102939]
+script = ExtResource("1_aseec")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1748650337]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=906954234]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("WorldBoundaryShape3D_vn0wg")
+
+[node name="Sprite2D" type="MeshInstance3D" parent="StaticBody3D" unique_id=2136922108]
+mesh = SubResource("BoxMesh_vn0wg")
+skeleton = NodePath("../..")
+
+[node name="bounds" type="StaticBody3D" parent="." unique_id=206270435]
+transform = Transform3D(1024, 0, 0, 0, 512, 0, 0, 0, 1024, 0, 128, 0)
+
+[node name="mesh" type="MeshInstance3D" parent="bounds" unique_id=1867061584]
+mesh = SubResource("BoxMesh_aseec")
+
+[node name="iy" type="CollisionShape3D" parent="bounds" unique_id=1020062781]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("WorldBoundaryShape3D_aseec")
+
+[node name="y" type="CollisionShape3D" parent="bounds" unique_id=473803944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("WorldBoundaryShape3D_tvmmn")
+
+[node name="ix" type="CollisionShape3D" parent="bounds" unique_id=1298356548]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.062, 0)
+shape = SubResource("WorldBoundaryShape3D_4xpgs")
+
+[node name="x" type="CollisionShape3D" parent="bounds" unique_id=82891570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_805w3")
+
+[node name="iz" type="CollisionShape3D" parent="bounds" unique_id=285392023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+shape = SubResource("WorldBoundaryShape3D_fhh06")
+
+[node name="z" type="CollisionShape3D" parent="bounds" unique_id=793812634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+shape = SubResource("WorldBoundaryShape3D_m4twg")
+
+[node name="enviroment" type="Node3D" parent="." unique_id=2113932307]
+
+[node name="light_main" type="DirectionalLight3D" parent="enviroment" unique_id=525810616]
+transform = Transform3D(0.82977283, 0.5228489, 0.19520792, -0.53271586, 0.63771224, 0.5563605, 0.16640596, -0.56564313, 0.80768615, 0, 0, 0)
+light_color = Color(0.99999946, 0.7616562, 0.7229244, 1)
+
+[node name="light_key" type="DirectionalLight3D" parent="enviroment" unique_id=1002332448]
+transform = Transform3D(0.6685954, 0.1472536, -0.728901, -0.48116988, 0.8330102, -0.27307436, 0.5669708, 0.5333014, 0.62780076, 0, 0, 0)
+light_color = Color(0.80131865, 0.9234274, 0.9999997, 1)
+light_energy = 0.25
+
+[node name="RigidBody3D" type="RigidBody3D" parent="enviroment" unique_id=1049583957]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6455452, 0, 0)
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="enviroment/RigidBody3D" unique_id=669477507]
+shape = SubResource("CapsuleShape3D_vn0wg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="enviroment/RigidBody3D" unique_id=30279466]
+mesh = SubResource("CapsuleMesh_aseec")
+
+[node name="RigidBody3D2" type="RigidBody3D" parent="enviroment" unique_id=1536923052]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8559604, 1.9691546, 0)
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="enviroment/RigidBody3D2" unique_id=1614883493]
+shape = SubResource("CapsuleShape3D_vn0wg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="enviroment/RigidBody3D2" unique_id=1087217637]
+mesh = SubResource("CapsuleMesh_aseec")
+
+[node name="RigidBody3D3" type="RigidBody3D" parent="enviroment" unique_id=1557778958]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7093958, 4.1959715, 0.11728382)
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="enviroment/RigidBody3D3" unique_id=1374210419]
+shape = SubResource("CapsuleShape3D_vn0wg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="enviroment/RigidBody3D3" unique_id=274280302]
+mesh = SubResource("CapsuleMesh_aseec")
+
+[node name="projectiles" type="Node3D" parent="." unique_id=1944024570]

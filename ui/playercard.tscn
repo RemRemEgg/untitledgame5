@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://caqvxbw61lbnt"]
+
+[ext_resource type="Script" uid="uid://cn65h8yyymvj5" path="res://ui/playercard.gd" id="1_po2kl"]
+
+[node name="playercard" type="ColorRect" unique_id=694245959]
+custom_minimum_size = Vector2(150, 150)
+offset_right = 50.0
+offset_bottom = 50.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+color = Color(0.19434929, 0.19434926, 0.19434926, 1)
+script = ExtResource("1_po2kl")
+
+[node name="name" type="Label" parent="." unique_id=974789312]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "<player name>"
+horizontal_alignment = 1
+text_overrun_behavior = 1
+
+[node name="color" type="ColorRect" parent="." unique_id=223080546]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 75.0
+offset_top = -55.0
+offset_right = 139.0
+offset_bottom = 9.0
+grow_vertical = 2
+rotation = 0.7853982
