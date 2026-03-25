@@ -1,4 +1,4 @@
-class_name PlayerCard
+class_name PlayerIcon
 extends ColorRect
 
 @onready var dispname: Label = $name as Label

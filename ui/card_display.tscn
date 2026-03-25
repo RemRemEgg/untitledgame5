@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://b5ava4xusp4lu"]
+
+[ext_resource type="Theme" uid="uid://bg5liorxv7qwu" path="res://ui/ui_theme.tres" id="1_03cmn"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_03cmn"]
+width = 196
+height = 196
+generate_mipmaps = false
+
+[node name="card_display" type="ColorRect" unique_id=1909330327]
+custom_minimum_size = Vector2(220, 379)
+offset_right = 220.0
+offset_bottom = 379.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+color = Color(0.3353648, 0.3353648, 0.3353648, 1)
+
+[node name="margin" type="MarginContainer" parent="." unique_id=70312740]
+layout_mode = 0
+offset_right = 152.0
+offset_bottom = 275.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource("1_03cmn")
+
+[node name="vbox" type="BoxContainer" parent="margin" unique_id=1033329913]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+vertical = true
+
+[node name="card_icon" type="TextureRect" parent="margin/vbox" unique_id=1785752983]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = SubResource("NoiseTexture2D_03cmn")
+
+[node name="Label" type="Label" parent="margin/vbox" unique_id=787282884]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Card Title"
+horizontal_alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="margin/vbox" unique_id=1605107375]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=gray]description[/color]
+[color=green]plus[/color] <stat>
+[color=green]plus[/color] <stat>
+[color=red]minus[/color] <stat>"
+scroll_active = false
+vertical_alignment = 1

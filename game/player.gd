@@ -8,6 +8,8 @@ var cam_ax: float = 0.0
 var camera: Camera3D
 var mesh: MeshInstance3D
 @onready var hud: HUD = $camera_root/camera/hud as HUD
+@onready var cards_menu: CardsMenu = $camera_root/camera/cards_menu as CardsMenu
+@onready var proj_spawner: MultiplayerSpawner = $proj_spawner as MultiplayerSpawner
 
 func set_data(data: Network.PlayerInfo) -> void:
 	camera = $camera_root/camera as Camera3D
@@ -32,11 +34,18 @@ var gun: Gun
 
 
 func _ready() -> void:
+	team = 0b1000 << 4
+	
 	procgun = ProcGun.new()
 	gun = Gun.new()
 	
 	var pproj := ProcProj.new()
 	procgun.pproj = pproj
+	
+	procgun.add_modifier(ProcGun.MOD_SPREAD, [5, 0.1])
+	
+	#proj_spawner.spawn_function = Network._spawn_projectile
+	Network.add_proj_spawner(proj_spawner)
 
 
 func _process(delta: float) -> void:
@@ -69,7 +78,7 @@ func _process(delta: float) -> void:
 			#col.get_collider().apply_central_impulse(-col.get_normal() * 0.3)
 			#col.get_collider().apply_impulse(-col.get_normal() * 0.01, col.get_position())
 	
-	procgun.process(gun, camera.transform, self, delta, Input.is_action_pressed(&"fire"))
+	procgun.process(gun, camera.global_transform, self, delta, Input.is_action_pressed(&"fire"))
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:

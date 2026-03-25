@@ -1,5 +1,5 @@
 extends MarginContainer
-const PLAYERCARD = preload("uid://caqvxbw61lbnt")
+const PLAYER_ICON = preload("uid://caqvxbw61lbnt")
 
 @onready var playereditor: VBoxContainer = $split/playereditor as VBoxContainer
 @onready var p_name: LineEdit = $split/playereditor/name as LineEdit
@@ -8,7 +8,6 @@ const PLAYERCARD = preload("uid://caqvxbw61lbnt")
 @onready var start: Button = $split/playereditor/start as Button
 
 @onready var playerlist: VFlowContainer = $split/playerlist as VFlowContainer
-
 
 func _ready() -> void:
 	p_name.text_changed.connect(_on_player_name_edit)
@@ -25,16 +24,19 @@ func _ready() -> void:
 	if Network.is_server:
 		start.visible = true
 
+
 func _process(_delta: float) -> void:
 	#start.disabled = !Network.players.values().all(func(p: Network.PlayerInfo): return p.ready)
 	pass
 
 func load_players() -> void:
-	for c in playerlist.get_children(): playerlist.remove_child(c)
+	for c in playerlist.get_children():
+		playerlist.remove_child(c) # memory leak lmao
+		c.queue_free()
 	Network.players.sort()
 	for p in Network.players:
 		var pi := (Network.players[p] as Network.PlayerInfo)
-		var pcard := PLAYERCARD.instantiate() as PlayerCard
+		var pcard := PLAYER_ICON.instantiate() as PlayerIcon
 		pi.on_update.connect(pcard._on_player_update)
 		playerlist.add_child(pcard)
 		pcard.dispname.text = pi.name

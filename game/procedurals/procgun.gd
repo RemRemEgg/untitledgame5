@@ -4,7 +4,7 @@ extends RefCounted
 
 
 
-var fire_rate := 1.0
+var fire_rate := 10.0
 
 enum {MOD_LINE, MOD_SHOTGUN, MOD_SPREAD}
 var mod_stack: PackedInt32Array
@@ -12,7 +12,7 @@ var mod_data: PackedFloat32Array
 
 var pproj: ProcProj
 var inaccuracy: float = 0.0
-var b_speed := 2.0
+var b_speed := 32.0
 
 func _init() -> void:
 	mod_stack = []
@@ -29,7 +29,7 @@ func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire:
 		gun.fire_timer = minf(gun.fire_timer, 1.0)
 		return
 	while gun.fire_timer >= 1.0:
-		make_bullets(trans, ownr, (gun.fire_timer - 1.0) / fire_rate)
+		fire(gun, trans, ownr, (gun.fire_timer - 1.0) / fire_rate)
 		gun.fire_timer -= 1.0
 
 #func __process(gun: Gun, trans: Transform2D, entity: Entity, delta: float) -> int:
@@ -57,37 +57,43 @@ func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire:
 	#return fire_count
 
 
-func fire(_gun: Gun, trans: Transform2D, entity: Entity, delta: float) -> void:
-	process_modifier(trans, Vector2i.ZERO, entity, delta)
+func fire(_gun: Gun, trans: Transform3D, ownr: Entity, delta: float) -> void:
+	process_modifier(Vector3(0, 0, -b_speed), Vector2i.ZERO, trans, ownr, delta)
 
 
-func process_modifier(trans: Transform2D, i: Vector2i, ownr: Entity, delta: float) -> void:
-	if i.x >= mod_stack.size(): return make_bullets(trans, ownr, delta)
+func process_modifier(vel: Vector3, i: Vector2i, trans: Transform3D, ownr: Entity, delta: float) -> void:
+	#make_bullets(vel, trans, ownr, delta)
+	if i.x >= mod_stack.size(): return make_bullets(vel, trans, ownr, delta)
 	match mod_stack[i.x]:
-		MOD_LINE: # [ count, dist ]
-			var o := (mod_data[i.y]-1) / 2.0
-			for j in int(mod_data[i.y]):
-				process_modifier(trans.translated_local(Vector2.DOWN * (j - o) * mod_data[i.y+1]), i+Vector2i(1, 1), ownr, delta)
-		MOD_SHOTGUN: # [ count, spread ]
-			for __ in int(mod_data[i.y]):
-				process_modifier(trans.rotated_local((randf()-0.5)*mod_data[i.y+1]), i+Vector2i(1, 2), ownr, delta)
+		#MOD_LINE: # [ count, dist ]
+			#var o := (mod_data[i.y]-1) / 2.0
+			#for j in int(mod_data[i.y]):
+				#process_modifier(trans.translated_local(Vector2.DOWN * (j - o) * mod_data[i.y+1]), i+Vector2i(1, 1), ownr, delta)
+				
+		#MOD_SHOTGUN: # [ count, spread ]
+			#for __ in int(mod_data[i.y]):
+				##process_modifier(trans.rotated_local((randf()-0.5)*mod_data[i.y+1]), i+Vector2i(1, 2), ownr, delta)
+				#process_modifier(vel.rotated(V), i+Vector2i(1, 2), trans, ownr, delta)
 		MOD_SPREAD: # [ count, angle ]
 			var o := (mod_data[i.y]-1) / 2.0
 			for j in int(mod_data[i.y]):
-				process_modifier(trans.rotated_local((j - o) * mod_data[i.y+1]), i+Vector2i(1, 1), ownr, delta)
+				#process_modifier(trans.rotated_local((j - o) * mod_data[i.y+1]), i+Vector2i(1, 1), ownr, delta)
+				process_modifier(vel.rotated(Vector3.UP, (j - o) * mod_data[i.y+1]), i+Vector2i(1, 2), trans, ownr, delta)
 		#MOD_SURROUND: # [ count ]
 			#for s in mod_data[i.y]:
 				#process_modifier(trans.rotated_local(s*((2*PI)/mod_data[i.y])), i+Vector2i(1, 1), ownr, delta)
 
 
 
-func make_bullets(trans: Transform3D, ownr: Entity, delta: float) -> void:
-	print("making bullet at %s" % trans)
+func make_bullets(vel: Vector3, trans: Transform3D, ownr: Entity, delta: float) -> void:
+	#print("making bullet at %s" % trans)
 	var pp := pproj.create_projectile()
-	pp.global_transform = trans.rotated_local(Vector3.BACK, randf() * PI*2).rotated_local(Vector3.UP, randf()*inaccuracy)
+	#pp.global_transform = trans.rotated_local(Vector3.BACK, randf() * PI*2).rotated_local(Vector3.UP, randf()*inaccuracy)
+	pp.global_position = trans.origin
 	pp.ownr = ownr
 	pp.team = ownr.team
-	pp.velocity = -pp.global_transform.basis.z
+	#pp.velocity = vel * pp.global_basis
+	pp.velocity = trans.basis * vel
 	pproj.update(pp, delta)
 	#trans = trans.rotated_local((randf()-0.5) * inaccuracy)
 	#var pp := pproj.create_pprojectile()

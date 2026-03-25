@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://caqvxbw61lbnt"]
 
-[ext_resource type="Script" uid="uid://cn65h8yyymvj5" path="res://ui/playercard.gd" id="1_po2kl"]
+[ext_resource type="Script" uid="uid://cn65h8yyymvj5" path="res://ui/player_icon.gd" id="1_iwu4p"]
 
 [node name="playercard" type="ColorRect" unique_id=694245959]
 custom_minimum_size = Vector2(150, 150)
@@ -9,7 +9,7 @@ offset_bottom = 50.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 color = Color(0.19434929, 0.19434926, 0.19434926, 1)
-script = ExtResource("1_po2kl")
+script = ExtResource("1_iwu4p")
 
 [node name="name" type="Label" parent="." unique_id=974789312]
 layout_mode = 1

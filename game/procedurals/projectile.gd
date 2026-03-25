@@ -14,7 +14,7 @@ var velocity: Vector3
 #var depth: float = 0.0
 var damage: float = 4.0
 var health: float = 20.0
-
+var bounces: int = 0
 
 func _init() -> void:
 	pass

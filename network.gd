@@ -69,7 +69,7 @@ func _connection_failed() -> void:print("[C] connection failed")#TODO
 
 func _server_disconnected() -> void:print("[C] server disconnected")#TODO
 
-@rpc("any_peer", "reliable")
+@rpc("any_peer", "call_remote", "reliable")
 func register_player(id: int, info: Dictionary) -> void:
 	players[id] = PlayerInfo.deseralize(info)
 	players_changed.emit()
@@ -92,11 +92,43 @@ func loaded_scene() -> void:
 			loaded_players = 0
 			print("all players loaded")
 			all_players_loaded.rpc()
-			#TODO
+			Game.world.all_players_loaded()
 @rpc("authority", "call_local", "reliable")
 func all_players_loaded() -> void:
 	var cs := get_tree().current_scene
 	cs.process_mode = Node.PROCESS_MODE_INHERIT
+
+@rpc("authority", "call_local", "reliable")
+func player_draw_time() -> void:
+	loaded_players = 0
+	Game.player.cards_menu._card_selection_time()
+@rpc("any_peer", "call_local", "reliable")
+func selected_card() -> void:
+	print("player selected")
+	if is_server:
+		loaded_players += 1
+		if loaded_players == players.size():
+			loaded_players = 0
+			print("all players selected")
+			all_players_selected.rpc()
+@rpc("authority", "call_local", "reliable")
+func all_players_selected() -> void:
+	loaded_players = 0
+	# TODO proj sync
+@rpc("any_peer", "call_local", "reliable")
+func projectiles_synced() -> void:
+	print("projectiles synced")
+	if is_server:
+		loaded_players += 1
+		if loaded_players == players.size():
+			loaded_players = 0
+			print("all projectiles synced")
+			all_projectiles_synced.rpc()
+@rpc("authority", "call_local", "reliable")
+func all_projectiles_synced() -> void:
+	print("all projectiles synced, starting round")
+	# TODO start round
+
 
 #endregion
 
@@ -130,3 +162,33 @@ class PlayerInfo:
 		color = info.get("color", color)
 		ready = info.get("ready", ready)
 		on_update.emit(self)
+
+var out_proj_spawner: MultiplayerSpawner
+
+#transform 
+func _send_projectile() -> void:
+	pass
+
+func add_proj_spawner(mps: MultiplayerSpawner, is_out: bool = false) -> void:
+	#mps.spawn_function = _recieve_projectile
+	#if is_out: out_proj_spawner = mps
+	pass
+
+func _recieve_projectile(data: Variant) -> void:
+	pass
+
+class ProjInfo:
+	var auth_uuid: int
+	
+	#static func
+	
+	func seralize() -> Dictionary:
+		var d := {}
+		d.auth_uuid = auth_uuid
+		return d
+	
+	static func deseralize(info: Dictionary) -> ProjInfo:
+		var pi := ProjInfo.new()
+		pi.auth_uuid = info.auth_uuid
+		return pi
+		

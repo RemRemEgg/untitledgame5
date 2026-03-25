@@ -15,7 +15,7 @@ func dbg_auto_join() -> void:
 		Network.start_client("127.0.0.1")
 	else:
 		print("no error detected, moving left")
-		#get_window().position.x -= 480
+		get_window().position.x -= 480
 	get_tree().change_scene_to_file(&"res://ui/lobby.tscn")
 
 

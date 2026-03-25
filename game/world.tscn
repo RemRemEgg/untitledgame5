@@ -36,6 +36,7 @@ script = ExtResource("1_aseec")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1748650337]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -5, 0)
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=906954234]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -47,6 +48,7 @@ skeleton = NodePath("../..")
 
 [node name="bounds" type="StaticBody3D" parent="." unique_id=206270435]
 transform = Transform3D(1024, 0, 0, 0, 512, 0, 0, 0, 1024, 0, 128, 0)
+collision_mask = 0
 
 [node name="mesh" type="MeshInstance3D" parent="bounds" unique_id=1867061584]
 mesh = SubResource("BoxMesh_aseec")
@@ -118,5 +120,7 @@ shape = SubResource("CapsuleShape3D_vn0wg")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="enviroment/RigidBody3D3" unique_id=274280302]
 mesh = SubResource("CapsuleMesh_aseec")
+
+[node name="players" type="Node3D" parent="." unique_id=540503973]
 
 [node name="projectiles" type="Node3D" parent="." unique_id=1944024570]

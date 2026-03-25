@@ -2,6 +2,7 @@ class_name LoboPlayer
 extends Entity
 
 var mesh: MeshInstance3D
+@onready var proj_spawner: MultiplayerSpawner = $proj_spawner as MultiplayerSpawner
 
 func set_data(data: Network.PlayerInfo) -> void:
 	mesh = $mesh
@@ -10,3 +11,4 @@ func set_data(data: Network.PlayerInfo) -> void:
 	var hud := $camera_root/camera/hud
 	$camera_root/camera.remove_child(hud)
 	hud.queue_free()
+	Network.add_proj_spawner(proj_spawner)
