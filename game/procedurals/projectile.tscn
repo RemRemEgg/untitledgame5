@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://djlg0ybtmd4im"]
+
+[ext_resource type="Script" uid="uid://b3u3m7210gpxu" path="res://game/procedurals/projectile.gd" id="1_73wlm"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_73wlm"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="projectile" type="MeshInstance3D" unique_id=2101233643]
+script = ExtResource("1_73wlm")
+
+[node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1495642114]
+replication_config = SubResource("SceneReplicationConfig_73wlm")

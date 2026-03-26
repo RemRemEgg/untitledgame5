@@ -87,14 +87,22 @@ func process_modifier(vel: Vector3, i: Vector2i, trans: Transform3D, ownr: Entit
 
 func make_bullets(vel: Vector3, trans: Transform3D, ownr: Entity, delta: float) -> void:
 	#print("making bullet at %s" % trans)
-	var pp := pproj.create_projectile()
-	#pp.global_transform = trans.rotated_local(Vector3.BACK, randf() * PI*2).rotated_local(Vector3.UP, randf()*inaccuracy)
-	pp.global_position = trans.origin
-	pp.ownr = ownr
-	pp.team = ownr.team
-	#pp.velocity = vel * pp.global_basis
-	pp.velocity = trans.basis * vel
-	pproj.update(pp, delta)
+	#var pp := pproj.create_projectile()
+	#pp.global_position = trans.origin
+	#pp.ownr = ownr
+	#pp.team = ownr.team
+	#pp.velocity = trans.basis * vel
+	#pproj.update(pp, delta)
+	#Network._send_projectile(pp)
+	
+	var proj := Network._send_projectile(trans, ownr.team)
+	proj.ownr = ownr
+	proj.velocity = trans.basis * vel
+	#pproj.bind(proj)
+	pproj.update(proj, delta)
+	
+	
+	###TODO
 	#trans = trans.rotated_local((randf()-0.5) * inaccuracy)
 	#var pp := pproj.create_pprojectile()
 	#pp.trans = trans

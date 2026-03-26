@@ -33,6 +33,7 @@ func _ready() -> void:
 			var lplayer := p_scn as LoboPlayer
 			lplayer.set_data(pi)
 		
+		pi.linked_player = p_scn as Player
 		players.add_child(p_scn)
 	
 	#var noise: FastNoiseLite = FastNoiseLite.new()
@@ -73,7 +74,7 @@ var game_state: int = GS_LOAD_WAITING
 var game_state_timer: float = 0.0
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if !Network.is_server: return
 	match game_state:
 		GS_LOAD_WAITING: return

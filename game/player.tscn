@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c2wfggr4eiia1"]
 
 [ext_resource type="PackedScene" uid="uid://c7ltvs5te3onl" path="res://ui/hud.tscn" id="1_dadds"]
+[ext_resource type="Material" uid="uid://v0dku6hcgd0b" path="res://shaders/xrayinline.res" id="1_p0vpi"]
 [ext_resource type="Script" uid="uid://yeplb42dhx0e" path="res://shaders/pannini/pannini_projection.gd" id="1_w5y0b"]
 [ext_resource type="PackedScene" uid="uid://byfoxwpg4svqx" path="res://ui/cards_menu.tscn" id="3_du4nq"]
 
@@ -10,14 +11,20 @@ height = 1.9
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
 resource_local_to_scene = true
+albedo_color = Color(0, 1, 1, 1)
+stencil_flags = 2
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
 radius = 0.35
 height = 1.9
+radial_segments = 9
+rings = 4
 
-[sub_resource type="Environment" id="Environment_onrkg"]
-background_energy_multiplier = 0.02
-ambient_light_energy = 0.0
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_p0vpi"]
+radius = 0.35
+height = 1.9
+radial_segments = 6
+rings = 1
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_w5y0b"]
 dof_blur_far_distance = 150.0
@@ -27,7 +34,7 @@ dof_blur_amount = 0.05
 [sub_resource type="CompositorEffect" id="CompositorEffect_du4nq"]
 resource_local_to_scene = false
 resource_name = ""
-enabled = false
+enabled = true
 effect_callback_type = 4
 needs_motion_vectors = false
 needs_normal_roughness = false
@@ -59,19 +66,25 @@ length = 0.6
 [node name="player" type="CharacterBody3D" unique_id=541339310]
 collision_layer = 2
 collision_mask = 3
+wall_min_slide_angle = 0.43633232
+floor_max_angle = 1.0471976
 
 [node name="collider" type="CollisionShape3D" parent="." unique_id=1996107302]
+visible = false
 shape = SubResource("CapsuleShape3D_sh265")
 
 [node name="mesh" type="MeshInstance3D" parent="." unique_id=357712946]
 material_override = SubResource("StandardMaterial3D_4flbx")
 mesh = SubResource("CapsuleMesh_4flbx")
 
+[node name="nodepth_mesh" type="MeshInstance3D" parent="." unique_id=1353467298]
+material_override = ExtResource("1_p0vpi")
+mesh = SubResource("CapsuleMesh_p0vpi")
+
 [node name="camera_root" type="Node3D" parent="." unique_id=1963262605]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
 [node name="camera" type="Camera3D" parent="camera_root" unique_id=1844707478]
-environment = SubResource("Environment_onrkg")
 attributes = SubResource("CameraAttributesPractical_w5y0b")
 compositor = SubResource("Compositor_p0vpi")
 fov = 130.0
@@ -92,9 +105,14 @@ spot_angle = 75.0
 visible = false
 
 [node name="nametag" type="Label3D" parent="." unique_id=673160830]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.90000004, 0)
+pixel_size = 0.003
 billboard = 1
+no_depth_test = true
+fixed_size = true
 text = "<name?>"
+outline_size = 5
+vertical_alignment = 2
 
 [node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1011191566]
 replication_config = SubResource("SceneReplicationConfig_4flbx")
@@ -116,4 +134,4 @@ shape = SubResource("SeparationRayShape3D_onrkg")
 disabled = true
 
 [node name="proj_spawner" type="MultiplayerSpawner" parent="." unique_id=1311397734]
-spawn_path = NodePath("../projectiles")
+spawn_path = NodePath("../../../projectiles")

@@ -10,11 +10,12 @@ func dbg_auto_join() -> void:
 	var error := Network.start_server()
 	if error:
 		print("error detected, moving right")
+		await get_tree().create_timer(0.1).timeout
 		get_window().position.x += 480
-		await get_tree().create_timer(0.5).timeout
 		Network.start_client("127.0.0.1")
 	else:
 		print("no error detected, moving left")
+		await get_tree().create_timer(0.1).timeout
 		get_window().position.x -= 480
 	get_tree().change_scene_to_file(&"res://ui/lobby.tscn")
 

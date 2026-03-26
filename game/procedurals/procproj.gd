@@ -1,32 +1,52 @@
 class_name ProcProj
 extends RefCounted
 
+func seralize(o_uuid: int = Network.uuid) -> Dictionary:
+	var d: Dictionary[String, Variant] = {}
+	
+	d.uuid = o_uuid
+	d.color = shader_mat.albedo_color
+	d.scale = scale
+	
+	return d
+
+static func deseralize(info: Dictionary) -> ProcProj:
+	var proc := new()
+	
+	proc.shader_mat.albedo_color = info.get("color", Color.WHITE)
+	proc.scale = info.get("scale", 1.0)
+	
+	return proc
+
+
 
 static var count: int = 0
 
 var psqp: PhysicsShapeQueryParameters3D
 var shape: SphereShape3D
 var mesh: SphereMesh
-var shader_mat: ShaderMaterial
+var shader_mat: StandardMaterial3D
 
 var health: float = 4.0
 var scale: float = 1.0
 var damage: float = 4.0
-var bounces: int = 10
+var bounces: int = 0
 
 
 func _init() -> void:
 	#pp.shader_mat = SDFBuilder.new().build_shader_2D((Vector3(randf(), randf(), randf()) - Vector3(0.1, 0.1, 0.1)).normalized() * 7./12)
+	shader_mat = StandardMaterial3D.new()
+	shader_mat.albedo_color = Color.from_hsv(randf_range(0.0, 1.0), 0.85, 0.85)
 	mesh = SphereMesh.new()
 	mesh.radial_segments = 4
 	mesh.rings = 1
-	mesh.radius = 0.15*scale; mesh.height = mesh.radius*2
-	#mesh.material = shader_mat
+	mesh.radius = 0.15; mesh.height = mesh.radius*2
+	mesh.material = shader_mat
 	shape = SphereShape3D.new()
 	shape.radius = mesh.radius
 	psqp = PhysicsShapeQueryParameters3D.new()
 	psqp.shape = shape
-	psqp.collision_mask = 0b0
+	psqp.collision_mask = 0b1111
 	
 	travel_mod_stack = []
 	travel_mod_data = []
@@ -34,6 +54,13 @@ func _init() -> void:
 
 func create_projectile() -> Projectile:
 	var proj := Projectile.new()
+	bind(proj)
+	
+	#Game.world.projectiles.add_child(proj)
+	count += 1
+	
+	return proj
+func bind(proj: Projectile) -> void:
 	proj.proc = self
 	
 	proj.health = health
@@ -42,11 +69,6 @@ func create_projectile() -> Projectile:
 	proj.mesh = mesh
 	proj.scale *= scale
 	proj.bounces = bounces
-	
-	Game.world.projectiles.add_child(proj)
-	count += 1
-	
-	return proj
 func destroy_projectile(proj: Projectile) -> void:
 	var p := proj.get_parent(); if p: p.remove_child(proj)
 	proj.queue_free()
@@ -63,7 +85,6 @@ func update(proj: Projectile, delta: float) -> bool:
 	var dss: PhysicsDirectSpaceState3D = Game.world.get_world_3d().direct_space_state
 	var rem := 1.0
 	var i := 0
-	psqp.collision_mask = proj.team | (0b0001)
 	
 	while rem > 0.0 && proj.health > 0.0 && i < 5: ##TODO do-while
 		i += 1
@@ -91,7 +112,7 @@ func update(proj: Projectile, delta: float) -> bool:
 	return proj.health > 0.0
 
 
-func process_hit(proj: Projectile, ent: Entity) -> void:
+func process_hit(_proj: Projectile, _ent: Entity) -> void:
 	pass
 	#if ent.team & proj.team: return
 	#

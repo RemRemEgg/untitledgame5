@@ -15,6 +15,5 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	fps.text = "%2.2f" % (Performance.get_monitor(Performance.TIME_PROCESS) *1000)
 	Performance.get_monitor(Performance.TIME_PROCESS)
-	stam_true.value = player.dash_count*100.0 / player.dash_max
-	#stam_round.value = floorf(player.dash_count)*100.0 / player.dash_max
-	stam_true.value = randf_range(0, 100)
+	stam_true.value = player.stamina*100.0 / player.stamina_max
+	stam_round.value = floorf(player.stamina)*100.0 / player.stamina_max

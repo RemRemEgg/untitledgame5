@@ -3,6 +3,8 @@ extends MeshInstance3D
 
 #var next: Projectile # ll # fuck you ll you aint even real
 
+const PROJECTILE := preload("uid://djlg0ybtmd4im")
+
 var proc: ProcProj
 var ownr: Entity
 
@@ -20,4 +22,15 @@ func _init() -> void:
 	pass
 
 func _process(delta: float) -> void:
-	proc.process(self, delta)
+	if !is_multiplayer_authority(): return
+	if proc: proc.process(self, delta)
+
+static func deseralize(data: Dictionary) -> Projectile:
+	#var proj := new()
+	var proj := PROJECTILE.instantiate() as Projectile
+	
+	var trans := data.get("trans", Transform3D()) as Transform3D
+	proj.position = trans.origin
+	proj.team = data.get("team", 0)
+	
+	return proj

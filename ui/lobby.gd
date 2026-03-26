@@ -23,6 +23,7 @@ func _ready() -> void:
 	
 	if Network.is_server:
 		start.visible = true
+		get_tree().create_timer(0.15).timeout.connect(_start_game)
 
 
 func _process(_delta: float) -> void:

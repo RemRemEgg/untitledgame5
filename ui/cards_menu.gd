@@ -6,6 +6,7 @@ extends CanvasLayer
 
 func _ready() -> void:
 	temp_skip.pressed.connect(_card_selected)
+	get_tree().create_timer(0.2).timeout.connect(_card_selected)
 
 
 func _card_selection_time() -> void:

@@ -79,6 +79,7 @@ func update_player(id: int, info: Dictionary) -> void:
 	(players[id] as PlayerInfo).update(info)
 
 var loaded_players := 0
+var synced_players := 0
 @rpc("authority", "call_local", "reliable")
 func change_scene(target: String) -> void:
 	loaded_players = 0
@@ -114,7 +115,20 @@ func selected_card() -> void:
 @rpc("authority", "call_local", "reliable")
 func all_players_selected() -> void:
 	loaded_players = 0
+	synced_players = 0
 	# TODO proj sync
+	var sps := Game.player.get_seralized_projectiles()
+	for sp in sps:
+		sync_projectile.rpc(sp)
+@rpc("any_peer", "call_remote", "reliable")
+func sync_projectile(info: Dictionary) -> void:
+	print("syncing projectile")
+	var id := info.get("uuid", 0) as int
+	if id > 0:
+		players[id].linked_player.set_seralized_projectiles(info)
+	synced_players += 1
+	if synced_players == players.size() - 1:
+		projectiles_synced.rpc_id(1)
 @rpc("any_peer", "call_local", "reliable")
 func projectiles_synced() -> void:
 	print("projectiles synced")
@@ -127,9 +141,20 @@ func projectiles_synced() -> void:
 @rpc("authority", "call_local", "reliable")
 func all_projectiles_synced() -> void:
 	print("all projectiles synced, starting round")
-	# TODO start round
-
-
+	
+	#calc spawn position
+	players.sort()
+	var seed_func := func(a: int, k: int) -> int: return (hash(a) ^ hash(k))
+	var sseed := int(players.keys().reduce(seed_func, 0xB100D1EDB00B5))
+	var angle := (sseed/1000.0)
+	angle += (players.keys().find(uuid) * PI*2.0) / players.size()
+	print("spawn info %s %s %s %s" % [uuid, sseed, angle, players.keys().find(uuid)])
+	var spawn2d := Vector2.from_angle(angle) * 9.0
+	var tween := self_player.linked_player.create_tween()
+	tween.tween_property(self_player.linked_player, "global_position", Vector3(spawn2d.x, 16.0, spawn2d.y), 0.0).set_trans(Tween.TRANS_QUAD)
+	tween.finished.connect(_local_round_start)
+func _local_round_start() -> void:
+	self_player.linked_player.can_shoot = true
 #endregion
 
 class PlayerInfo:
@@ -139,9 +164,10 @@ class PlayerInfo:
 	var name: String = "New Player"
 	var color: Color = Color.from_hsv(randf_range(0, 1.0), 0.95, 0.95)
 	var ready := false
+	var linked_player: Player
 	
 	func seralize() -> Dictionary:
-		var d: Dictionary = {}
+		var d: Dictionary[String, Variant] = {}
 		d.uuid = uuid
 		d.name = name
 		d.color = color
@@ -163,24 +189,46 @@ class PlayerInfo:
 		ready = info.get("ready", ready)
 		on_update.emit(self)
 
+
 var out_proj_spawner: MultiplayerSpawner
 
-#transform 
-func _send_projectile() -> void:
-	pass
+#pp.global_position = trans.origin
+#pp.ownr = ownr
+#pp.team = ownr.team
+#pp.velocity = trans.basis * vel
+#pproj.update(pp, delta)
+#Network._send_projectile(pp)
+#func _send_projectile(proj: Projectile) -> void:
+	#var data: Dictionary = {}
+	#data.team = proj.team
+	#data.transform = proj.global_position
+	#out_proj_spawner.spawn(data)
+func _send_projectile(trans: Transform3D, team: int) -> Projectile:
+	var node := out_proj_spawner.spawn({"trans":trans, "team":team, "uuid":uuid})
+	return node as Projectile
 
 func add_proj_spawner(mps: MultiplayerSpawner, is_out: bool = false) -> void:
-	#mps.spawn_function = _recieve_projectile
-	#if is_out: out_proj_spawner = mps
-	pass
+	mps.spawn_function = _recieve_projectile
+	if is_out: out_proj_spawner = mps
 
-func _recieve_projectile(data: Variant) -> void:
-	pass
+# transform (rotation, position, ) 
+func _recieve_projectile(data: Dictionary) -> Projectile:
+	var id := data.get("uuid", 0) as int
+	if id > 0:
+		var proj := Projectile.deseralize(data)
+		proj.set_multiplayer_authority(id)
+		
+		players[id].linked_player.pproj.bind(proj)
+		
+		return proj
+	return null
+
+
 
 class ProjInfo:
 	var auth_uuid: int
 	
-	#static func
+	
 	
 	func seralize() -> Dictionary:
 		var d := {}
