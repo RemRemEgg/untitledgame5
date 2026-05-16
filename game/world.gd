@@ -5,6 +5,7 @@ const PLAYER := preload("uid://c2wfggr4eiia1")
 const P_SCRIPT = preload("uid://dqe5og2n28eku")
 const L_SCRIPT = preload("uid://y4dp2cqltcrw")
 
+@onready var levelgeo: Node3D = $levelgeo as Node3D
 @onready var enviroment: Node3D = $enviroment as Node3D
 @onready var players: Node3D = $players as Node3D
 @onready var projectiles: Node3D = $projectiles as Node3D
@@ -16,8 +17,8 @@ func _ready() -> void:
 	#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 	process_mode = Node.PROCESS_MODE_DISABLED
 	
-	for v_p in Network.players.values():
-		var pi := (v_p as Network.PlayerInfo)
+	
+	for pi in (Network.players.values() as Array[Network.PlayerInfo]): # typesafe
 		var p_scn := PLAYER.instantiate()
 		
 		p_scn.name = str(pi.uuid)
@@ -66,22 +67,57 @@ func _ready() -> void:
 	#($StaticBody3D/Sprite2D as MeshInstance3D).mesh = tgen.mesh
 	#($StaticBody3D/CollisionShape3D as CollisionShape3D).shape = tgen.mesh.create_trimesh_shape()
 	
-	Network.loaded_scene.rpc_id(1)
+	Network.change_to_state(Network.NS_IDLE)
+
+func change_level(_lvl: String, stasis_pos: Vector3) -> void:
+	# move player to spawn pos and wait
+	var stasis := Game.player.create_tween()
+	stasis.tween_property(Game.player, "position", stasis_pos, 1.0)
+	await stasis.finished
+	Game.player.stasis = stasis_pos
+	await get_tree().create_timer(0.5).timeout
+	
+	# shrink old level
+	var cur_level := levelgeo.get_child(0) as Level
+	var tween := cur_level.create_tween()
+	tween.tween_property(cur_level, "rotation:y", PI, 1.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_EXPO)
+	tween = cur_level.create_tween()
+	tween.tween_property(cur_level, "scale", Vector3.ONE*0.001, 1.5)
+	await tween.finished
+	
+	# setup new level
+	levelgeo.remove_child(cur_level)
+	cur_level.queue_free()
+	#var packed := preload("res://game/levels/level_playground.tscn")
+	var packed := preload("res://game/levels/fixtest2.tscn")
+	cur_level = packed.instantiate() as Level
+	levelgeo.add_child(cur_level)
+	
+	# grow new level
+	cur_level.rotation.y = -PI
+	cur_level.scale = Vector3.ONE*0.001
+	tween = cur_level.create_tween()
+	tween.tween_property(cur_level, "rotation:y", 0.0, 1.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
+	tween = cur_level.create_tween()
+	tween.tween_property(cur_level, "scale", Vector3.ONE, 1.5)
+	await tween.finished
+	
+	await get_tree().create_timer(0.5).timeout
+	Network.change_to_state(Network.NS_IDLE)
+
+#enum {GS_LOAD_WAITING, GS_PLAYER_DRAW, GS_ROUND}
+#var game_state: int = GS_LOAD_WAITING
+#var game_state_timer: float = 0.0
 
 
-enum {GS_LOAD_WAITING, GS_PLAYER_DRAW, GS_ROUND}
-var game_state: int = GS_LOAD_WAITING
-var game_state_timer: float = 0.0
+#func _process(_delta: float) -> void:
+	#if !Network.is_server: return
+	#match game_state:
+		#GS_LOAD_WAITING: return
 
+#func all_players_loaded() -> void: # called locally from server
+	#get_tree().create_timer(0.5).timeout.connect(player_draw_time)
 
-func _process(_delta: float) -> void:
-	if !Network.is_server: return
-	match game_state:
-		GS_LOAD_WAITING: return
-
-func all_players_loaded() -> void:
-	player_draw_time()
-
-func player_draw_time() -> void:
-	game_state = GS_PLAYER_DRAW
-	Network.player_draw_time.rpc()
+#func player_draw_time() -> void:
+	#game_state = GS_PLAYER_DRAW
+	#Network.player_draw_time.rpc()

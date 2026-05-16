@@ -1,45 +1,13 @@
 [gd_scene format=3 uid="uid://byfoxwpg4svqx"]
 
-[ext_resource type="Theme" uid="uid://bg5liorxv7qwu" path="res://ui/ui_theme.tres" id="1_dh723"]
 [ext_resource type="Script" uid="uid://ccqi1utu1jtd1" path="res://ui/cards_menu.gd" id="1_usdfd"]
-[ext_resource type="PackedScene" uid="uid://b5ava4xusp4lu" path="res://ui/card_display.tscn" id="2_jtfqm"]
 
-[node name="cards_menu" type="CanvasLayer" unique_id=1527336510]
+[node name="cards_menu" type="Control" unique_id=361756010]
 process_mode = 4
-script = ExtResource("1_usdfd")
-
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=584986322]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_dh723")
-
-[node name="BoxContainer" type="BoxContainer" parent="MarginContainer" unique_id=35448646]
-layout_mode = 2
-alignment = 1
-
-[node name="card_display" parent="MarginContainer/BoxContainer" unique_id=1909330327 instance=ExtResource("2_jtfqm")]
-layout_mode = 2
-
-[node name="card_display2" parent="MarginContainer/BoxContainer" unique_id=460415774 instance=ExtResource("2_jtfqm")]
-layout_mode = 2
-
-[node name="card_display3" parent="MarginContainer/BoxContainer" unique_id=702859030 instance=ExtResource("2_jtfqm")]
-layout_mode = 2
-
-[node name="card_display4" parent="MarginContainer/BoxContainer" unique_id=1416880099 instance=ExtResource("2_jtfqm")]
-layout_mode = 2
-
-[node name="card_display5" parent="MarginContainer/BoxContainer" unique_id=351802569 instance=ExtResource("2_jtfqm")]
-layout_mode = 2
-
-[node name="temp_skip" type="Button" parent="." unique_id=709786160]
-offset_left = 369.0
-offset_top = 427.0
-offset_right = 753.0
-offset_bottom = 516.0
-size_flags_horizontal = 0
-size_flags_vertical = 0
-text = "TEMP card select"
+script = ExtResource("1_usdfd")

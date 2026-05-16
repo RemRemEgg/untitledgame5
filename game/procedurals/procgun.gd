@@ -2,17 +2,29 @@ class_name ProcGun
 extends RefCounted
 
 
+var pproj: ProcProj
 
 
-var fire_rate := 10.0
+func set_default_stats() -> void:
+	mod_stack = []
+	mod_data = []
+	fire_rate = 2.0
+	b_speed = 32.0
+	inaccuracy = 0.0
+	bullets_per_shot = 1
+	clip_size = 6
+	reload_time = 1.2
+	pproj.set_default_stats()
 
 enum {MOD_LINE, MOD_SHOTGUN, MOD_SPREAD}
 var mod_stack: PackedInt32Array
 var mod_data: PackedFloat32Array
-
-var pproj: ProcProj
-var inaccuracy: float = 0.0
-var b_speed := 32.0
+var fire_rate: float
+var b_speed: float
+var inaccuracy: float
+var bullets_per_shot: int
+var clip_size: int
+var reload_time: float
 
 func _init() -> void:
 	mod_stack = []
@@ -24,13 +36,29 @@ func add_modifier(type: int, data: Array[float]) -> void:
 
 
 func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire: bool) -> void:
+	if gun.reload:
+		gun.reload -= delta
+		if gun.reload <= 0.0:
+			gun.reload = 0.0
+			gun.clip = clip_size
+			gun.fire_timer = 1.0
+	if gun.reload: return
 	gun.fire_timer += delta * fire_rate
 	if !can_fire:
 		gun.fire_timer = minf(gun.fire_timer, 1.0)
 		return
 	while gun.fire_timer >= 1.0:
+		if gun.clip <= 0:
+			gun.reload = reload_time
+			gun.fire_timer = 0.0
+			return
 		fire(gun, trans, ownr, (gun.fire_timer - 1.0) / fire_rate)
 		gun.fire_timer -= 1.0
+		gun.clip -= 1
+	if gun.clip <= 0:
+		gun.reload = reload_time
+		gun.fire_timer = 0.0
+		return
 
 #func __process(gun: Gun, trans: Transform2D, entity: Entity, delta: float) -> int:
 	#var fire_count := 0
@@ -86,29 +114,7 @@ func process_modifier(vel: Vector3, i: Vector2i, trans: Transform3D, ownr: Entit
 
 
 func make_bullets(vel: Vector3, trans: Transform3D, ownr: Entity, delta: float) -> void:
-	#print("making bullet at %s" % trans)
-	#var pp := pproj.create_projectile()
-	#pp.global_position = trans.origin
-	#pp.ownr = ownr
-	#pp.team = ownr.team
-	#pp.velocity = trans.basis * vel
-	#pproj.update(pp, delta)
-	#Network._send_projectile(pp)
-	
-	var proj := Network._send_projectile(trans, ownr.team)
+	var proj := Network._send_projectile(trans)
 	proj.ownr = ownr
 	proj.velocity = trans.basis * vel
-	#pproj.bind(proj)
 	pproj.update(proj, delta)
-	
-	
-	###TODO
-	#trans = trans.rotated_local((randf()-0.5) * inaccuracy)
-	#var pp := pproj.create_pprojectile()
-	#pp.trans = trans
-	#trans.origin = Vector2.ZERO
-	#pp.vel = trans*Vector2.RIGHT
-	#pp.vel *= pproj.speed
-	#pp.ownr = ownr
-	#pp.team = ownr.team
-	#pproj.update(pp, delta)

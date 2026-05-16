@@ -13,7 +13,7 @@ func _ready() -> void:
 	p_name.text_changed.connect(_on_player_name_edit)
 	p_color.color_changed.connect(_on_player_color_edit)
 	p_ready.toggled.connect(_on_player_ready_edit)
-	start.pressed.connect(_start_game)
+	start.pressed.connect(Network.start_game)
 	
 	p_color.color = Network.self_player.color
 	#p_name.text = str(Network.uuid)
@@ -23,7 +23,7 @@ func _ready() -> void:
 	
 	if Network.is_server:
 		start.visible = true
-		get_tree().create_timer(0.15).timeout.connect(_start_game)
+		#get_tree().create_timer(0.2).timeout.connect(Network.start_game)
 
 
 func _process(_delta: float) -> void:
@@ -32,7 +32,7 @@ func _process(_delta: float) -> void:
 
 func load_players() -> void:
 	for c in playerlist.get_children():
-		playerlist.remove_child(c) # memory leak lmao
+		playerlist.remove_child(c)
 		c.queue_free()
 	Network.players.sort()
 	for p in Network.players:
@@ -51,14 +51,11 @@ func _on_player_name_edit(new_name: String) -> void:
 	if new_name.is_empty():
 		new_name = "Player"
 		p_name.text = new_name
-	Network.update_player.rpc(Network.uuid, {"name":new_name})
+	Network.update_player.rpc({"name":new_name})
 
 func _on_player_color_edit(new_color: Color) -> void:
-	Network.update_player.rpc(Network.uuid, {"color":new_color})
+	Network.update_player.rpc({"color":new_color})
 
 func _on_player_ready_edit(is_ready: bool) -> void:
-	Network.update_player.rpc(Network.uuid, {"ready":is_ready})
+	Network.update_player.rpc({"ready":is_ready})
 	playereditor.process_mode = PROCESS_MODE_DISABLED if is_ready else PROCESS_MODE_INHERIT
-
-func _start_game() -> void:
-	Network.change_scene.rpc("res://game/world.tscn")

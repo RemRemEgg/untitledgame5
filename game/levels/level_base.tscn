@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://28120xtw4fhx"]
+
+[ext_resource type="Script" uid="uid://dp04o0itt8kw3" path="res://game/levels/level.gd" id="1_bb1n0"]
+[ext_resource type="Material" uid="uid://cpnpb6gvn4xc5" path="res://shaders/tile.res" id="2_bb1n0"]
+[ext_resource type="PackedScene" uid="uid://bsqmvwnoix70h" path="res://game/bounds.tscn" id="2_j8nxo"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_7xihh"]
+material = ExtResource("2_bb1n0")
+size = Vector3(256, 2, 256)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xuocq"]
+size = Vector3(256, 2, 256)
+
+[node name="level_base" type="Node3D" unique_id=934256404]
+script = ExtResource("1_bb1n0")
+metadata/_custom_type_script = "uid://dp04o0itt8kw3"
+
+[node name="bounds" parent="." unique_id=1803502617 instance=ExtResource("2_j8nxo")]
+
+[node name="point_lower" type="OmniLight3D" parent="." unique_id=509575897]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+light_energy = 2.0
+shadow_enabled = true
+omni_range = 128.0
+omni_attenuation = 0.1
+
+[node name="point_higher" type="OmniLight3D" parent="." unique_id=371689776]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 72, 0)
+light_energy = 2.0
+shadow_enabled = true
+omni_range = 128.0
+omni_attenuation = 0.1
+
+[node name="full_floor" type="StaticBody3D" parent="." unique_id=926384544]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+collision_mask = 0
+
+[node name="mesh" type="MeshInstance3D" parent="full_floor" unique_id=1367807556]
+mesh = SubResource("BoxMesh_7xihh")
+skeleton = NodePath("../../..")
+
+[node name="collider" type="CollisionShape3D" parent="full_floor" unique_id=1227916597]
+shape = SubResource("BoxShape3D_xuocq")

@@ -10,8 +10,8 @@ var ownr: Entity
 
 #var mesh: MeshInstance3D
 
-var team: int
 var velocity: Vector3
+var left_owner: bool = false
 
 #var depth: float = 0.0
 var damage: float = 4.0
@@ -31,6 +31,5 @@ static func deseralize(data: Dictionary) -> Projectile:
 	
 	var trans := data.get("trans", Transform3D()) as Transform3D
 	proj.position = trans.origin
-	proj.team = data.get("team", 0)
 	
 	return proj

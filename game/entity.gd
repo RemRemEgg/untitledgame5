@@ -18,7 +18,6 @@ static func movement_update_full(ent: Entity, dir: Vector3, delta: float) -> voi
 #var mesh: MeshInstance3D
 #var rotlerp: Vector2
 #var hurt_text: TextPopup
-var team: int = 0x0
 
 #var atk_data: Array[float]
 #var curr_atk: ProcEntity.AtkExecutor
@@ -27,7 +26,8 @@ var team: int = 0x0
 
 #var guns: Array[Gun]
 
-#var health: float = 60.0
+var health: float = 100.0
+var max_health: float = 100.0
 #var hurt_time: float = 0.0
 
 
@@ -38,7 +38,7 @@ var team: int = 0x0
 	#ent.remove_child(ent.mesh)
 	#return ent
 #func add_to_world() -> Entity:
-	#mesh.owner = null ##??TODO
+	#mesh.owner = null
 	#Global.Game.render.add_child(mesh)
 	#Global.Game.entities.add_child(self)
 	#return self

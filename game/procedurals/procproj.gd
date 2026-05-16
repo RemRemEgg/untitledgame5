@@ -1,10 +1,9 @@
 class_name ProcProj
 extends RefCounted
 
-func seralize(o_uuid: int = Network.uuid) -> Dictionary:
+func seralize() -> Dictionary:
 	var d: Dictionary[String, Variant] = {}
 	
-	d.uuid = o_uuid
 	d.color = shader_mat.albedo_color
 	d.scale = scale
 	
@@ -27,10 +26,17 @@ var shape: SphereShape3D
 var mesh: SphereMesh
 var shader_mat: StandardMaterial3D
 
-var health: float = 4.0
-var scale: float = 1.0
-var damage: float = 4.0
-var bounces: int = 0
+func set_default_stats() -> void:
+	health = 4.0
+	scale = 1.0
+	damage = 20.0
+	bounces = 0
+
+#modifiable stats
+var health: float
+var scale: float
+var damage: float
+var bounces: int
 
 
 func _init() -> void:
@@ -40,12 +46,13 @@ func _init() -> void:
 	mesh = SphereMesh.new()
 	mesh.radial_segments = 4
 	mesh.rings = 1
-	mesh.radius = 0.15; mesh.height = mesh.radius*2
+	mesh.radius = 0.1; mesh.height = mesh.radius*2
 	mesh.material = shader_mat
 	shape = SphereShape3D.new()
 	shape.radius = mesh.radius
 	psqp = PhysicsShapeQueryParameters3D.new()
 	psqp.shape = shape
+	#psqp.collision_mask = 0b0011
 	psqp.collision_mask = 0b1111
 	
 	travel_mod_stack = []
@@ -86,7 +93,7 @@ func update(proj: Projectile, delta: float) -> bool:
 	var rem := 1.0
 	var i := 0
 	
-	while rem > 0.0 && proj.health > 0.0 && i < 5: ##TODO do-while
+	while rem > 0.0 && proj.health > 0.0 && i < 5: ##TODO point collisions
 		i += 1
 		psqp.transform = proj.transform
 		psqp.motion = proj.velocity * rem * delta
@@ -102,27 +109,31 @@ func update(proj: Projectile, delta: float) -> bool:
 		var hits := dss.get_rest_info(psqp)
 		shape.radius -= 0.02
 		
+		
 		if hits:
 			var cid := hits[&"collider_id"] as int
 			var colc := instance_from_id(cid) as PhysicsBody3D
-			if colc is Entity: process_hit(proj, colc as Entity)
+			if colc is Entity:
+				process_hit(proj, colc as Entity)
+			else: proj.left_owner = true
 			if colc is StaticBody3D:
 				process_collision(proj, colc as StaticBody3D, hits.get(&"normal", -proj.velocity) as Vector3)
+		else: proj.left_owner = true
 	
 	return proj.health > 0.0
 
 
-func process_hit(_proj: Projectile, _ent: Entity) -> void:
-	pass
-	#if ent.team & proj.team: return
-	#
-	#ent.proc.take_proj_damage(ent, proj)
-	#deal_proj_damage(proj, ent)
-	#ent.proc.deal_proj_damage(ent, proj)
-#
-#func deal_proj_damage(proj: Projectile, _ent: Entity) -> void:
-	#proj.health = 0.0
-
+func process_hit(proj: Projectile, ent: Entity) -> void: # TODO fixed maybe?
+	print("hit entity %s, owner is %s" % [ent.uuid, proj.ownr.uuid])
+	
+	if ent.uuid == proj.ownr.uuid && !proj.left_owner: return
+	proj.left_owner = true
+	
+	proj.health = -1.0
+	
+	if ent is Player:
+		var hit_player := ent as Player
+		hit_player.take_damage.rpc(proj.damage)
 
 func process_collision(proj: Projectile, _sb3d: StaticBody3D, normal: Vector3) -> void:
 	if proj.bounces > 0:

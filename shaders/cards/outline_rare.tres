@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://fif1sx8k4w8f"]
+
+[ext_resource type="Shader" uid="uid://d0io7u6h2yxf4" path="res://shaders/cards/outline_rare.gdshader" id="1_p1mrp"]
+
+[resource]
+shader = ExtResource("1_p1mrp")
