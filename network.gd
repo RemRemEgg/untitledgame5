@@ -149,15 +149,24 @@ var next_state: int = NS_IDLE
 func test_all_players_synced() -> void:
 	if players.values().all(func(p:PlayerInfo)->bool:return p.state == self_player.state): all_peers_synced()
 func all_peers_synced() -> void: # server side
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(0.25).timeout
 	match self_player.state:
 		NS_IDLE:
 			if next_state != NS_IDLE:
 				change_to_state.rpc(next_state)
+		NS_BATTLE:
+			system_message.rpc(&"[b]Round start![/b]")
 		_: pass
+
+#endregion
+
+
+
+#region helper functions #################################
 
 func start_game() -> void: # called from host pressing start button
 	change_to_state.rpc(NS_LOAD_GAME)
+
 
 @rpc("any_peer", "call_remote", "reliable")
 func sync_projectile(info: Dictionary) -> void: # peer side, from peers
@@ -177,10 +186,13 @@ func load_level(sseed: int) -> void:# peer side, from server
 	var spawn2d := Vector2.from_angle(angle) * 32.0
 	Game.world.change_level("", Vector3(spawn2d.x, 16.0, spawn2d.y))
 
+
 func start_round() -> void: # peer side
 	Console.print(&"starting round")
+	Game.world.game_start()
 	Game.player.game_start()
 	round_count += 1
+
 
 @rpc("any_peer", "call_local", "reliable")
 func player_died(time: float) -> void: # server side, from peers
@@ -188,6 +200,7 @@ func player_died(time: float) -> void: # server side, from peers
 	Console.print(&"player [%s] died at %+010.1f" % [id, time])
 	if !players.has(id): return
 	players[id].death_time = time
+	system_message.rpc(&"%s has died" % players[id].name)
 	
 	var players_left := players.values().filter(func(p:PlayerInfo)->bool:return p.death_time < 0.0).size()
 	if players_left == 1:
@@ -205,24 +218,61 @@ func determine_winner() -> void: # server side
 			win_id = player.uuid
 	if win_id == -1: assert(false, "No winner found")
 	Console.print(&"winner is [%s]" % win_id)
+	system_message.rpc(&"[b]%s won![/b]" % players[win_id].name)
 	player_won_game.rpc(win_id)
 
 @rpc("authority", "call_local", "reliable")
 func player_won_game(id: int) -> void:
 	Console.print(&"recieved [%s] won" % id)
 	self_player.linked_player.respawn()
+	players[id].wins += 1
 	if id == uuid: # won
-		Console.print(&"i won, moving to idle")
+		Console.print(&"i won, skip card draw")
 		change_to_state(NS_IDLE)
 	else:
 		Console.print(&"i lost, drawing cards")
 		change_to_state(NS_DRAWING)
+
+
+@rpc("authority", "call_local", "reliable")
+func system_message(msg: String) -> void:
+	Game.player.hud.add_chat_message(msg)
+
+@rpc("any_peer", "call_local", "reliable")
+func chat_message(msg: String) -> void:
+	var id := multiplayer.get_remote_sender_id()
+	Game.player.hud.add_chat_message(&"%s: " % [players[id].name, msg])
+
+@rpc("any_peer", "call_local", "reliable")
+func update_card_picked(card_uuid: StringName) -> void:
+	var id := multiplayer.get_remote_sender_id()
+	
+	var card := Card.get_card(card_uuid)
+	if !card:
+			Console.print_err(&"Cannot find card %s" % card_uuid)
+			return
+	
+	var card_list := players[id].cards
+	card_list[card_uuid] = card_list.get(card_uuid, 0) + 1
+	
+	Game.player.hud.add_chat_message(&"%s picked [color=%s]%s[/color]" % [players[id].name, Card.RARITY_COLORS[card.rarity], card.name])
 
 #endregion
 
 
 
 #region world sync #######################################
+
+func _round_seed_func(a: int, k: int) -> int: return (hash(a) ^ hash(k))
+func get_round_seed() -> int:
+	var keys := players.keys().duplicate() as Array[int]
+	keys.sort()
+	return int(keys.reduce(_round_seed_func, 0xB100D1EDB00B5))
+func get_synced_rng() -> RandomNumberGenerator:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = get_round_seed()
+	return rng
+
 const NS_NAME: PackedStringArray = ["NS_UNINIT", "NS_IDLE", "NS_LOBBY", "NS_LOAD_GAME", "NS_DRAWING", "NS_PROJ_SYNC", "NS_LOAD_LEVEL", "NS_BATTLE"]
 enum {NS_UNINIT, NS_IDLE, NS_LOBBY, NS_LOAD_GAME, NS_DRAWING, NS_PROJ_SYNC, NS_LOAD_LEVEL, NS_BATTLE}
 class PlayerInfo:
@@ -237,9 +287,12 @@ class PlayerInfo:
 	var ready := false
 	var death_time := -1.0
 	var proj_synced := false
+	var wins: int = 0
+	
+	var cards: Dictionary[StringName, int]
 	
 	func seralize() -> Dictionary:
-		var d: Dictionary[String, Variant] = {}
+		var d: Dictionary[StringName, Variant] = {}
 		d.uuid = uuid
 		d.name = name
 		d.color = color
@@ -257,11 +310,11 @@ class PlayerInfo:
 		return pi
 	
 	func update(info: Dictionary) -> void:
-		uuid = info.get("uuid", uuid)
-		name = info.get("name", name)
-		color = info.get("color", color)
-		ready = info.get("ready", ready)
-		state = info.get("state", state)
+		uuid = info.get(&"uuid", uuid)
+		name = info.get(&"name", name)
+		color = info.get(&"color", color)
+		ready = info.get(&"ready", ready)
+		state = info.get(&"state", state)
 		on_update.emit(self)
 
 
@@ -286,5 +339,17 @@ func _recieve_projectile(data: Dictionary) -> Projectile:
 		
 		return proj
 	return null
+
+#endregion
+
+
+
+#region rpcs for card effects #################################
+
+@rpc("any_peer", "call_local", "reliable")
+func move_object(path: NodePath, pos: Vector3) -> void: # spacial warp
+	print("warp %s to %s" % [path, pos])
+	var node: Node3D = get_tree().root.get_node(path) as Node3D
+	if node: node.global_position = pos
 
 #endregion

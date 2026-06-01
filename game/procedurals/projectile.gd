@@ -11,12 +11,13 @@ var ownr: Entity
 #var mesh: MeshInstance3D
 
 var velocity: Vector3
-var left_owner: bool = false
+#var left_owner: bool = false
 
 #var depth: float = 0.0
 var damage: float = 4.0
-var health: float = 20.0
+var time: float = 0.0
 var bounces: int = 0
+var knockback: float = 0.0
 
 func _init() -> void:
 	pass

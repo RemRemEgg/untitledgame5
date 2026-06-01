@@ -5,7 +5,7 @@ func seralize() -> Dictionary:
 	var d: Dictionary[String, Variant] = {}
 	
 	d.color = shader_mat.albedo_color
-	d.scale = scale
+	d.scale = scale.value
 	
 	return d
 
@@ -13,7 +13,7 @@ static func deseralize(info: Dictionary) -> ProcProj:
 	var proc := new()
 	
 	proc.shader_mat.albedo_color = info.get("color", Color.WHITE)
-	proc.scale = info.get("scale", 1.0)
+	proc.scale.value = info.get("scale", 1.0)
 	
 	return proc
 
@@ -22,25 +22,42 @@ static func deseralize(info: Dictionary) -> ProcProj:
 static var count: int = 0
 
 var psqp: PhysicsShapeQueryParameters3D
+var prqp: PhysicsRayQueryParameters3D
 var shape: SphereShape3D
 var mesh: SphereMesh
 var shader_mat: StandardMaterial3D
 
-func set_default_stats() -> void:
-	health = 4.0
-	scale = 1.0
-	damage = 20.0
-	bounces = 0
+func reset_stats() -> void:
+	time.reset_value()
+	scale.reset_value()
+	damage.reset_value()
+	bounces.reset_value()
+	knockback.reset_value()
+	collide_hooks = []
+	damage_hooks = []
+
+func calculate_stats() -> void:
+	time.calculate_value()
+	scale.calculate_value()
+	damage.calculate_value()
+	bounces.calculate_value()
+	knockback.calculate_value()
 
 #modifiable stats
-var health: float
-var scale: float
-var damage: float
-var bounces: int
+var time := Stat.new(4.0)
+var scale := Stat.new(1.0)
+var damage := Stat.new(20.0)
+var bounces := Stat.new(0)
+var knockback := Stat.new(0.0)
+##Hook for projectile hitting an object or entity, without bouncing
+##[codeblock]func(bullet:Projectile,collider:CollisionObject3D) -> void:[/codeblock]
+var collide_hooks: Array[Callable]
+##Hook for projectile damaging entity
+##[codeblock]func(bullet:Projectile,hit_player:Player) -> void:[/codeblock]
+var damage_hooks: Array[Callable]
 
 
 func _init() -> void:
-	#pp.shader_mat = SDFBuilder.new().build_shader_2D((Vector3(randf(), randf(), randf()) - Vector3(0.1, 0.1, 0.1)).normalized() * 7./12)
 	shader_mat = StandardMaterial3D.new()
 	shader_mat.albedo_color = Color.from_hsv(randf_range(0.0, 1.0), 0.85, 0.85)
 	mesh = SphereMesh.new()
@@ -52,8 +69,9 @@ func _init() -> void:
 	shape.radius = mesh.radius
 	psqp = PhysicsShapeQueryParameters3D.new()
 	psqp.shape = shape
-	#psqp.collision_mask = 0b0011
-	psqp.collision_mask = 0b1111
+	psqp.collision_mask = 0b0110
+	prqp = PhysicsRayQueryParameters3D.new()
+	prqp.collision_mask = 0b0001
 	
 	travel_mod_stack = []
 	travel_mod_data = []
@@ -62,20 +80,18 @@ func _init() -> void:
 func create_projectile() -> Projectile:
 	var proj := Projectile.new()
 	bind(proj)
-	
-	#Game.world.projectiles.add_child(proj)
 	count += 1
-	
 	return proj
 func bind(proj: Projectile) -> void:
 	proj.proc = self
 	
-	proj.health = health
-	proj.damage = damage
+	proj.time = 0.0
+	proj.damage = damage.value
 	#proj.depth = 0.0
 	proj.mesh = mesh
-	proj.scale *= scale
-	proj.bounces = bounces
+	proj.scale *= scale.value
+	proj.bounces = bounces.value_int
+	proj.knockback = knockback.value
 func destroy_projectile(proj: Projectile) -> void:
 	var p := proj.get_parent(); if p: p.remove_child(proj)
 	proj.queue_free()
@@ -83,63 +99,70 @@ func destroy_projectile(proj: Projectile) -> void:
 
 
 func process(proj: Projectile, delta: float) -> void:
-	if !update(proj, delta): return destroy_projectile(proj)
-	
-	#proj.global_position = Entity.up_dim(proj.trans.origin)
-	#proj.rotation.y = -proj.vel.angle()
-#
-func update(proj: Projectile, delta: float) -> bool:
+	update(proj, delta)
+	if proj.time >= time.value: destroy_projectile(proj)
+
+func update(proj: Projectile, delta: float) -> void:
 	var dss: PhysicsDirectSpaceState3D = Game.world.get_world_3d().direct_space_state
-	var rem := 1.0
-	var i := 0
+	#TODO custom collision api?
+	#TODO pserver rids over refs? see psqp
 	
-	while rem > 0.0 && proj.health > 0.0 && i < 5: ##TODO point collisions
-		i += 1
+	
+	prqp.from = proj.global_position
+	prqp.to = prqp.from + proj.velocity*delta
+	var r_col := dss.intersect_ray(prqp)
+	var r_dist := 1.0
+	var h_pos := Vector3.ZERO
+	if !r_col.is_empty():
+		h_pos = r_col[&"position"] as Vector3
+		r_dist = Util.vec3_inv_lerp(prqp.from, prqp.to, h_pos)
+	
+	psqp.transform = proj.transform
+	psqp.motion = proj.velocity * delta * r_dist
+	var s_dist := dss.cast_motion(psqp)[1]
+	
+	var dist := delta*s_dist*r_dist
+	proj.transform.origin += proj.velocity * dist
+	proj.velocity += Vector3(0.0, -32.0, 0.0) * dist
+	#process_modifier(proj, Vector2i.ZERO, delta * dist) # TODO proj modifiers
+	
+	if s_dist < 1.0: # hit entity before wall
 		psqp.transform = proj.transform
-		psqp.motion = proj.velocity * rem * delta
-		var dist := dss.cast_motion(psqp)[1] * rem
-		
-		proj.transform.origin += proj.velocity * dist * delta
-		proj.velocity += Vector3(0.0, -32.0, 0.0) * delta * dist
-		#process_modifier(proj, Vector2i.ZERO, delta * dist)
-		proj.health -= delta * dist
-		rem -= dist
-		psqp.transform = proj.transform
-		shape.radius += 0.02
+		if proj.time == 0.0: psqp.exclude = [proj.ownr.get_rid()]
 		var hits := dss.get_rest_info(psqp)
-		shape.radius -= 0.02
-		
-		
-		if hits:
+		if proj.time == 0.0: psqp.exclude = []
+		if !hits.is_empty():
 			var cid := hits[&"collider_id"] as int
 			var colc := instance_from_id(cid) as PhysicsBody3D
-			if colc is Entity:
-				process_hit(proj, colc as Entity)
-			else: proj.left_owner = true
-			if colc is StaticBody3D:
-				process_collision(proj, colc as StaticBody3D, hits.get(&"normal", -proj.velocity) as Vector3)
-		else: proj.left_owner = true
+			if colc is Entity: hit_entity(proj, colc as Entity)
+	elif h_pos: # hit wall TODO collide with bounds
+		var colc: Variant = r_col[&"collider"]
+		if colc is LevelBody:
+			var lvlb: LevelBody = colc as LevelBody
+			var normal: Vector3 = r_col.get(&"normal", -proj.velocity.normalized()) as Vector3
+			var pos := r_col.get(&"position", lvlb.global_position) as Vector3
+			hit_levelbody(proj, lvlb, normal, pos)
 	
-	return proj.health > 0.0
+	proj.time += dist
 
-
-func process_hit(proj: Projectile, ent: Entity) -> void: # TODO fixed maybe?
-	print("hit entity %s, owner is %s" % [ent.uuid, proj.ownr.uuid])
-	
-	if ent.uuid == proj.ownr.uuid && !proj.left_owner: return
-	proj.left_owner = true
-	
-	proj.health = -1.0
+func hit_entity(proj: Projectile, ent: Entity) -> void:
+	proj.time = time.value
 	
 	if ent is Player:
 		var hit_player := ent as Player
-		hit_player.take_damage.rpc(proj.damage)
+		hit_player.take_damage.rpc(proj.damage, proj.velocity.normalized() * proj.knockback)
+		for hook: Callable in collide_hooks: hook.call(proj, ent)
+		for hook: Callable in damage_hooks: hook.call(proj, ent as Entity)
 
-func process_collision(proj: Projectile, _sb3d: StaticBody3D, normal: Vector3) -> void:
+func hit_levelbody(proj: Projectile, lvlb: LevelBody, normal: Vector3, pos: Vector3) -> void:
+	pos -= lvlb.global_position
+	lvlb.take_proj_hit.rpc_id(1, proj.damage, proj.velocity.normalized() * (proj.knockback + 5.0), pos)
 	if proj.bounces > 0:
 		proj.bounces -= 1
 		proj.velocity = proj.velocity.bounce(normal)
-	else: proj.health = 0.0
+	else:
+		proj.time = time.value
+		for hook: Callable in collide_hooks: hook.call(proj, lvlb)
 
 
 ##region MODIFIERS

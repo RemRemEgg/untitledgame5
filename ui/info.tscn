@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://gbvy6duhr7d4"]
+
+[ext_resource type="Script" uid="uid://bwqfk5bcerlb7" path="res://ui/info.gd" id="1_tphq3"]
+[ext_resource type="Script" uid="uid://b842d5orwjbbc" path="res://ui/spider_graph.gd" id="2_xhkx0"]
+
+[node name="info" type="BoxContainer" unique_id=653032974]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1_tphq3")
+
+[node name="player_list" type="FlowContainer" parent="." unique_id=91436475]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="info_list" type="BoxContainer" parent="." unique_id=193740545]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
+vertical = true
+
+[node name="player_name" type="Label" parent="info_list" unique_id=1738489801]
+layout_mode = 2
+mouse_filter = 1
+theme_override_font_sizes/font_size = 48
+text = "< Player Name >"
+horizontal_alignment = 1
+
+[node name="team_color" type="ColorRect" parent="info_list" unique_id=1252923936]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="quick_stats" type="Label" parent="info_list" unique_id=856730904]
+layout_mode = 2
+mouse_filter = 1
+theme_override_font_sizes/font_size = 24
+text = "0 Wins  0 KD  0 Ping 0 Bitches"
+horizontal_alignment = 1
+
+[node name="spider_graph" type="Control" parent="info_list" unique_id=1006006992]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+script = ExtResource("2_xhkx0")
+radius = 256.0
+axis_labels = PackedStringArray("Toughness", "Agility", "Lethality", "Ammo", "Sp. Attack", "Sp. Defense")
+values = Array[float]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+data_min = -1.0
+data_scale = 0.85
+metadata/_custom_type_script = "uid://b842d5orwjbbc"
+
+[node name="card_list" type="FlowContainer" parent="." unique_id=15476575]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3

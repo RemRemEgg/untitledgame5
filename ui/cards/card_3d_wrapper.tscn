@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://tp7ecpbxfw28"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ne05q"]
+viewport_path = NodePath("sub_vp")
+
+[node name="card_3d_wrapper" type="Sprite3D" unique_id=1128603354]
+layers = 2
+pixel_size = 0.001
+shaded = true
+texture = SubResource("ViewportTexture_ne05q")
+
+[node name="sub_vp" type="SubViewport" parent="." unique_id=1950706856]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(258, 386)
+render_target_update_mode = 4

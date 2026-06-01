@@ -18,6 +18,7 @@ func _ready() -> void:
 	history = []
 	input.text_submitted.connect(submit_console)
 
+
 func _process(_delta: float) -> void:
 	if load_status % 3 == 1:
 		load_call.call_deferred()
@@ -108,7 +109,7 @@ func run_command(args: Array[String]) -> void:
 		&"help":
 			if help(&"help [command]"):return
 			match args.size():
-				1: self.print(&"Commands: help fps")
+				1: self.print(&"Commands: help fps net dash card")
 				2:
 					is_help = true
 					args.pop_front()
@@ -128,11 +129,39 @@ func run_command(args: Array[String]) -> void:
 					self.print(&"Network[%s]: S:%s N:%s" % [Network.uuid, Network.NS_NAME[Network.self_player.state], Network.NS_NAME[Network.next_state]])
 				&"state":
 					Network.change_to_state(Network.NS_NAME.find(args[2]))
+		&"dash":
+			if help(&"dash <type:int[0,4]>"): return
+			if !exact_args(args, 1): return
+			Game.player.dash_type = int(args[1])
+			self.print(&"Dash type set to %s" % args[1])
+		&"card":
+			if help(&"card <list> | card <give> <id> [count:int]"): return
+			if !min_args(args, 1): return
+			match args[1]:
+				&"list":
+					self.print(&"All Cards:\n%s" % Util.format_array(Card.ALL_CARDS.map(func(c:Card)->String:return c.name)))
+				&"give":
+					var target := args[2].trim_prefix(&'"').trim_suffix(&'"')
+					var idx := Card.ALL_CARDS.find_custom(func(c:Card)->bool: return c.name==target)
+					if idx != -1:
+						var count := 1
+						if args.size() == 4: count = maxi(int(args[3]), 1)
+						for __ in count: Game.player.cards.append(Card.ALL_CARDS[idx])
+						Game.player.update_cards()
+						self.print(&"Give card %s x %s" % [args[2], count])
+					else:
+						print_err(&"Card not found: %s" % args[2])
 		_ when !hit_error: print_err(&"Unknown Command '%s'" % args[0])
 		_: pass
 
 func exact_args(args: Array[String], count: int) -> bool:
 	if args.size() == count+1: return true
+	hit_error = true
+	print_err(&"Invalid arguments, expected %s got %s" % [count, args.size()-1])
+	return false
+
+func min_args(args: Array[String], count: int) -> bool:
+	if args.size() >= count+1: return true
 	hit_error = true
 	print_err(&"Invalid arguments, expected %s got %s" % [count, args.size()-1])
 	return false

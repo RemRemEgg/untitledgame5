@@ -5,26 +5,35 @@ extends RefCounted
 var pproj: ProcProj
 
 
-func set_default_stats() -> void:
+func reset_stats() -> void:
 	mod_stack = []
 	mod_data = []
-	fire_rate = 2.0
-	b_speed = 32.0
-	inaccuracy = 0.0
-	bullets_per_shot = 1
-	clip_size = 6
-	reload_time = 1.2
-	pproj.set_default_stats()
+	fire_rate.reset_value()
+	b_speed.reset_value()
+	inaccuracy.reset_value()
+	bullets_per_shot.reset_value()
+	clip_size.reset_value()
+	reload_time.reset_value()
+	pproj.reset_stats()
+
+func calculate_stats() -> void:
+	fire_rate.calculate_value()
+	b_speed.calculate_value()
+	inaccuracy.calculate_value()
+	bullets_per_shot.calculate_value()
+	clip_size.calculate_value()
+	reload_time.calculate_value()
+	pproj.calculate_stats()
 
 enum {MOD_LINE, MOD_SHOTGUN, MOD_SPREAD}
 var mod_stack: PackedInt32Array
 var mod_data: PackedFloat32Array
-var fire_rate: float
-var b_speed: float
-var inaccuracy: float
-var bullets_per_shot: int
-var clip_size: int
-var reload_time: float
+var fire_rate := Stat.new(2.0)
+var b_speed := Stat.new(32.0)
+var inaccuracy := Stat.new(0.0) #TODO NYI
+var bullets_per_shot := Stat.new(1, 1) #TODO NYI
+var clip_size := Stat.new(6, 1)
+var reload_time := Stat.new(1.2)
 
 func _init() -> void:
 	mod_stack = []
@@ -40,23 +49,23 @@ func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire:
 		gun.reload -= delta
 		if gun.reload <= 0.0:
 			gun.reload = 0.0
-			gun.clip = clip_size
+			gun.clip = clip_size.value_int
 			gun.fire_timer = 1.0
 	if gun.reload: return
-	gun.fire_timer += delta * fire_rate
+	gun.fire_timer += delta * fire_rate.value
 	if !can_fire:
 		gun.fire_timer = minf(gun.fire_timer, 1.0)
 		return
 	while gun.fire_timer >= 1.0:
 		if gun.clip <= 0:
-			gun.reload = reload_time
+			gun.reload = reload_time.value
 			gun.fire_timer = 0.0
 			return
-		fire(gun, trans, ownr, (gun.fire_timer - 1.0) / fire_rate)
+		fire(gun, trans, ownr, (gun.fire_timer - 1.0) / fire_rate.value)
 		gun.fire_timer -= 1.0
 		gun.clip -= 1
 	if gun.clip <= 0:
-		gun.reload = reload_time
+		gun.reload = reload_time.value
 		gun.fire_timer = 0.0
 		return
 
@@ -86,7 +95,7 @@ func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire:
 
 
 func fire(_gun: Gun, trans: Transform3D, ownr: Entity, delta: float) -> void:
-	process_modifier(Vector3(0, 0, -b_speed), Vector2i.ZERO, trans, ownr, delta)
+	process_modifier(Vector3(0, 0, -b_speed.value), Vector2i.ZERO, trans, ownr, delta)
 
 
 func process_modifier(vel: Vector3, i: Vector2i, trans: Transform3D, ownr: Entity, delta: float) -> void:

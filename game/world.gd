@@ -14,7 +14,7 @@ const L_SCRIPT = preload("uid://y4dp2cqltcrw")
 func _ready() -> void:
 	Game.world = self
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+	Game.mouse_fallback = Input.MOUSE_MODE_CAPTURED
 	process_mode = Node.PROCESS_MODE_DISABLED
 	
 	
@@ -78,46 +78,35 @@ func change_level(_lvl: String, stasis_pos: Vector3) -> void:
 	await get_tree().create_timer(0.5).timeout
 	
 	# shrink old level
-	var cur_level := levelgeo.get_child(0) as Level
-	var tween := cur_level.create_tween()
-	tween.tween_property(cur_level, "rotation:y", PI, 1.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_EXPO)
-	tween = cur_level.create_tween()
-	tween.tween_property(cur_level, "scale", Vector3.ONE*0.001, 1.5)
+	var tween := levelgeo.create_tween()
+	tween.tween_property(levelgeo, "rotation:y", PI, 1.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_EXPO)
+	tween = levelgeo.create_tween()
+	tween.tween_property(levelgeo, "scale", Vector3.ONE*0.001, 1.5)
 	await tween.finished
 	
 	# setup new level
+	var cur_level := levelgeo.get_child(0) as Level
 	levelgeo.remove_child(cur_level)
 	cur_level.queue_free()
 	#var packed := preload("res://game/levels/level_playground.tscn")
-	var packed := preload("res://game/levels/fixtest2.tscn")
+	#var packed := preload("res://game/levels/fixtest2.tscn")
+	var packed := preload("res://game/levels/level_playground_remake.tscn")
 	cur_level = packed.instantiate() as Level
+	cur_level.process_mode = Node.PROCESS_MODE_DISABLED
 	levelgeo.add_child(cur_level)
 	
 	# grow new level
-	cur_level.rotation.y = -PI
-	cur_level.scale = Vector3.ONE*0.001
-	tween = cur_level.create_tween()
-	tween.tween_property(cur_level, "rotation:y", 0.0, 1.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
-	tween = cur_level.create_tween()
-	tween.tween_property(cur_level, "scale", Vector3.ONE, 1.5)
+	levelgeo.rotation.y = -PI
+	levelgeo.scale = Vector3.ONE*0.001
+	tween = levelgeo.create_tween()
+	tween.tween_property(levelgeo, "rotation:y", 0.0, 1.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
+	tween = levelgeo.create_tween()
+	tween.tween_property(levelgeo, "scale", Vector3.ONE, 1.5)
 	await tween.finished
 	
 	await get_tree().create_timer(0.5).timeout
 	Network.change_to_state(Network.NS_IDLE)
 
-#enum {GS_LOAD_WAITING, GS_PLAYER_DRAW, GS_ROUND}
-#var game_state: int = GS_LOAD_WAITING
-#var game_state_timer: float = 0.0
 
-
-#func _process(_delta: float) -> void:
-	#if !Network.is_server: return
-	#match game_state:
-		#GS_LOAD_WAITING: return
-
-#func all_players_loaded() -> void: # called locally from server
-	#get_tree().create_timer(0.5).timeout.connect(player_draw_time)
-
-#func player_draw_time() -> void:
-	#game_state = GS_PLAYER_DRAW
-	#Network.player_draw_time.rpc()
+func game_start() -> void:
+	levelgeo.get_child(0).process_mode = Node.PROCESS_MODE_INHERIT

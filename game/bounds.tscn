@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bsqmvwnoix70h"]
 
-[ext_resource type="Material" uid="uid://dgwpatt4cp37" path="res://shaders/bounds.res" id="1_14vco"]
+[ext_resource type="Material" uid="uid://dgwpatt4cp37" path="res://shaders/level/bounds.res" id="1_14vco"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_e10is"]
 material = ExtResource("1_14vco")
@@ -25,7 +25,8 @@ plane = Plane(0, 0, 1, 0)
 plane = Plane(0, 0, -1, 0)
 
 [node name="bounds" type="StaticBody3D" unique_id=1803502617]
-collision_mask = 0
+collision_layer = 255
+collision_mask = 255
 
 [node name="mesh" type="MeshInstance3D" parent="." unique_id=1866912161]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 48, 0)

@@ -1,5 +1,5 @@
 extends MarginContainer
-const PLAYER_ICON = preload("uid://caqvxbw61lbnt")
+
 
 @onready var playereditor: VBoxContainer = $split/playereditor as VBoxContainer
 @onready var p_name: LineEdit = $split/playereditor/name as LineEdit
@@ -37,7 +37,7 @@ func load_players() -> void:
 	Network.players.sort()
 	for p in Network.players:
 		var pi := (Network.players[p] as Network.PlayerInfo)
-		var pcard := PLAYER_ICON.instantiate() as PlayerIcon
+		var pcard := Util.PLAYER_ICON.instantiate() as PlayerIcon
 		pi.on_update.connect(pcard._on_player_update)
 		playerlist.add_child(pcard)
 		pcard.dispname.text = pi.name
@@ -51,11 +51,11 @@ func _on_player_name_edit(new_name: String) -> void:
 	if new_name.is_empty():
 		new_name = "Player"
 		p_name.text = new_name
-	Network.update_player.rpc({"name":new_name})
+	Network.update_player.rpc({&"name":new_name})
 
 func _on_player_color_edit(new_color: Color) -> void:
-	Network.update_player.rpc({"color":new_color})
+	Network.update_player.rpc({&"color":new_color})
 
 func _on_player_ready_edit(is_ready: bool) -> void:
-	Network.update_player.rpc({"ready":is_ready})
+	Network.update_player.rpc({&"ready":is_ready})
 	playereditor.process_mode = PROCESS_MODE_DISABLED if is_ready else PROCESS_MODE_INHERIT

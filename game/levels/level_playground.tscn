@@ -81,6 +81,7 @@ script = ExtResource("1_nlt6d")
 metadata/_custom_type_script = "uid://dp04o0itt8kw3"
 
 [node name="bounds" parent="." unique_id=1803502617 instance=ExtResource("2_ii6ry")]
+visible = false
 
 [node name="point_lower" type="OmniLight3D" parent="." unique_id=509575897]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)

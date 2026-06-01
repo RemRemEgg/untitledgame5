@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c7ltvs5te3onl"]
 
 [ext_resource type="Script" uid="uid://8f8lny64t5hf" path="res://ui/hud.gd" id="1_3dnit"]
+[ext_resource type="PackedScene" uid="uid://gbvy6duhr7d4" path="res://ui/info.tscn" id="3_546lt"]
 [ext_resource type="Texture2D" uid="uid://8krwtbql3iuu" path="res://ui/cursor.png" id="3_bqox4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ihmi"]
@@ -33,36 +34,8 @@ corner_detail = 1
 [node name="hud" type="CanvasLayer" unique_id=1071044547]
 script = ExtResource("1_3dnit")
 
-[node name="fps" type="RichTextLabel" parent="." unique_id=972726535]
-offset_left = 5.0
-offset_right = 227.0
-offset_bottom = 104.0
-text = "00"
-
-[node name="debug_any" type="RichTextLabel" parent="." unique_id=1922662852]
-offset_left = 5.0
-offset_top = 14.0
-offset_right = 227.0
-offset_bottom = 118.0
-text = "00"
-
-[node name="gun_debug" type="RichTextLabel" parent="." unique_id=268973967]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -222.0
-offset_top = -104.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_font_sizes/normal_font_size = 32
-text = "00"
-horizontal_alignment = 2
-vertical_alignment = 2
-
 [node name="crosshair" type="TextureRect" parent="." unique_id=1111072082]
-modulate = Color(1, 1, 1, 0.376471)
+modulate = Color(1, 1, 1, 0.5019608)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -78,11 +51,66 @@ scale = Vector2(2, 2)
 pivot_offset = Vector2(8, 8)
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 2
 texture = ExtResource("3_bqox4")
 stretch_mode = 3
 
-[node name="health" type="ProgressBar" parent="." unique_id=1224388642]
+[node name="chat" type="Control" parent="." unique_id=1616353826]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="chatbox" type="RichTextLabel" parent="chat" unique_id=650451364]
+layout_mode = 0
+offset_right = 574.0
+offset_bottom = 46.0
+mouse_filter = 2
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+
+[node name="gun" type="Control" parent="." unique_id=742310458]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="gun_debug" type="RichTextLabel" parent="gun" unique_id=268973967]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -222.0
+offset_top = -104.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 32
+text = "00"
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="stats" type="Control" parent="." unique_id=1292417783]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="health" type="ProgressBar" parent="stats" unique_id=1224388642]
 texture_filter = 2
+layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -91,13 +119,15 @@ offset_top = -56.0
 offset_right = 276.0
 offset_bottom = -32.0
 grow_vertical = 0
+mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_7ihmi")
 theme_override_styles/fill = SubResource("StyleBoxFlat_546lt")
 value = 100.0
 show_percentage = false
 
-[node name="stam_true" type="ProgressBar" parent="." unique_id=1272918589]
+[node name="stam_true" type="ProgressBar" parent="stats" unique_id=1272918589]
 texture_filter = 2
+layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -106,13 +136,15 @@ offset_top = -32.0
 offset_right = 212.0
 offset_bottom = -16.0
 grow_vertical = 0
+mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_276te")
 theme_override_styles/fill = SubResource("StyleBoxFlat_1v5rv")
 value = 64.0
 show_percentage = false
 
-[node name="stam_round" type="ProgressBar" parent="." unique_id=331318818]
+[node name="stam_round" type="ProgressBar" parent="stats" unique_id=331318818]
 texture_filter = 2
+layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -121,7 +153,41 @@ offset_top = -32.0
 offset_right = 212.0
 offset_bottom = -16.0
 grow_vertical = 0
+mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxEmpty_7ihmi")
 theme_override_styles/fill = SubResource("StyleBoxFlat_en2x2")
 value = 50.0
 show_percentage = false
+
+[node name="debug" type="RichTextLabel" parent="." unique_id=972726535]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -222.0
+offset_bottom = 104.0
+grow_horizontal = 0
+mouse_filter = 2
+text = "00"
+horizontal_alignment = 2
+
+[node name="info_holder" type="Control" parent="." unique_id=812456712]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="background" type="ColorRect" parent="info_holder" unique_id=479192919]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0.34901962, 0.34901962, 0.34901962, 0.9411765)
+
+[node name="info" parent="info_holder" unique_id=1711472649 instance=ExtResource("3_546lt")]
+layout_mode = 1

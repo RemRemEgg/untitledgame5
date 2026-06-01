@@ -1,0 +1,175 @@
+[gd_scene format=3 uid="uid://b5ava4xusp4lu"]
+
+[ext_resource type="Texture2D" uid="uid://ctd1rux31n1ru" path="res://textures/cards/card_example.png" id="1_m1mul"]
+[ext_resource type="Script" uid="uid://b842d5orwjbbc" path="res://ui/spider_graph.gd" id="2_m1mul"]
+[ext_resource type="Script" uid="uid://b7ao38spyywla" path="res://ui/cards/card_display.gd" id="2_p1uqy"]
+[ext_resource type="Theme" uid="uid://bg5liorxv7qwu" path="res://ui/ui_theme.tres" id="2_y4850"]
+[ext_resource type="Material" uid="uid://fif1sx8k4w8f" path="res://shaders/cards/outline_rare.tres" id="3_m1mul"]
+[ext_resource type="PackedScene" uid="uid://ba8bixelqjeyx" path="res://ui/cards/card_icon.tscn" id="6_5kb46"]
+
+[sub_resource type="SystemFont" id="SystemFont_m1mul"]
+font_names = PackedStringArray("Cascadia Mono")
+font_weight = 450
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_m1mul"]
+font = SubResource("SystemFont_m1mul")
+font_size = 24
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_hhwgi"]
+noise_type = 2
+seed = 6
+frequency = 0.02
+fractal_type = 0
+fractal_octaves = 3
+cellular_distance_function = 2
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_03cmn"]
+width = 240
+height = 120
+generate_mipmaps = false
+noise = SubResource("FastNoiseLite_hhwgi")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_05gny"]
+draw_center = false
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+corner_radius_top_left = 8
+corner_radius_bottom_right = 8
+corner_detail = 1
+
+[node name="card_display" type="TextureRect" unique_id=2030955788]
+custom_minimum_size = Vector2(256, 384)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -192.0
+offset_right = 128.0
+offset_bottom = 192.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource("1_m1mul")
+script = ExtResource("2_p1uqy")
+
+[node name="background" type="ColorRect" parent="." unique_id=1897555730]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05490196, 0, 0, 0.8980392)
+
+[node name="content" type="MarginContainer" parent="." unique_id=822583490]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -132.0
+offset_right = 132.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme = ExtResource("2_y4850")
+theme_override_constants/margin_top = 16
+
+[node name="vbox" type="BoxContainer" parent="content" unique_id=1033329913]
+layout_mode = 2
+vertical = true
+
+[node name="name" type="Label" parent="content/vbox" unique_id=787282884]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Card Name Yay!"
+label_settings = SubResource("LabelSettings_m1mul")
+horizontal_alignment = 1
+
+[node name="card_image" type="TextureRect" parent="content/vbox" unique_id=1785752983]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 4
+texture = SubResource("NoiseTexture2D_03cmn")
+
+[node name="spacer" type="ColorRect" parent="content/vbox" unique_id=114733787]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+color = Color(1, 1, 1, 0)
+
+[node name="desc" type="RichTextLabel" parent="content/vbox" unique_id=1605107375]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[color=#fff]description
+[color=green]+50% stat
++5 stat
+[color=red]-20% stat
+-2 stat
+"
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="extras" type="Control" parent="." unique_id=1281850431]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="outline" type="Panel" parent="extras" unique_id=1491946273]
+material = ExtResource("3_m1mul")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_05gny")
+
+[node name="spider_graph" type="Control" parent="extras" unique_id=1636597622]
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 98.0
+offset_top = 159.0
+offset_right = 98.0
+offset_bottom = 159.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_m1mul")
+radius = 24.0
+outline_width = 1.0
+axis_labels = PackedStringArray("", "", "", "", "", "")
+inline_count = 1
+values = Array[float]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+data_min = -1.0
+data_scale = 1.0
+data_outline_width = 0.5
+data_fill_color = Color(1, 1, 1, 1)
+metadata/_custom_type_script = "uid://b842d5orwjbbc"
+
+[node name="card_mini_icon" parent="extras" unique_id=78439861 instance=ExtResource("6_5kb46")]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = -59.0
+offset_right = 116.0
+offset_bottom = 55.0
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)

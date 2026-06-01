@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://byfoxwpg4svqx"]
 
-[ext_resource type="Script" uid="uid://ccqi1utu1jtd1" path="res://ui/cards_menu.gd" id="1_usdfd"]
+[ext_resource type="Script" uid="uid://ccqi1utu1jtd1" path="res://ui/cards/cards_menu.gd" id="1_usdfd"]
 
 [node name="cards_menu" type="Control" unique_id=361756010]
 process_mode = 4

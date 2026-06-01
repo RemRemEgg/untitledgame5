@@ -2,9 +2,11 @@
 class_name LevelFixer
 extends EditorScript
 
+func to_key(v:Vector3, i:Variant) -> Vector4: return Vector4(v.x, v.y, v.z, hash(i))
+func key_size(v:Vector4) -> Vector3: return Vector3(v.x, v.y, v.z)
 var root: Node
-var col_list: Dictionary[Vector3, Shape3D]
-var mesh_list: Dictionary[Vector3, Mesh]
+var col_list: Dictionary[Vector4, Shape3D]
+var mesh_list: Dictionary[Vector4, Mesh]
 
 var mat_normal := load("res://shaders/tile.res") as ShaderMaterial
 
@@ -27,54 +29,39 @@ func scan_node(node: Node) -> void:
 		print(&"Node '%s' is subscene, skipping" % node.name)
 		return
 	
+	if node is LevelBody:
+		fix_levelbody(node as LevelBody)
+		return
+	
 	for child in node.get_children():
 		scan_node(child)
-	
-	if node is LevelBody:
-		var lvlb := node as LevelBody
-		var meshes := node.find_children(&"*", &"MeshInstance3D")
-		if meshes.size() > 1:
-			push_warning(&"Node '%s' has too many mesh children, cannot fix" % node.name)
-			return
-		if meshes.size() == 0: return
-		var meshnode := meshes[0] as MeshInstance3D
-		var mesh := meshnode.mesh
-		var p_basis := lvlb.transform * meshnode.transform
-		meshnode.transform = Transform3D.IDENTITY
-		lvlb.transform = p_basis
-		lvlb.scale = Vector3.ONE
-		if mesh is BoxMesh:
-			var size: Vector3 = p_basis.basis.get_scale() * (mesh as BoxMesh).size
-			size = size.snapped(Vector3.ONE * 0.01)
-			meshnode.mesh = get_mesh(size)
-			lvlb.update_mesh_look(meshnode)
-			var cols := lvlb.find_children(&"*", &"CollisionShape3D")
-			for col in cols:
-				lvlb.remove_child(col)
-				col.free()
-			var coll := get_collider(size)
-			lvlb.add_child(coll)
-			coll.owner = root
-		else:
-			push_warning(&"Node '%s' has mesh of type '%s' which cannot be fixed" % [node.name, mesh.get_class()])
-	
 
 
-func get_mesh(size: Vector3) -> Mesh:
-	if mesh_list.has(size): return mesh_list[size]
+func fix_levelbody(body: LevelBody) -> void:
+	var scale := body.scale
+	body.scale = Vector3.ONE
+	
+	if !body.mesh: body.mesh = BoxMesh.new()
+	
+	if body.mesh is BoxMesh:
+		scale *= (body.mesh as BoxMesh).size
+		body.mesh = get_mesh(scale, BoxMesh)
+		body.shape = get_collider(scale, BoxShape3D)
+		body.mass = scale.x * scale.y * scale.z * 0.2
+		return
+
+func get_mesh(size: Vector3, type: Variant) -> Mesh:
+	var key := to_key(size, type)
+	if mesh_list.has(key): return mesh_list[key]
 	var mesh := BoxMesh.new()
 	mesh.size = size
-	mesh_list[size] = mesh
+	mesh_list[key] = mesh
 	return mesh
 
-func get_collider(size: Vector3) -> CollisionShape3D:
-	var coll := CollisionShape3D.new()
-	coll.name = &"collider"
-	if col_list.has(size): 
-		coll.shape = col_list[size]
-		return coll
+func get_collider(size: Vector3, type: Variant) -> Shape3D:
+	var key := to_key(size, type)
+	if col_list.has(key): return col_list[key]
 	var shape := BoxShape3D.new()
 	shape.size = size
-	coll.shape = shape
-	col_list[size] = shape
-	return coll
+	col_list[key] = shape
+	return shape

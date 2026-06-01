@@ -3,7 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://c7ltvs5te3onl" path="res://ui/hud.tscn" id="1_dadds"]
 [ext_resource type="Material" uid="uid://v0dku6hcgd0b" path="res://shaders/xrayinline.res" id="1_p0vpi"]
 [ext_resource type="Script" uid="uid://yeplb42dhx0e" path="res://shaders/pannini/pannini_projection.gd" id="1_w5y0b"]
-[ext_resource type="PackedScene" uid="uid://byfoxwpg4svqx" path="res://ui/cards_menu.tscn" id="3_du4nq"]
+[ext_resource type="PackedScene" uid="uid://byfoxwpg4svqx" path="res://ui/cards/cards_menu.tscn" id="3_du4nq"]
+[ext_resource type="PackedScene" uid="uid://0rgy345h86et" path="res://models/dingus.glb" id="5_d631c"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
 radius = 0.35
@@ -70,33 +71,27 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath("camera_root:rotation")
+properties/2/path = NodePath("camera:rotation")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath("camera_root/camera:rotation")
+properties/3/path = NodePath(".:health")
 properties/3/spawn = true
-properties/3/replication_mode = 1
-properties/4/path = NodePath(".:health")
+properties/3/replication_mode = 2
+properties/4/path = NodePath(".:max_health")
 properties/4/spawn = true
 properties/4/replication_mode = 2
-properties/5/path = NodePath(".:max_health")
-properties/5/spawn = true
-properties/5/replication_mode = 2
-
-[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_onrkg"]
-length = 0.6
 
 [node name="player" type="CharacterBody3D" unique_id=541339310]
-collision_layer = 2
+collision_layer = 34
 collision_mask = 3
 wall_min_slide_angle = 0.43633232
 floor_max_angle = 1.0471976
 
 [node name="collider" type="CollisionShape3D" parent="." unique_id=1996107302]
-visible = false
 shape = SubResource("CapsuleShape3D_sh265")
 
 [node name="mesh" type="MeshInstance3D" parent="." unique_id=357712946]
+visible = false
 material_override = SubResource("StandardMaterial3D_4flbx")
 mesh = SubResource("CapsuleMesh_4flbx")
 
@@ -104,17 +99,18 @@ mesh = SubResource("CapsuleMesh_4flbx")
 material_override = ExtResource("1_p0vpi")
 mesh = SubResource("CapsuleMesh_p0vpi")
 
-[node name="camera_root" type="Node3D" parent="." unique_id=1963262605]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+[node name="dingus" parent="." unique_id=889406392 instance=ExtResource("5_d631c")]
+transform = Transform3D(-0.23, 0, -2.0107239e-08, 0, 0.23, 0, 2.0107239e-08, 0, -0.23, 0, -0.92523444, 0)
 
-[node name="camera" type="Camera3D" parent="camera_root" unique_id=1844707478]
+[node name="camera" type="Camera3D" parent="." unique_id=1844707478]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 cull_mask = 1
 attributes = SubResource("CameraAttributesPractical_w5y0b")
 compositor = SubResource("Compositor_p0vpi")
 fov = 130.0
 size = 38.13
 
-[node name="flashlight" type="SpotLight3D" parent="camera_root/camera" unique_id=1712767520]
+[node name="flashlight" type="SpotLight3D" parent="camera" unique_id=1712767520]
 light_energy = 2.0
 shadow_enabled = true
 shadow_bias = 2.0
@@ -123,10 +119,11 @@ spot_range = 256.0
 spot_attenuation = 1.67
 spot_angle = 75.0
 
-[node name="hud" parent="camera_root/camera" unique_id=1071044547 instance=ExtResource("1_dadds")]
+[node name="hud" parent="camera" unique_id=1071044547 instance=ExtResource("1_dadds")]
 layer = 16
 
-[node name="ui3d_container" type="SubViewportContainer" parent="camera_root/camera" unique_id=332088380]
+[node name="ui3d_container" type="SubViewportContainer" parent="camera" unique_id=332088380]
+z_index = 16
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -134,21 +131,21 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="ui3d_vp" type="SubViewport" parent="camera_root/camera/ui3d_container" unique_id=692642081]
+[node name="ui3d_vp" type="SubViewport" parent="camera/ui3d_container" unique_id=692642081]
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
-[node name="camera" type="Camera3D" parent="camera_root/camera/ui3d_container/ui3d_vp" unique_id=1066895993]
+[node name="camera" type="Camera3D" parent="camera/ui3d_container/ui3d_vp" unique_id=1066895993]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 keep_aspect = 0
 cull_mask = 2
 fov = 50.0
 
-[node name="cards_menu" parent="camera_root/camera/ui3d_container/ui3d_vp" unique_id=361756010 instance=ExtResource("3_du4nq")]
+[node name="cards_menu" parent="camera/ui3d_container/ui3d_vp" unique_id=361756010 instance=ExtResource("3_du4nq")]
 
-[node name="OmniLight3D" type="OmniLight3D" parent="camera_root/camera/ui3d_container/ui3d_vp" unique_id=130150982]
+[node name="OmniLight3D" type="OmniLight3D" parent="camera/ui3d_container/ui3d_vp" unique_id=130150982]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 2)
 layers = 2
 omni_attenuation = 0.0
@@ -171,9 +168,6 @@ billboard = 1
 texture_filter = 0
 texture = SubResource("GradientTexture2D_d631c")
 
-[node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1011191566]
-replication_config = SubResource("SceneReplicationConfig_4flbx")
-
 [node name="light_med" type="OmniLight3D" parent="." unique_id=1635548757]
 light_energy = 0.5
 shadow_enabled = true
@@ -185,10 +179,8 @@ omni_range = 128.0
 omni_attenuation = 0.5
 omni_shadow_mode = 0
 
-[node name="ray" type="CollisionShape3D" parent="." unique_id=479628766]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.4, -0.6)
-shape = SubResource("SeparationRayShape3D_onrkg")
-disabled = true
+[node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1011191566]
+replication_config = SubResource("SceneReplicationConfig_4flbx")
 
 [node name="proj_spawner" type="MultiplayerSpawner" parent="." unique_id=1311397734]
 spawn_path = NodePath("../../../projectiles")
