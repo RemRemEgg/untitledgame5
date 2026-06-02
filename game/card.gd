@@ -1,17 +1,15 @@
 class_name Card
 extends RefCounted
 
-const CARD_DISPLAY := preload("uid://b5ava4xusp4lu")
 const CARD_3D_WRAPPER := preload("uid://tp7ecpbxfw28")
 
 
 static var ALL_CARDS: Array[Card] = []
+static var DECKS: Array[CardDeck]
 
-const OUTLINE_COMMON := preload("uid://cr73ecy66f8or") as ShaderMaterial
-const OUTLINE_UNUSUAL := preload("uid://b8j6y8svxyb2q") as ShaderMaterial
-const OUTLINE_RARE = preload("uid://fif1sx8k4w8f") as ShaderMaterial
-const OUTLINE_EPIC = preload("uid://caexkypvp4txu") as ShaderMaterial
-
+static var BASE_DECK: CardDeck
+static var BLOCK_DECK: CardDeck
+static var TEMP_DECK: CardDeck
 
 # TODO event hooks
 
@@ -29,7 +27,7 @@ static func spider_to_color(data: Array[float]) -> Color:
 
 #            INTERNAL         GREEN          YELLOW          BLUE         PURPLE
 enum {RARITY_INTERNAL, RARITY_COMMON, RARITY_UNUSUAL, RARITY_RARE, RARITY_EPIC}
-const RARITY_COLORS: Array[StringName] = [&"#555555", &"22dd66", &"ccc022", &"1177dd", &"cb22bb"]
+const RARITY_COLORS: Array[StringName] = [&"#555555", &"1ad933", &"fff200", &"33cce6", &"ff00ff"]
 # NYI
 enum {STYLE_INTERNAL, STYLE_BASIC}
 
@@ -55,6 +53,7 @@ static func get_card(card_uuid: StringName) -> Card:
 	return Card.ALL_CARDS[idx]
 
 
+## [b]TODO documentation needs rework[/b][br]
 ## Adds a new card to the main card pool
 ##[br][br][b]uuid[/b]: Internal id of the card, must be unique, only a-z,0-9,_ allowed. ex &"impact_plates"
 ##[br][br][b]name[/b]: Display name of the card, max 16 chars. ex &"Impact Plates"
@@ -118,7 +117,7 @@ static func get_card(card_uuid: StringName) -> Card:
 ##		)
 ##)
 ##[/codeblock]
-static func register_card(uuid_: StringName, name_: StringName, abbv_: StringName, rarity_: int, style_: int, spider_: Array[float], desc_: StringName, effect: Callable) -> void:
+static func register_card(deck: CardDeck, uuid_: StringName, name_: StringName, abbv_: StringName, rarity_: int, style_: int, spider_: Array[float], desc_: StringName, effect: Callable) -> void:
 	Console.print(&"Loading card %s" % uuid_)
 	
 	var uuid_exists := ALL_CARDS.find_custom(func(c:Card)->bool: return c.uuid == uuid_) + 1
@@ -151,36 +150,28 @@ static func register_card(uuid_: StringName, name_: StringName, abbv_: StringNam
 					.replace(&"$n", &"[color=red]")\
 					.replace(&"$s", &"[color=aqua]") + &"[/color]"
 	card.card_effect = effect
-	card.display = build_display(card)
+	card.display = CardDisplay.from_card(card, deck)
 	card.wrapper_3d = CARD_3D_WRAPPER.instantiate() as Sprite3D
 	card.wrapper_3d.get_child(0).add_child(card.display)
 	
 	ALL_CARDS.append(card)
+	deck.cards.append(card)
 	Console.print(&"Loaded %s" % card)
 
 
-static func build_display(card: Card) -> CardDisplay: # TODO make part of carddisplay
-	var cdisp := CARD_DISPLAY.instantiate() as CardDisplay
-	
-	(cdisp.get_node(^"content/vbox/name") as Label).text = card.name
-	(cdisp.get_node(^"content/vbox/desc") as RichTextLabel).text = card.desc
-	match card.rarity:
-		RARITY_COMMON: (cdisp.get_node(^"extras/outline") as Panel).material = OUTLINE_COMMON
-		RARITY_UNUSUAL:(cdisp.get_node(^"extras/outline") as Panel).material = OUTLINE_UNUSUAL
-		RARITY_RARE:(cdisp.get_node(^"extras/outline") as Panel).material = OUTLINE_RARE
-		RARITY_EPIC:(cdisp.get_node(^"extras/outline") as Panel).material = OUTLINE_EPIC
-	
-	var sg := cdisp.get_node(^"extras/spider_graph") as SpiderGraph
-	sg.values = card.spider
-	sg.data_outline_color = spider_to_color(card.spider)
-	sg.recalculate_graph()
-	
-	return cdisp
+static func register_all_decks() -> void:
+	BASE_DECK = CardDeck.new(&"base", load("res://textures/cards/card_example.png") as Texture2D)
+	DECKS.append(BASE_DECK)
+	BLOCK_DECK = CardDeck.new(&"block", load("res://textures/cards/card_example_2.png") as Texture2D)
+	DECKS.append(BLOCK_DECK)
+	TEMP_DECK = CardDeck.new(&"temp", load("res://textures/cards/card_example_3.png") as Texture2D)
+	DECKS.append(TEMP_DECK)
 
 
-static func register_all_cards() -> bool:
+
+static func register_all_cards() -> void:
 	@warning_ignore_start("unused_parameter")
-	register_card(&"impact_plates", &"Impact Plates", &"IP", RARITY_EPIC, STYLE_BASIC,
+	register_card(BLOCK_DECK, &"impact_plates", &"Impact Plates", &"IP", RARITY_EPIC, STYLE_BASIC,
 		[.77, 0.0, 0.0, 0.0, 0.0, 0.0],
 		&"$dConverts 35% of damage taken to knockback taken\n\
 		$p+20 Max Health\n\
@@ -188,8 +179,8 @@ static func register_all_cards() -> bool:
 		-10% Jump Height",
 		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			player.max_health.adder += 20.0
-			player.speed.multiplier -= 0.2
-			player.jump.multiplier -= 0.1
+			player.speed.multiplier *= 0.8
+			player.jump.multiplier *= 0.9
 			hook(player.damage_hooks, func(de:DamageEvent) -> DamageEvent:
 				var amount := clampf(de.damage / player.max_health.value, 0.0, 1.0)
 				de.knockback += de.knockback.normalized() * amount * 10.0
@@ -198,174 +189,177 @@ static func register_all_cards() -> bool:
 			)
 	)
 	
-	register_card(&"rubber_bullets", &"Rubber Bullets", &"RB", RARITY_UNUSUAL, STYLE_BASIC,
+	register_card(BASE_DECK, &"rubber_bullets", &"Rubber Bullets", &"RB", RARITY_UNUSUAL, STYLE_BASIC,
 		[.77, 0.0, 0.0, 0.0, 0.0, 0.0],
 		&"$dBoing!\n\
 		$p+1 Bullet Bounce\n\
 		$n-15% Bullet Damage",
 		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			proj.bounces.adder += 1
-			proj.damage.multiplier -= 0.15
+			proj.damage.multiplier *= 0.85
 	)
 	
-	register_card(&"ultralight", &"Ultralight", &"UL", RARITY_RARE, STYLE_BASIC,
+	register_card(TEMP_DECK, &"ultralight", &"Ultralight", &"UL", RARITY_RARE, STYLE_BASIC,
 		[-0.5, 0.0, 1.5, 0.0, 0.0, 0.0],
 		&"$dNow with 10% more Speed per Speed!\n\
 		$p+100% Movement Speed\n\
 		+50% Acceleration\n\
 		$n+100% Knockback Taken",
 		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-			player.speed.multiplier += 1.0
-			player.accel.multiplier += 0.5
+			player.speed.multiplier *= 2.0
+			player.accel.multiplier *= 1.5
 			player.damage_hooks.append(func(de:DamageEvent) -> DamageEvent:
 				de.knockback *= 2.0
 				return de
 			)
 	)
 	
-	seed(12354678)
-	for i in 2:
-		var a := String.chr(65+randi_range(0, 25))
-		var b := String.chr(65+randi_range(0, 25))
-		register_card(&"impact_plates_%s"%i, &"%smpact %slates"%[a,b], &"%s%s"%[a,b], randi_range(RARITY_COMMON, RARITY_EPIC), STYLE_BASIC,
-			[.77, 0.0, 0.0, 0.0, 0.0, 0.0],
-			&"$dConverts 35% of damage taken to knockback taken\n\
-			$p+20 Max Health\n\
-			$n-20% Speed\n\
-			-10% Jump Height",
-			func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-				player.max_health.adder += 20.0
-				player.speed.multiplier -= 0.2
-				player.jump.multiplier -= 0.1
-				hook(player.damage_hooks, func(de:DamageEvent) -> DamageEvent:
-					var amount := clampf(de.damage / player.max_health.value, 0.0, 1.0)
-					de.knockback += de.knockback.normalized() * amount * 10.0
-					de.damage *= 0.65
-					return de
-				)
-		)
+	
+	#seed(12354678)
+	#for i in 2:
+		#var a := String.chr(65+randi_range(0, 25))
+		#var b := String.chr(65+randi_range(0, 25))
+		#register_card(BASE_DECK, &"base_card_%s"%i, &"%sase %sard"%[a,b], &"%s%s"%[a,b], randi_range(RARITY_COMMON, RARITY_EPIC), STYLE_BASIC,
+			#[-1.0, -0.5, -1.0, 1.0, 0.5, 1.0],
+			#&"$dExample $sBASE$d card for debugging\n\
+			#$p+0 Everything\n\
+			#$n-0 Nothing",
+			#func(player: Player, gun: ProcGun, proj: ProcProj) -> void: pass
+		#)
+	#
+	#for i in 2:
+		#var a := String.chr(65+randi_range(0, 25))
+		#var b := String.chr(65+randi_range(0, 25))
+		#register_card(BLOCK_DECK, &"block_card_%s"%i, &"%slock %sard"%[a,b], &"%s%s"%[a,b], randi_range(RARITY_COMMON, RARITY_EPIC), STYLE_BASIC,
+			#[1.0, 2.0, 0.5, -1.0, -2.0, -3.0],
+			#&"$dExample $sBLOCK$d card for debugging\n\
+			#$p+0 Everything\n\
+			#$n-0 Nothing",
+			#func(player: Player, gun: ProcGun, proj: ProcProj) -> void: pass
+		#)
+	#
+	#for i in 2:
+		#var a := String.chr(65+randi_range(0, 25))
+		#var b := String.chr(65+randi_range(0, 25))
+		#register_card(TEMP_DECK, &"temp_card_%s"%i, &"%semp %sard"%[a,b], &"%s%s"%[a,b], randi_range(RARITY_COMMON, RARITY_EPIC), STYLE_BASIC,
+			#[-1.0, 1.0, -1.0, 1.0, -1.0, 1.0],
+			#&"$dExample $sTEMP$d card for debugging\n\
+			#$p+0 Everything\n\
+			#$n-0 Nothing",
+			#func(player: Player, gun: ProcGun, proj: ProcProj) -> void: pass
+		#)
 	
 	
+	register_card(BASE_DECK, &"heavy_hitter", &"Heavy Hitter", &"HV", RARITY_COMMON, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"[color=green]+40% Damage\n\
+		[color=red]-10% Fire Rate[/color]",
+		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			proj.damage.multiplier *= 1.4
+			gun.fire_rate.multiplier *= 0.9
+	)
 	
-	#register_card(&"Free Bounce", RARITY_UNUSUAL, STYLE_BASIC,
-		#&"[color=green]+1 Bounce\n\
-		#[color=red]-1 Bitches[/color]",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#proj.bounces += 1
-		#)
+	register_card(BASE_DECK, &"big_bullets", &"Big Bullets", &"BB", RARITY_COMMON, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"[color=green]+100% Bullet Size\n\
+		[color=red]-40% Bullet Speed[/color]",
+		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			proj.scale.multiplier *= 2.0 # TODO fix: projectiles are synced before card effect applies
+			gun.b_speed.multiplier *= 0.6
+	)
 	
-	#register_card(&"Heavy Hitter", RARITY_COMMON, STYLE_BASIC,
-		#&"[color=green]+40% Damage\n\
-		#[color=red]-10% Fire Rate[/color]",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#proj.damage *= 1.4
-		#gun.fire_rate *= 0.9
-		#)
-	#
-	#register_card(&"Big Bullets", RARITY_COMMON, STYLE_BASIC,
-		#&"[color=green]+100% Bullet Size\n\
-		#[color=red]-40% Bullet Speed[/color]",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#proj.scale *= 2.0 # TODO fix: projectiles are synced before card effect applies
-		#gun.b_speed *= 0.60
-		#)
-	#
-	#register_card(&"Fastball", RARITY_COMMON, STYLE_BASIC,
-		#&"[color=green]+30% Bullet Speed\n\
-		#[color=red]-10% Fire Rate[/color]",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#gun.b_speed *= 1.30
-		#gun.fire_rate *= 0.90
-		#)
-	#
-	#register_card(&"Overclocked Firing Mechanism", RARITY_RARE, STYLE_BASIC,
-		#&"[color=green]+100% Gun Rate of Fire\n\
-		#+4 Clip Size\n\
-		#[color=red]-60% Damage\n\
-		#+0.5 Reload Time[/color]",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#gun.fire_rate *= 2.0
-		#gun.clip_size += 4
-		#proj.damage *= 0.4
-		#gun.reload_time += 0.5
-		#)
-	#
-	#register_card(&"Fat Fucking Chud", RARITY_EPIC, STYLE_BASIC,
-		#&"[color=green]+100% Health\n\
-		#[color=red]-10% Speed\n\
-		#-10% Jump Height\n\
-		#-10% Acceleration",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#player.max_health *= 2.0
-		#player.speed *= 0.9
-		#player.jump *= 0.9
-		#player.accel *= 0.9
-		#)
-	#
-	#register_card(&"Get Yoked", RARITY_UNUSUAL, STYLE_BASIC,
-		#&"[color=green]+15% Speed\n\
-		#+15% Jump\n\
-		#+15% Acceleration\n\
-		#+1 Max Stamina",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#player.speed *= 1.15
-		#player.jump *= 1.15**0.5 # jump might be exp
-		#player.accel *= 1.15
-		#player.stamina_max += 1
-		#)
-	#
-	#register_card(&"Spacial Warp", RARITY_EPIC, STYLE_BASIC,
-		#&"[color=green]Warp objects to projectile on hit",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#proj.collide_hooks.append(func(bullet:Projectile,collider:CollisionObject3D) -> void:
-			#Network.move_object.rpc(collider.get_path(), bullet.position)
-			#)
-		#)
-	#
-	#register_card(&"Swap", RARITY_RARE, STYLE_BASIC,
-		#&"[color=green]Swap positions with a player you hit",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#proj.damage_hooks.append(func(bullet:Projectile,hit_player:Player) -> void:
-			#var pos := hit_player.position
-			#Network.move_object.rpc(hit_player.get_path(), player.position)
-			#player.position = pos
-			#)
-		#)
-	#
-	#register_card(&"Scavenger", RARITY_RARE, STYLE_BASIC,
-		#&"[color=green]Reloads 1 bullet into your mag upon player hit\n\
-		#[color=red]-50% Fire Rate[/color]",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#gun.fire_rate *= 0.5
-		#proj.damage_hooks.append(func(bullet:Projectile,hit_player:Player) -> void:
-			#player.gun.clip = mini(gun.clip_size, player.gun.clip+1)
-			#)
-		#)
-	#
-	#register_card(&"Ultralight", RARITY_RARE, STYLE_BASIC,
-		#&"[color=green]2x Movement Speed\n\
-		#[color=red]2x Knockback taken",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#player.speed *= 2.0
-		#player.damage_hooks.append(func(de:DamageEvent) -> DamageEvent:
-			#de.knockback *= 2.0
-			#return de
-			#)
-		#)
-	#
-	#register_card(&"Iron Cannon", RARITY_UNUSUAL, STYLE_BASIC,
-		#&"[color=green]+25 Knockback\n\
-		#+25% Bullet Size\n\
-		#+15% Damage\n\
-		#[color=red]-50% Fire Rate\n\
-		#-2 Ammo[/color]",
-		#func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-		#proj.knockback += 25.0
-		#proj.scale *= 1.25
-		#proj.damage *= 1.15
-		#gun.fire_rate *= 0.5
-		#gun.clip_size -= 2
-		#)
+	register_card(BASE_DECK, &"fastball", &"Fastball", &"FB", RARITY_COMMON, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"[color=green]+30% Bullet Speed\n\
+		[color=red]-10% Fire Rate[/color]",
+		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			gun.b_speed.multiplier *= 1.3
+			gun.fire_rate.multiplier *= 0.9
+	)
+	
+	register_card(BASE_DECK, &"overclock_fm", &"Overclocked Firing Mechanism", &"OC", RARITY_RARE, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"[color=green]+100% Gun Rate of Fire\n\
+		+4 Clip Size\n\
+		[color=red]-50% Damage\n\
+		+0.5s Reload Time[/color]",
+		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			gun.fire_rate.multiplier *= 2.0
+			gun.clip_size.adder += 4
+			proj.damage.multiplier *= 0.5
+			gun.reload_time.adder += 0.5
+	)
+	
+	register_card(BLOCK_DECK, &"fat_fucking_chud", &"Fat Fucking Chud", &"FC", RARITY_EPIC, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"[color=green]+100% Health\n\
+		[color=red]-10% Speed\n\
+		-10% Jump Height\n\
+		-10% Acceleration",
+		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			player.max_health.multiplier *= 2.0
+			player.speed.multiplier *= 0.9
+			player.jump.multiplier *= 0.9
+			player.accel.multiplier *= 0.9
+	)
+	
+	register_card(BLOCK_DECK, &"get_yoked", &"Get Yoked", &"GY", RARITY_UNUSUAL, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"[color=green]+15% Speed\n\
+		+15% Jump\n\
+		+15% Acceleration\n\
+		+1 Max Stamina",
+		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			player.speed.multiplier *= 1.15
+			player.jump.multiplier *= 1.07238052947636087 # jump might be exp
+			player.accel.multiplier *= 1.15
+			player.stamina_max.adder += 1
+	)
+	
+	register_card(TEMP_DECK, &"spacial_warp", &"Spacial Warp", &"SW", RARITY_EPIC, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"[color=green]Warp objects to projectile on hit",
+		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			proj.collide_hooks.append(func(bullet:Projectile,collider:CollisionObject3D) -> void:
+				Network.move_object.rpc(collider.get_path(), bullet.position)
+			)
+	)
+	
+	register_card(TEMP_DECK, &"swap", &"Swap", &"SW", RARITY_RARE, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"[color=green]Swap positions with a player you hit",
+		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			proj.damage_hooks.append(func(bullet:Projectile,hit_player:Player) -> void:
+				var pos := hit_player.position
+				Network.move_object.rpc(hit_player.get_path(), player.position)
+				player.position = pos
+			)
+	)
+	
+	register_card(TEMP_DECK, &"scavenger", &"Scavenger", &"SC", RARITY_RARE, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"[color=green]Reloads 1 bullet into your mag upon player hit\n\
+		[color=red]-50% Fire Rate[/color]",
+		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			gun.fire_rate.multiplier *= 0.5
+			proj.damage_hooks.append(func(bullet:Projectile,hit_player:Player) -> void:
+				player.gun.clip = mini(gun.clip_size.value_int, player.gun.clip+1)
+			)
+	)
+	
+	register_card(BASE_DECK, &"iron_cannon", &"Iron Cannon", &"IC", RARITY_UNUSUAL, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"[color=green]+25 Knockback\n\
+		+25% Bullet Size\n\
+		+15% Damage\n\
+		[color=red]-50% Fire Rate\n\
+		-2 Ammo[/color]",
+		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			proj.knockback.adder += 25.0
+			proj.scale.multiplier *= 1.25
+			proj.damage.multiplier *= 1.15
+			gun.fire_rate.multiplier *= 0.5
+			gun.clip_size.adder += -2
+	)
 	
 	@warning_ignore_restore("unused_parameter")
-	return true

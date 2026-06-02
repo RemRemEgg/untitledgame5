@@ -32,7 +32,7 @@ void fragment() {
 		//          -(COUNT/2) * (2/COUNT)
 		z = abs(z - 8.0)*0.125;
 		//                                                          SHAPE
-		float d = (pvec.x + pvec.y + z*z*z) - (abs(pvec.x - pvec.y)*1.05);
+		float d = (pvec.x + pvec.y + z*z*z) - (abs(pvec.x - pvec.y)*1.0);
 		
 		min_d = min(min_d, d);
 	}

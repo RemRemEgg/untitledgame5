@@ -40,6 +40,7 @@ func attempt_load(load_step: Callable, load_name: String) -> void:
 
 func load_cards() -> void:
 	load_status += 1
+	Card.register_all_decks()
 	Card.register_all_cards()
 
 func load_resources() -> void:

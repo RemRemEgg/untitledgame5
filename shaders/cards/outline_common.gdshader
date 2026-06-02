@@ -11,5 +11,6 @@ void fragment() {
 	p = abs(round(p) - p);
 	//           SHARPNESS
 	p = p / (p + 0.035);
+	p = min(1.0, p*1.6 );
 	COLOR = mix(HILIGHT_COLOR, BASE_COLOR, p);
 }

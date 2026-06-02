@@ -1,10 +1,9 @@
 [gd_scene format=3 uid="uid://b5ava4xusp4lu"]
 
-[ext_resource type="Texture2D" uid="uid://ctd1rux31n1ru" path="res://textures/cards/card_example.png" id="1_m1mul"]
+[ext_resource type="Texture2D" uid="uid://dxacs6c330q5v" path="res://textures/cards/card_example_2.png" id="1_m1mul"]
 [ext_resource type="Script" uid="uid://b842d5orwjbbc" path="res://ui/spider_graph.gd" id="2_m1mul"]
 [ext_resource type="Script" uid="uid://b7ao38spyywla" path="res://ui/cards/card_display.gd" id="2_p1uqy"]
 [ext_resource type="Theme" uid="uid://bg5liorxv7qwu" path="res://ui/ui_theme.tres" id="2_y4850"]
-[ext_resource type="Material" uid="uid://fif1sx8k4w8f" path="res://shaders/cards/outline_rare.tres" id="3_m1mul"]
 [ext_resource type="PackedScene" uid="uid://ba8bixelqjeyx" path="res://ui/cards/card_icon.tscn" id="6_5kb46"]
 
 [sub_resource type="SystemFont" id="SystemFont_m1mul"]
@@ -32,6 +31,7 @@ generate_mipmaps = false
 noise = SubResource("FastNoiseLite_hhwgi")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_05gny"]
+resource_local_to_scene = true
 draw_center = false
 border_width_left = 8
 border_width_top = 8
@@ -40,6 +40,10 @@ border_width_bottom = 8
 corner_radius_top_left = 8
 corner_radius_bottom_right = 8
 corner_detail = 1
+
+[sub_resource type="Theme" id="Theme_y4850"]
+resource_local_to_scene = true
+Panel/styles/panel = SubResource("StyleBoxFlat_05gny")
 
 [node name="card_display" type="TextureRect" unique_id=2030955788]
 custom_minimum_size = Vector2(256, 384)
@@ -127,14 +131,13 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="outline" type="Panel" parent="extras" unique_id=1491946273]
-material = ExtResource("3_m1mul")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_05gny")
+theme = SubResource("Theme_y4850")
 
 [node name="spider_graph" type="Control" parent="extras" unique_id=1636597622]
 z_index = 1

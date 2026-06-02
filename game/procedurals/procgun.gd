@@ -43,7 +43,7 @@ func add_modifier(type: int, data: Array[float]) -> void:
 	mod_stack.append(type)
 	mod_data.append_array(data)
 
-
+# TODO cleanup, bullets_per_shot
 func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire: bool) -> void:
 	if gun.reload:
 		gun.reload -= delta

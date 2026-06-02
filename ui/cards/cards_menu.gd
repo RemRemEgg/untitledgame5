@@ -25,7 +25,6 @@ func card_selection_time() -> void:
 	flip_animations.resize(selection.size())
 	flip_animations.fill(-1.0)
 	for card in selection:
-		card.display._init() # TODO fix
 		card.display.set_face_up(false)
 	
 	reset_card_displays()
