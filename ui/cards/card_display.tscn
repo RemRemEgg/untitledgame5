@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://b5ava4xusp4lu"]
 
-[ext_resource type="Texture2D" uid="uid://dxacs6c330q5v" path="res://textures/cards/card_example_2.png" id="1_m1mul"]
 [ext_resource type="Script" uid="uid://b842d5orwjbbc" path="res://ui/spider_graph.gd" id="2_m1mul"]
 [ext_resource type="Script" uid="uid://b7ao38spyywla" path="res://ui/cards/card_display.gd" id="2_p1uqy"]
 [ext_resource type="Theme" uid="uid://bg5liorxv7qwu" path="res://ui/ui_theme.tres" id="2_y4850"]
@@ -31,18 +30,15 @@ generate_mipmaps = false
 noise = SubResource("FastNoiseLite_hhwgi")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_05gny"]
-resource_local_to_scene = true
 draw_center = false
 border_width_left = 8
 border_width_top = 8
 border_width_right = 8
 border_width_bottom = 8
-corner_radius_top_left = 8
-corner_radius_bottom_right = 8
+border_color = Color(1, 1, 1, 0.5568628)
 corner_detail = 1
 
 [sub_resource type="Theme" id="Theme_y4850"]
-resource_local_to_scene = true
 Panel/styles/panel = SubResource("StyleBoxFlat_05gny")
 
 [node name="card_display" type="TextureRect" unique_id=2030955788]
@@ -61,7 +57,6 @@ grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 size_flags_horizontal = 0
 size_flags_vertical = 0
-texture = ExtResource("1_m1mul")
 script = ExtResource("2_p1uqy")
 
 [node name="background" type="ColorRect" parent="." unique_id=1897555730]
@@ -71,7 +66,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.05490196, 0, 0, 0.8980392)
+color = Color(0.0490397, 0.049039796, 0.049039714, 0.81960785)
 
 [node name="content" type="MarginContainer" parent="." unique_id=822583490]
 layout_mode = 1

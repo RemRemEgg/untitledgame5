@@ -28,11 +28,16 @@ static func from_card(card: Card, deck: CardDeck) -> CardDisplay:
 	cdisp.card_name.text = card.name
 	cdisp.card_desc.text = card.desc
 	
+	cdisp.outline.modulate = Color(Card.RARITY_COLORS[card.rarity])
 	match card.rarity:
-		Card.RARITY_COMMON: cdisp.outline.material = OUTLINE_COMMON
-		Card.RARITY_UNUSUAL: cdisp.outline.material = OUTLINE_UNUSUAL
-		Card.RARITY_RARE: cdisp.outline.material = OUTLINE_RARE
-		Card.RARITY_EPIC: cdisp.outline.material = OUTLINE_EPIC
+		#Card.RARITY_COMMON: cdisp.outline.material = OUTLINE_COMMON
+		#Card.RARITY_UNUSUAL: cdisp.outline.material = OUTLINE_UNUSUAL
+		#Card.RARITY_RARE: cdisp.outline.material = OUTLINE_RARE
+		#Card.RARITY_EPIC: cdisp.outline.material = OUTLINE_EPIC
+		Card.RARITY_COMMON: cdisp.material = OUTLINE_COMMON
+		Card.RARITY_UNUSUAL: cdisp.material = OUTLINE_UNUSUAL
+		Card.RARITY_RARE: cdisp.material = OUTLINE_RARE
+		Card.RARITY_EPIC: cdisp.material = OUTLINE_EPIC
 	
 	cdisp.spider_graph.values = card.spider
 	cdisp.spider_graph.data_outline_color = Card.spider_to_color(card.spider)

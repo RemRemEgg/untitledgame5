@@ -1,8 +1,8 @@
 extends MarginContainer
 
 func _ready() -> void:
-	$vbox/host.pressed.connect(_host_game)
-	$vbox/join.pressed.connect(_join_game)
+	($vbox/host as Button).pressed.connect(_host_game)
+	($vbox/join as Button).pressed.connect(_join_game)
 	dbg_auto_join()
 
 func dbg_auto_join() -> void:
@@ -26,6 +26,7 @@ func _host_game() -> void:
 	if !e: Network.change_to_state(Network.NS_LOBBY)
 
 func _join_game() -> void:
-	Console.print(&"joining game ip:%s" % $vbox/join_ip.text)
-	var e := Network.start_client($vbox/join_ip.text)
+	var ip := ($vbox/join_ip as LineEdit).text
+	Console.print(&"joining game ip:%s" % ip)
+	var e := Network.start_client(ip)
 	if !e: Network.change_to_state(Network.NS_LOBBY) # TODO fix

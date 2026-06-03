@@ -16,25 +16,30 @@ int pkn(int a, int b, int c) {
 }
 
 void fragment() {
-	float min_d = 1.0;
-	//                    SPEED
-	float s_time = TIME * 12.0;
-	//                  COUNT
-	for (int i = 0; i < 16; i++) {
-		float local_time = s_time - float(i);
-		
-		int star_seed = pkn(int(local_time) + 5648, 138431, 1687566);
-		vec2 star_pos = vec2(float(star_seed % 100)/100.0, float((star_seed >> 12) % 100)/100.0);
-		//                               SCALE
-		vec2 pvec = abs(UV - star_pos) * 15.0;
-		
-		float z = (s_time - floor(local_time));
-		//          -(COUNT/2) * (2/COUNT)
-		z = abs(z - 8.0)*0.125;
-		//                                                          SHAPE
-		float d = (pvec.x + pvec.y + z*z*z) - (abs(pvec.x - pvec.y)*1.0);
-		
-		min_d = min(min_d, d);
+	vec4 tex = texture(TEXTURE, UV);
+	if (tex.rgb == vec3(0.0) || tex.a == 0.0) {
+		// dont change color
+	} else {
+		float min_d = 1.0;
+		//                    SPEED
+		float s_time = TIME * 12.0; 
+		//                  COUNT
+		for (int i = 0; i < 16; i++) {
+			float local_time = s_time - float(i);
+			
+			int star_seed = pkn(int(local_time) + 5648, 138431, 1687566);
+			vec2 star_pos = vec2(float(star_seed % 100)/100.0, float((star_seed >> 12) % 100)/100.0);
+			//                               SCALE
+			vec2 pvec = abs(UV - star_pos) * 15.0;
+			
+			float z = (s_time - floor(local_time));
+			//          -(COUNT/2) * (2/COUNT)
+			z = abs(z - 8.0)*0.125;
+			//                                                          SHAPE
+			float d = (pvec.x + pvec.y + z*z*z) - (abs(pvec.x - pvec.y)*1.04);
+			
+			min_d = min(min_d, d);
+		}
+		COLOR = mix(HILIGHT_COLOR, BASE_COLOR, min_d*1.5) * tex;
 	}
-	COLOR = mix(HILIGHT_COLOR, BASE_COLOR, min_d);
 }

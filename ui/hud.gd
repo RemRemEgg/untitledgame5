@@ -8,6 +8,7 @@ extends CanvasLayer
 @onready var health: ProgressBar = $stats/health as ProgressBar
 @onready var stam_true: ProgressBar = $stats/stam_true as ProgressBar
 @onready var stam_round: ProgressBar = $stats/stam_round as ProgressBar
+@onready var block: ProgressBar = $stats/block as ProgressBar
 
 @onready var chatbox: RichTextLabel = $chat/chatbox as RichTextLabel
 var chatduration: Array[float] = []
@@ -39,12 +40,14 @@ func _process(delta: float) -> void:
 	health.max_value = player.max_health.value
 	stam_true.value = player.stamina*100.0 / player.stamina_max.value
 	stam_round.value = floorf(player.stamina)*100.0 / player.stamina_max.value
+	block.value = (-player.block_timer*100.0) / player.block_cd.value
+	block.modulate = Color.WHITE if player.block_timer <= -player.block_cd.value else Color.WEB_GRAY
 	
 	var perf := Performance.get_monitor(Performance.TIME_PROCESS) *1000
 	debug.text = "%03.2f : %03.0f/%03.0f FPS\n%03.2f UPS" %\
 		[perf, Engine.get_frames_per_second(), 1000/perf, player.velocity.length()]
 	
-	gun_debug.text = "%s / %s \n%02.1f %02.1f" % [player.gun.clip, player.procgun.clip_size, player.gun.fire_timer, player.gun.reload]
+	gun_debug.text = "%s / %s \n%02.1f %02.1f" % [player.gun.clip, player.procgun.clip_size.value_int, player.gun.fire_timer, player.gun.reload]
 	
 	var remove_count := 0
 	for i in chatduration.size():
