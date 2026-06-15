@@ -28,8 +28,8 @@ func calculate_stats() -> void:
 enum {MOD_LINE, MOD_SHOTGUN, MOD_SPREAD}
 var mod_stack: PackedInt32Array
 var mod_data: PackedFloat32Array
-var fire_rate := Stat.new(2.0)
-var b_speed := Stat.new(32.0)
+var fire_rate := Stat.new(4.0)
+var b_speed := Stat.new(320.0)
 var inaccuracy := Stat.new(0.0) #TODO NYI
 var bullets_per_shot := Stat.new(1, 1) #TODO NYI
 var clip_size := Stat.new(6, 1)

@@ -19,7 +19,7 @@ func card_selection_time() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
 	selection = []
-	while selection.size() < Card.ALL_CARDS.size(): #TODO shitassery
+	while selection.size() < mini(Card.ALL_CARDS.size(), 5): #TODO shitassery
 		var random_card: Card = Card.ALL_CARDS.pick_random() as Card
 		if !selection.has(random_card): selection.append(random_card)
 	flip_animations.resize(selection.size())
@@ -32,8 +32,8 @@ func card_selection_time() -> void:
 
 
 func _process(delta: float) -> void:
-	#TODO flip animation, custom ones based on rarity?
-	#TODO better hitboxing
+	#TODO custom flip anims based on rarity? at least more stylization based on rarity
+	#TODO better hitboxing, sometimes mouse isnt correct
 	var g_mouse := (get_global_mouse_position() / size) * 2.0 - Vector2.ONE
 	local_mouse = Vector3(g_mouse.x, -g_mouse.y * (size.y/size.x), 0.0) * 0.933 # why 0.933 idfk
 	
@@ -47,8 +47,7 @@ func _process(delta: float) -> void:
 			animation_timer = 1.0
 		2: # card selected, pick animation
 			if tick_animation_timer(1.5, -1):
-				Game.player.cards.append(selection[picked_card])
-				Network.update_card_picked.rpc(selection[picked_card].uuid)
+				Game.player.add_card(selection[picked_card])
 				
 				card_selected()
 				selection = []

@@ -29,7 +29,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	crosshair.rotation = (player.gun.fire_timer + (player.gun.reload / player.procgun.reload_time.value)) * (PI/2.0)
 	crosshair.modulate = Color(1.0, 1.0, 1.0, 0.75)
-	crosshair.scale = Vector2.ONE*2.0
+	crosshair.scale = Vector2.ONE*3.0
 	if player.gun.fire_timer != 1.0:
 		crosshair.modulate = Color(0.75, 0.75, 1.0, 0.5)
 		crosshair.scale *= 0.875

@@ -1,6 +1,7 @@
 class_name Player
 extends Entity
 
+# TODO wallclimbing
 
 func get_seralized_projectiles() -> Array[Dictionary]:
 	return [procgun.pproj.seralize()]
@@ -52,10 +53,11 @@ func set_color_recur(node: Node, mat: StandardMaterial3D) -> void:
 var cards: Dictionary[Card, int]
 var stamina: float = 0.0
 var block_timer: float = 0.0
-var is_jump: bool = 0
+var is_hold_jump: bool = 0
 var is_floor: bool = 0
 var dash_type: int = 5
 var cyote: float = -1
+var jumps: int = 0
 var bounds_ignore: float = 0.0
 var can_shoot: bool = false
 var procgun: ProcGun
@@ -64,35 +66,35 @@ var gun: Gun
 
 # modifiable stats
 # max_health speed accel
-var jump := Stat.new(10.0, 0.5)
+var jump := Stat.new(8.0, 0.5)
+var max_jumps := Stat.new(2, 1)
 var stamina_max := Stat.new(1.0, 0.0)
 var block_cd := Stat.new(2.0, 0.01)
 
-## Hook for player taking damage, must return the [DamageEvent] passed in
-## [codeblock]func(de:DamageEvent) -> DamageEvent:[/codeblock]
-var damage_hooks: Array[Callable]
+## Hook for player taking damage. Player is [code]de.target_entity[/code].
+## [codeblock]func(n:int, de:DamageEvent) -> void:[/codeblock]
+var damage_hook := EventHook.new()
 ## Hook for block effects (ie implode or emp)
-## [codeblock]func(p:Player) -> void:[/codeblock]
-var block_effect_hooks: Array[Callable]
-## Hook for block chains (ie shield charge or echo).
+## [codeblock]func(n:int, p:Player) -> void:[/codeblock]
+var block_hook := EventHook.new()
+## [b]NYI[/b][br][s]Hook for block chains (ie shield charge or echo)
 ## Set [code]player.block_chain_delay[/code] to change delay between chains. Default 0.25 sec.
-## [codeblock]func(p:Player) -> void:[/codeblock]
-var block_chain_hooks: Array[Callable]
-var block_chain_index: int
-var block_chain_delay: float
+## [codeblock]func(n:int, p:Player) -> void:[/codeblock][/s]
+@warning_ignore("unused_private_class_variable")
+var __block_triggers := 0
 
 func reset_stats() -> void:
 	max_health.reset_value()
 	health = max_health.value
 	speed.reset_value()
 	jump.reset_value()
+	max_jumps.reset_value()
 	accel.reset_value()
 	stamina_max.reset_value()
 	block_cd.reset_value()
 	
-	damage_hooks.clear()
-	block_effect_hooks.clear()
-	block_chain_hooks.clear()
+	damage_hook.clear_effects()
+	block_hook.clear_effects()
 	
 	procgun.reset_stats()
 
@@ -101,6 +103,7 @@ func calculate_stats() -> void:
 	max_health.calculate_value()
 	speed.calculate_value()
 	jump.calculate_value()
+	max_jumps.calculate_value()
 	accel.calculate_value()
 	stamina_max.calculate_value()
 	block_cd.calculate_value()
@@ -122,31 +125,33 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	update_healthbar()
-	
 	if is_spectator: return spectator_process(delta)
-	velocity += Vector3(0.0, -32.0, 0.0) * delta # gravity
-	cyote -= delta
-	bounds_ignore -= delta
-	if is_floor: cyote = 0.15
+	
 	stamina = minf(stamina + delta * (1.2 if is_floor else 0.6), stamina_max.value) # dash recharge
-	is_floor = is_on_floor()
-	is_jump = Input.is_action_pressed(&"jump")
 	time_survived += delta
+	bounds_ignore -= delta
+	cyote -= delta
 	block_timer -= delta
+	is_floor = is_on_floor()
+	is_hold_jump = Input.is_action_pressed(&"jump")
+	if Input.is_action_just_pressed(&"jump"): cyote = 0.2
+	if is_floor: jumps = max_jumps.value_int
 	
 	if stasis:
 		velocity = Vector3.ZERO
 		global_position = stasis
 		return
 	
+	velocity += Vector3(0.0, -32.0, 0.0) * delta # gravity
 	# handle jump
 	var input_dir := Vector2.ZERO
-	if cyote >= 0.0 && is_jump: # jump + boost
+	if jumps > 0 && cyote >= 0.0: # jump + boost
 		var boost := Vector2(velocity.x, velocity.z).length()
 		boost = boost / (boost + 48.0)
 		velocity.y = jump.value * (1.0+boost)
+		jumps -= 1
 		cyote = -1.0
-	if velocity.y > 0 && is_jump: velocity -= Vector3(0.0, -32.0, 0.0) * delta * 0.35 # high jump
+	if velocity.y > 0 && is_hold_jump: velocity -= Vector3(0.0, -32.0, 0.0) * delta * 0.35 # high jump
 	
 	# handle movement
 	input_dir = Input.get_vector(&"left", &"right", &"forward", &"backward")
@@ -182,8 +187,10 @@ func _process(delta: float) -> void:
 			(colc as RigidBody3D).apply_central_impulse.rpc(impact * 0.5)
 	
 	var b_trans := camera.global_transform
-	b_trans.origin += Vector3(0.0, -0.2, 0.0) # TODO
-	procgun.process(gun, b_trans.rotated_local(Vector3.RIGHT, 0.1), self, delta, Input.is_action_pressed(&"fire") && can_shoot)
+	# TODO bullets dont clip camera
+	b_trans.origin += Vector3(0.0, -0.2, 0.0)
+	procgun.process(gun, b_trans, self, delta, Input.is_action_pressed(&"fire") && can_shoot)
+	#procgun.process(gun, b_trans.rotated_local(Vector3.RIGHT, 0.1), self, delta, Input.is_action_pressed(&"fire") && can_shoot)
 
 
 func spectator_process(delta: float) -> void:
@@ -207,9 +214,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		camera.rotation.x = clampf(deg_to_rad(-iemm.relative.y * 0.2) + camera.rotation.x, -PI/2, PI/2)
 		return
 	if !is_spectator:
-		if event.is_action_pressed(&"dash") && stamina >= 1.0 && !stasis: dash()
-		if event.is_action_pressed(&"reload") && gun.reload == 0: gun.reload = procgun.reload_time.value
-		if event.is_action_pressed(&"block") && block_timer <= -block_cd.value: initalize_block()
+		if event.is_action_pressed(&"dash") && stamina >= 1.0 && !stasis:
+			dash()
+			stamina -= 1.0
+		if event.is_action_pressed(&"reload") && gun.reload == 0:
+			gun.reload = procgun.reload_time.value
+		if event.is_action_pressed(&"block") && block_timer <= -block_cd.value:
+			initalize_block()
 	if event is InputEventKey:
 		var iek := event as InputEventKey
 		match iek.keycode:
@@ -236,6 +247,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				health = max_health.value
 			KEY_I:
 				is_immortal = !is_immortal
+			KEY_T:
+				update_cards()
 
 
 func dash() -> void:
@@ -256,28 +269,30 @@ func dash() -> void:
 			var target := (camera.global_transform.basis * Vector3(dir.x, 0, dir.y)).normalized()
 			var bonus := maxf(-0.2, velocity.normalized().dot(target) * 0.9)
 			velocity = velocity*bonus + Vector3(target.x, target.y, target.z)*speed.value*0.9
-			
-	stamina -= 1
 
+
+#region block
 
 func initalize_block() -> void:
 	block_timer = 0.5
-	block_chain_delay = 0.25
-	block_chain_index = 0
+	process_block_effects()
 
 
-func process_block_chain(delta: float) -> void:
-	block_chain_delay -= delta
-	if block_chain_delay <= 0.0 && block_chain_index < block_chain_hooks.size():
-		block_chain_delay = 0.25
-		block_chain_hooks[block_chain_index].call()
-		process_block_effects()
-		block_chain_index += 1
+#func process_block_chain(delta: float) -> void: # NYI
+	#block_chain_delay -= delta
+	#if block_chain_delay <= 0.0 && block_chain_index < block_chain_hooks.size():
+		#block_chain_delay = 0.25
+		#block_chain_hooks[block_chain_index].call()
+		#process_block_effects()
+		#block_chain_index += 1
 
 
 func process_block_effects() -> void:
 	block_timer = 0.5
-	for hook: Callable in block_effect_hooks: hook.call()
+	for effect:EventHook.EventEffect in block_hook:
+		effect.execute(self)
+
+#endregion
 
 
 func game_start() -> void:
@@ -288,24 +303,17 @@ func game_start() -> void:
 	update_cards()
 
 
-func update_cards() -> void:
-	reset_stats()
-	for card in cards:
-		card.card_effect.call(self, procgun, procgun.pproj)
-	health = max_health.value
-	gun.clip = procgun.clip_size.value_int
-	gun.reload = 0.0
-	calculate_stats()
-
-
 @rpc("any_peer", "call_local", "reliable")
+# TODO fix bounds, split take_hit / take_damage?
 func take_damage(amount: float, knockback: Vector3 = Vector3.ZERO) -> void:
-	if !is_multiplayer_authority(): return
+	if !is_multiplayer_authority() || block_timer >= 0.0: return
 	var de := DamageEvent.new(amount, knockback)
-	for hook: Callable in damage_hooks: de = hook.call(de)
+	de.target_entity = self
+	for effect:EventHook.EventEffect in damage_hook:
+		effect.execute(de)
 	velocity += de.knockback
 	#Console.print(&"%s %08.2f damage" % [(&"ignored" if is_immortal else &"took"), de.damage])
-	if is_immortal || (block_timer >= 0.0): return
+	if is_immortal: return
 	health -= de.damage
 	health_update()
 
@@ -344,3 +352,24 @@ func exit_spectator() -> void:
 	is_spectator = false
 	visible = true
 	velocity = Vector3.ZERO
+
+
+#region cards
+
+func add_card(card: Card, count: int = 1) -> void:
+	cards[card] = cards.get(card, 0) + count
+	#Network.update_card_picked.rpc(card.uuid) # TODO netsync cards
+	if cards[card] <= 0:
+		cards.erase(card)
+
+
+func update_cards() -> void:
+	reset_stats()
+	for card in cards: # for each card
+		card.card_effect.call(cards[card], self, procgun, procgun.pproj)
+	calculate_stats()
+	gun.clip = procgun.clip_size.value_int
+	gun.reload = 0.0
+	health = max_health.value
+
+#endregion

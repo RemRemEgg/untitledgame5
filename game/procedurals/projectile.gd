@@ -1,6 +1,8 @@
 class_name Projectile
 extends MeshInstance3D
 
+# TODO add tracers
+
 #var next: Projectile # ll # fuck you ll you aint even real
 
 const PROJECTILE := preload("uid://djlg0ybtmd4im")

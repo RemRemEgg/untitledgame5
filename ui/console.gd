@@ -147,7 +147,7 @@ func run_command(args: Array[String]) -> void:
 					if idx != -1:
 						var count := 1
 						if args.size() == 4: count = maxi(int(args[3]), 1)
-						for __ in count: Game.player.cards.append(Card.ALL_CARDS[idx])
+						Game.player.add_card(Card.ALL_CARDS[idx], count)
 						Game.player.update_cards()
 						self.print(&"Give card %s x %s" % [args[2], count])
 					else:

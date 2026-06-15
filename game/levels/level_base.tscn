@@ -5,11 +5,47 @@
 [ext_resource type="PackedScene" uid="uid://bsqmvwnoix70h" path="res://game/bounds.tscn" id="2_j8nxo"]
 [ext_resource type="PackedScene" uid="uid://b5r0t8pi8r5fv" path="res://game/levelbody.tscn" id="3_j8nxo"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_2nkcm"]
+[sub_resource type="BoxMesh" id="BoxMesh_j8nxo"]
 size = Vector3(256, 1, 256)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_7xihh"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_2nkcm"]
 size = Vector3(256, 1, 256)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7xihh"]
+size = Vector3(3, 16, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xuocq"]
+size = Vector3(3, 16, 3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6ddl8"]
+size = Vector3(2.9999995, 16, 2.9999995)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_aa7w5"]
+size = Vector3(2.9999995, 16, 2.9999995)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qscu8"]
+size = Vector3(1, 4, 16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3r0hj"]
+size = Vector3(1, 4, 16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_m4s1f"]
+size = Vector3(1, 16, 16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3qbwa"]
+size = Vector3(1, 16, 16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qybr7"]
+size = Vector3(0.99999994, 16, 15.999999)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_05vc0"]
+size = Vector3(0.99999994, 16, 15.999999)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8tib3"]
+size = Vector3(4.5, 4, 4.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3lkt8"]
+size = Vector3(4.5, 4, 4.5)
 
 [node name="level_base" type="Node3D" unique_id=934256404]
 script = ExtResource("1_bb1n0")
@@ -36,6 +72,69 @@ omni_attenuation = 0.1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 collision_mask = 17
 mass = 13107.2
-mesh = SubResource("BoxMesh_2nkcm")
+mesh = SubResource("BoxMesh_j8nxo")
 material = ExtResource("2_bb1n0")
-shape = SubResource("BoxShape3D_7xihh")
+shape = SubResource("BoxShape3D_2nkcm")
+
+[node name="parkour_test" type="Node3D" parent="." unique_id=901490572]
+
+[node name="levelbody" parent="parkour_test" unique_id=94959277 instance=ExtResource("3_j8nxo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 8, -1)
+mass = 28.8
+mesh = SubResource("BoxMesh_7xihh")
+shape = SubResource("BoxShape3D_xuocq")
+
+[node name="levelbody7" parent="parkour_test" unique_id=1816242585 instance=ExtResource("3_j8nxo")]
+transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 15, 8, -1)
+collision_mask = 17
+mass = 28.799992
+mesh = SubResource("BoxMesh_6ddl8")
+shape = SubResource("BoxShape3D_aa7w5")
+
+[node name="levelbody2" parent="parkour_test" unique_id=2026076198 instance=ExtResource("3_j8nxo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 7, 16)
+mass = 12.8
+mesh = SubResource("BoxMesh_qscu8")
+shape = SubResource("BoxShape3D_3r0hj")
+
+[node name="levelbody4" parent="parkour_test" unique_id=829755691 instance=ExtResource("3_j8nxo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 11, 16)
+collision_mask = 17
+mass = 12.8
+mesh = SubResource("BoxMesh_qscu8")
+shape = SubResource("BoxShape3D_3r0hj")
+
+[node name="levelbody5" parent="parkour_test" unique_id=2050633828 instance=ExtResource("3_j8nxo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 8, 16)
+collision_mask = 17
+mass = 51.2
+mesh = SubResource("BoxMesh_m4s1f")
+shape = SubResource("BoxShape3D_3qbwa")
+
+[node name="levelbody6" parent="parkour_test" unique_id=1695165540 instance=ExtResource("3_j8nxo")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 11.5, 8, -8)
+collision_mask = 17
+mass = 51.2
+mesh = SubResource("BoxMesh_m4s1f")
+shape = SubResource("BoxShape3D_3qbwa")
+
+[node name="levelbody8" parent="parkour_test" unique_id=1189127631 instance=ExtResource("3_j8nxo")]
+transform = Transform3D(-0.8660255, 0, 0.49999982, 0, 1, 0, -0.49999982, 0, -0.8660255, -5.5, 8, 1)
+collision_mask = 17
+mass = 51.199993
+mesh = SubResource("BoxMesh_qybr7")
+shape = SubResource("BoxShape3D_05vc0")
+
+[node name="levelbody3" parent="parkour_test" unique_id=364260258 instance=ExtResource("3_j8nxo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 4, 16)
+collision_mask = 17
+mass = 12.8
+mesh = SubResource("BoxMesh_qscu8")
+shape = SubResource("BoxShape3D_3r0hj")
+
+[node name="levelbody9" parent="parkour_test" unique_id=1886347848 instance=ExtResource("3_j8nxo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 12)
+collision_mask = 17
+mass = 16.2
+mesh = SubResource("BoxMesh_8tib3")
+shape = SubResource("BoxShape3D_3lkt8")

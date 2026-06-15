@@ -33,8 +33,8 @@ func reset_stats() -> void:
 	damage.reset_value()
 	bounces.reset_value()
 	knockback.reset_value()
-	collide_hooks = []
-	damage_hooks = []
+	collide_hook.clear_effects()
+	damage_hook.clear_effects()
 
 func calculate_stats() -> void:
 	time.calculate_value()
@@ -49,12 +49,13 @@ var scale := Stat.new(1.0)
 var damage := Stat.new(20.0)
 var bounces := Stat.new(0)
 var knockback := Stat.new(0.0)
-##Hook for projectile hitting an object or entity, without bouncing
-##[codeblock]func(bullet:Projectile,collider:CollisionObject3D) -> void:[/codeblock]
-var collide_hooks: Array[Callable]
-##Hook for projectile damaging entity
-##[codeblock]func(bullet:Projectile,hit_player:Player) -> void:[/codeblock]
-var damage_hooks: Array[Callable]
+## Hook for projectile hitting an object or entity, without bouncing
+## [codeblock]func(n:int, bullet:Projectile, collider:CollisionObject3D) -> void:[/codeblock]
+var collide_hook := EventHook.new()
+## TODO seralize de for networking?
+## Hook for projectile damaging entity
+## [codeblock]func(n:int, bullet:Projectile, hit_player:Player) -> void:[/codeblock]
+var damage_hook := EventHook.new()
 
 
 func _init() -> void:
@@ -151,8 +152,10 @@ func hit_entity(proj: Projectile, ent: Entity) -> void:
 	if ent is Player:
 		var hit_player := ent as Player
 		hit_player.take_damage.rpc(proj.damage, proj.velocity.normalized() * proj.knockback)
-		for hook: Callable in collide_hooks: hook.call(proj, ent)
-		for hook: Callable in damage_hooks: hook.call(proj, ent as Entity)
+		for effect:EventHook.EventEffect in collide_hook:
+			effect.execute(proj, ent)
+		for effect:EventHook.EventEffect in damage_hook:
+			effect.execute(proj, ent)
 
 func hit_levelbody(proj: Projectile, lvlb: LevelBody, normal: Vector3, pos: Vector3) -> void:
 	pos -= lvlb.global_position
@@ -162,7 +165,8 @@ func hit_levelbody(proj: Projectile, lvlb: LevelBody, normal: Vector3, pos: Vect
 		proj.velocity = proj.velocity.bounce(normal)
 	else:
 		proj.time = time.value
-		for hook: Callable in collide_hooks: hook.call(proj, lvlb)
+		for effect:EventHook.EventEffect in collide_hook:
+			effect.execute(proj, lvlb)
 
 
 ##region MODIFIERS

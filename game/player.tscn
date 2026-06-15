@@ -53,7 +53,7 @@ compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_du4n
 [sub_resource type="Gradient" id="Gradient_p0vpi"]
 resource_local_to_scene = true
 offsets = PackedFloat32Array(0.75, 0.75)
-colors = PackedColorArray(1, 0, 0, 1, 0, 0, 0, 0.3529412)
+colors = PackedColorArray(1, 0, 0, 1, 0.10747974, 0.10747973, 0.107479684, 0.85882354)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_d631c"]
 resource_local_to_scene = true
@@ -91,7 +91,6 @@ floor_max_angle = 1.0471976
 shape = SubResource("CapsuleShape3D_sh265")
 
 [node name="mesh" type="MeshInstance3D" parent="." unique_id=357712946]
-visible = false
 material_override = SubResource("StandardMaterial3D_4flbx")
 mesh = SubResource("CapsuleMesh_4flbx")
 
@@ -100,7 +99,8 @@ material_override = ExtResource("1_p0vpi")
 mesh = SubResource("CapsuleMesh_p0vpi")
 
 [node name="dingus" parent="." unique_id=889406392 instance=ExtResource("5_d631c")]
-transform = Transform3D(-0.23, 0, -2.0107239e-08, 0, 0.23, 0, 2.0107239e-08, 0, -0.23, 0, -0.92523444, 0)
+transform = Transform3D(-0.235, 0, -3.5484014e-08, 0, 0.235, 0, 3.5484014e-08, 0, -0.235, 0, -0.92523444, -0.034322128)
+visible = false
 
 [node name="camera" type="Camera3D" parent="." unique_id=1844707478]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
