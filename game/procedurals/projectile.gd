@@ -1,7 +1,7 @@
 class_name Projectile
 extends MeshInstance3D
 
-# TODO add tracers
+# TODO trail visuals update
 
 #var next: Projectile # ll # fuck you ll you aint even real
 

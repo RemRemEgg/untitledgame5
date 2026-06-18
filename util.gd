@@ -1,8 +1,7 @@
 class_name Util
 extends RefCounted
 
-const PLAYER_ICON = preload("uid://caqvxbw61lbnt")
-
+static var PLAYER_ICON_SCN: PackedScene
 
 static func cast_float(v:Variant, default:float=0.0) -> float:
 	if v is float:

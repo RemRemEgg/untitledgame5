@@ -2,6 +2,7 @@ class_name Info
 extends BoxContainer
 
 const CARD_ICON := preload("uid://ba8bixelqjeyx") as PackedScene
+const PLAYER_ICON = preload("uid://caqvxbw61lbnt") as PackedScene
 
 @onready var player_list: FlowContainer = $player_list as FlowContainer
 
@@ -16,7 +17,8 @@ const CARD_ICON := preload("uid://ba8bixelqjeyx") as PackedScene
 func _ready() -> void:
 	for p in Network.players:
 		var pi := (Network.players[p] as Network.PlayerInfo)
-		var pcard := Util.PLAYER_ICON.instantiate() as PlayerIcon
+		
+		var pcard := Util.PLAYER_ICON_SCN.instantiate() as PlayerIcon
 		player_list.add_child(pcard)
 		pcard.pressed.connect(swap_to_player)
 		pcard.dispname.text = pi.name

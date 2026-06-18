@@ -69,7 +69,7 @@ func _ready() -> void:
 	
 	Network.change_to_state(Network.NS_IDLE)
 
-func change_level(_lvl: String, stasis_pos: Vector3) -> void:
+func change_level(lvl: String, stasis_pos: Vector3) -> void:
 	# move player to spawn pos and wait
 	var stasis := Game.player.create_tween()
 	stasis.tween_property(Game.player, "position", stasis_pos, 1.0)
@@ -90,7 +90,7 @@ func change_level(_lvl: String, stasis_pos: Vector3) -> void:
 	cur_level.queue_free()
 	#var packed := preload("res://game/levels/level_playground.tscn")
 	#var packed := preload("res://game/levels/fixtest2.tscn")
-	var packed := preload("res://game/levels/level_playground_remake.tscn")
+	var packed := load(lvl)
 	cur_level = packed.instantiate() as Level
 	cur_level.process_mode = Node.PROCESS_MODE_DISABLED
 	levelgeo.add_child(cur_level)

@@ -1,6 +1,5 @@
 extends MarginContainer
 
-
 @onready var playereditor: VBoxContainer = $split/playereditor as VBoxContainer
 @onready var p_name: LineEdit = $split/playereditor/name as LineEdit
 @onready var p_color: ColorPicker = $split/playereditor/color as ColorPicker
@@ -23,7 +22,8 @@ func _ready() -> void:
 	
 	if Network.is_server:
 		start.visible = true
-		#get_tree().create_timer(0.2).timeout.connect(Network.start_game)
+		if Console.AUTO_FULLSCREEN: DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+		if Console.AUTO_START_GAME: get_tree().create_timer(0.2).timeout.connect(Network.start_game)
 
 
 func _process(_delta: float) -> void:
@@ -37,7 +37,7 @@ func load_players() -> void:
 	Network.players.sort()
 	for p in Network.players:
 		var pi := (Network.players[p] as Network.PlayerInfo)
-		var pcard := Util.PLAYER_ICON.instantiate() as PlayerIcon
+		var pcard := Util.PLAYER_ICON_SCN.instantiate() as PlayerIcon
 		pi.on_update.connect(pcard._on_player_update)
 		playerlist.add_child(pcard)
 		pcard.dispname.text = pi.name

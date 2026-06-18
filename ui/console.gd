@@ -10,6 +10,9 @@ var load_call: Callable
 
 
 static var DEBUG: bool = true
+static var AUTO_START_GAME: bool = 1
+static var AUTO_FULLSCREEN: bool = 1
+static var AUTO_CARD_SELECT: bool = 1
 
 
 func _ready() -> void:
@@ -26,7 +29,7 @@ func _process(_delta: float) -> void:
 	if load_status % 3 == 2: return
 	match load_status:
 		0: attempt_load(load_cards, &"Loading Cards")
-		3: attempt_load(load_resources, &"Loading Cards")
+		3: attempt_load(load_resources, &"Loading Resources")
 		#0: attempt_load(Global.load_resources, "Loading Global Resources")
 		#3: attempt_load(Server.load_resources, "Loading Server Resources")
 		#6: attempt_load(ProcItem.register_all, "Loading Static Items")
@@ -45,6 +48,9 @@ func load_cards() -> void:
 
 func load_resources() -> void:
 	load_status += 1 +3+3+3
+	# TODO make more preloads into load
+	Util.PLAYER_ICON_SCN = load("res://ui/player_icon.tscn") as PackedScene
+	
 	self.print(&"CLoad complete, initalizing")
 	await get_tree().create_timer(0.2).timeout
 	get_tree().change_scene_to_file(&"res://ui/connection_ui.tscn")

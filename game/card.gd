@@ -43,7 +43,6 @@ var display: CardDisplay
 var wrapper_3d: Sprite3D
 
 
-static func hook(hook_arr: Array[Callable], hook_func: Callable) -> void: hook_arr.append(hook_func)
 func _to_string() -> String: return &"%s[R:%s S:%s]" % [name, rarity, style]
 
 
@@ -179,7 +178,7 @@ static func register_all_cards() -> void:
 		&"$dBoing!\n\
 		$p+1 Bullet Bounce\n\
 		$n-15% Bullet Damage",
-		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			proj.bounces.adder += 1
 			proj.damage.multiplier *= 0.85
 	)
@@ -188,7 +187,7 @@ static func register_all_cards() -> void:
 		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 		&"[color=green]+40% Damage\n\
 		[color=red]-10% Fire Rate[/color]",
-		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			proj.damage.multiplier *= 1.4
 			gun.fire_rate.multiplier *= 0.9
 	)
@@ -197,7 +196,7 @@ static func register_all_cards() -> void:
 		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 		&"[color=green]+100% Bullet Size\n\
 		[color=red]-40% Bullet Speed[/color]",
-		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			proj.scale.multiplier *= 2.0 # TODO fix: projectiles are synced before card effect applies
 			gun.b_speed.multiplier *= 0.6
 	)
@@ -206,7 +205,7 @@ static func register_all_cards() -> void:
 		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 		&"[color=green]+30% Bullet Speed\n\
 		[color=red]-10% Fire Rate[/color]",
-		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			gun.b_speed.multiplier *= 1.3
 			gun.fire_rate.multiplier *= 0.9
 	)
@@ -217,7 +216,7 @@ static func register_all_cards() -> void:
 		+4 Clip Size\n\
 		[color=red]-50% Damage\n\
 		+0.5s Reload Time[/color]",
-		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			gun.fire_rate.multiplier *= 2.0
 			gun.clip_size.adder += 4
 			proj.damage.multiplier *= 0.5
@@ -231,7 +230,7 @@ static func register_all_cards() -> void:
 		+15% Damage\n\
 		[color=red]-50% Fire Rate\n\
 		-2 Ammo[/color]",
-		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			proj.knockback.adder += 25.0
 			proj.scale.multiplier *= 1.25
 			proj.damage.multiplier *= 1.15
@@ -255,7 +254,7 @@ static func register_all_cards() -> void:
 		#[0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
 		#&"$dDash forward on block\n\
 		#$p-50% Block Cooldown",
-		#func(__z:int,player: Player, gun: ProcGun, proj: ProcProj) -> void:
+		#func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			#player.block_cd.multiplier *= 0.5
 			#player.block_effect_hook.add_hook(temp_block_effect)
 	#)
@@ -283,11 +282,11 @@ static func register_all_cards() -> void:
 		$p+20 Max Health\n\
 		$n-20% Speed\n\
 		-10% Jump Height",
-		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			player.max_health.adder += 20.0
 			player.speed.multiplier *= 0.8
 			player.jump.multiplier *= 0.9
-			hook(player.damage_hooks, func(de:DamageEvent) -> DamageEvent:
+			player.damage_hook.add_effect(n, func(de:DamageEvent) -> DamageEvent:
 				var amount := clampf(de.damage / player.max_health.value, 0.0, 1.0)
 				de.knockback += de.knockback.normalized() * amount * 10.0
 				de.damage *= 0.65
@@ -301,7 +300,7 @@ static func register_all_cards() -> void:
 		[color=red]-10% Speed\n\
 		-10% Jump Height\n\
 		-10% Acceleration",
-		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			player.max_health.multiplier *= 2.0
 			player.speed.multiplier *= 0.9
 			player.jump.multiplier *= 0.9
@@ -314,7 +313,7 @@ static func register_all_cards() -> void:
 		+15% Jump\n\
 		+15% Acceleration\n\
 		+1 Max Stamina",
-		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
 			player.speed.multiplier *= 1.15
 			player.jump.multiplier *= 1.07238052947636087 # jump might be exp
 			player.accel.multiplier *= 1.15
@@ -361,16 +360,18 @@ static func register_all_cards() -> void:
 			proj.damage_hook.add_effect(n, swap_effect)
 	)
 	
-	register_card(TEMP_DECK, &"scavenger", &"Scavenger", &"SC", RARITY_UNUSUAL, STYLE_BASIC,
-		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-		&"$dReloads 1 bullet into your mag upon hitting another player with your bullet\n\
-		$n-50% Fire Rate[/color]",
-		func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
-			gun.fire_rate.multiplier *= 0.5
-			proj.damage_hooks.append(func(bullet:Projectile,hit_player:Player) -> void:
-				if hit_player != player: player.gun.clip = mini(gun.clip_size.value_int, player.gun.clip+1)
-			)
-	)
+	
+	#var scavenger_effect := func(n:int, bullet:Projectile, hit_player:Player) -> void:
+		#player.gun.clip = mini(gun.clip_size.value_int, player.gun.clip+n)
+	#register_card(TEMP_DECK, &"scavenger", &"Scavenger", &"SC", RARITY_UNUSUAL, STYLE_BASIC,
+		#[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		#&"$dReloads 1 bullet into your mag upon hitting another player with your bullet\n\
+		#$n-50% Fire Rate[/color]",
+		#func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			#gun.fire_rate.multiplier *= 0.5
+			#proj.damage_hook.add_effect(n, 
+			#)
+	#)
 	
 	#endregion
 	

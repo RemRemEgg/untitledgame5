@@ -53,10 +53,10 @@ func set_color_recur(node: Node, mat: StandardMaterial3D) -> void:
 var cards: Dictionary[Card, int]
 var stamina: float = 0.0
 var block_timer: float = 0.0
-var is_hold_jump: bool = 0
 var is_floor: bool = 0
 var dash_type: int = 5
 var cyote: float = -1
+var wall_cyote: float = 0.0
 var jumps: int = 0
 var bounds_ignore: float = 0.0
 var can_shoot: bool = false
@@ -67,7 +67,7 @@ var gun: Gun
 # modifiable stats
 # max_health speed accel
 var jump := Stat.new(8.0, 0.5)
-var max_jumps := Stat.new(2, 1)
+var max_jumps := Stat.new(1, 1)
 var stamina_max := Stat.new(1.0, 0.0)
 var block_cd := Stat.new(2.0, 0.01)
 
@@ -125,51 +125,54 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	update_healthbar()
-	if is_spectator: return spectator_process(delta)
-	
-	stamina = minf(stamina + delta * (1.2 if is_floor else 0.6), stamina_max.value) # dash recharge
-	time_survived += delta
-	bounds_ignore -= delta
-	cyote -= delta
-	block_timer -= delta
-	is_floor = is_on_floor()
-	is_hold_jump = Input.is_action_pressed(&"jump")
-	if Input.is_action_just_pressed(&"jump"): cyote = 0.2
-	if is_floor: jumps = max_jumps.value_int
-	
 	if stasis:
 		velocity = Vector3.ZERO
 		global_position = stasis
 		return
+	if is_spectator: return spectator_process(delta)
+	
+	is_floor = is_on_floor()
+	stamina = minf(stamina + delta * (1.2 if is_floor else 0.6), stamina_max.value) # dash recharge
+	time_survived += delta
+	bounds_ignore -= delta
+	block_timer -= delta
+	if is_floor: jumps = max_jumps.value_int
 	
 	velocity += Vector3(0.0, -32.0, 0.0) * delta # gravity
-	# handle jump
-	var input_dir := Vector2.ZERO
+	
+	# jumps
+	cyote -= delta
+	if Input.is_action_just_pressed(&"jump"): cyote = 0.2
+	wall_cyote -= delta
+	if is_on_wall(): wall_cyote = 0.1
+	# normal jump
 	if jumps > 0 && cyote >= 0.0: # jump + boost
 		var boost := Vector2(velocity.x, velocity.z).length()
 		boost = boost / (boost + 48.0)
 		velocity.y = jump.value * (1.0+boost)
 		jumps -= 1
 		cyote = -1.0
-	if velocity.y > 0 && is_hold_jump: velocity -= Vector3(0.0, -32.0, 0.0) * delta * 0.35 # high jump
+	# high jump
+	if velocity.y > 0 && Input.is_action_pressed(&"jump"): velocity -= Vector3(0.0, -32.0, 0.0) * delta * 0.35
+	# wall jump
+	if wall_cyote >= 0.0 && cyote >= 0.0:
+		var wall := get_wall_normal()
+		velocity += wall * jump.value
+		velocity.y = jump.value
+		cyote = -1.0
+	
 	
 	# handle movement
-	input_dir = Input.get_vector(&"left", &"right", &"forward", &"backward")
+	var input_dir := Input.get_vector(&"left", &"right", &"forward", &"backward")
 	if is_floor || input_dir:
 		var dir_3 := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		var intent := Vector2(dir_3.x, dir_3.z) # flattened & transformed input direction
 		movement_update_flat(self, intent, delta)
 	
-	# handle hover
-	if Input.is_action_pressed(&"hover"):
-		var eat := delta * 3
-		var rem := minf(eat, stamina)
-		velocity.y *= 1.0-(rem/eat)**3.0
-		stamina -= rem
-	
 	var pvel := velocity
 	move_and_slide()
 	
+	# collisions
 	for col_idx in get_slide_collision_count():
 		var col := get_slide_collision(col_idx)
 		
@@ -187,23 +190,19 @@ func _process(delta: float) -> void:
 			(colc as RigidBody3D).apply_central_impulse.rpc(impact * 0.5)
 	
 	var b_trans := camera.global_transform
-	# TODO bullets dont clip camera
+	# TODO bullets dont clip camera. Fixed?
+	# TODO make bullets fire from "gun"
 	b_trans.origin += Vector3(0.0, -0.2, 0.0)
 	procgun.process(gun, b_trans, self, delta, Input.is_action_pressed(&"fire") && can_shoot)
 	#procgun.process(gun, b_trans.rotated_local(Vector3.RIGHT, 0.1), self, delta, Input.is_action_pressed(&"fire") && can_shoot)
 
 
 func spectator_process(delta: float) -> void:
-	if stasis:
-		velocity = Vector3.ZERO
-		global_position = stasis
-		return
-	
 	var input_dir := Input.get_vector(&"left", &"right", &"forward", &"backward")
 	var h_dir := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	var v_dir := Input.get_axis(&"hover", &"jump")
+	var v_dir := Input.get_axis(&"slide", &"jump")
 	
-	global_position += Vector3(h_dir.x, v_dir, h_dir.z) * delta * (80.0 if Input.is_action_pressed(&"dash") else 32.0)
+	global_position += Vector3(h_dir.x, v_dir, h_dir.z) * delta * (96.0 if Input.is_action_pressed(&"dash") else 32.0)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -230,8 +229,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_C:
 				camera.fov = 30 if iek.pressed else 130
 			KEY_K when iek.pressed:
-				Console.print(&"killbinded super:%s" % Input.is_action_pressed(&"hover"))
-				if Input.is_action_pressed(&"hover"):
+				Console.print(&"killbinded super:%s" % Input.is_action_pressed(&"slide"))
+				if Input.is_action_pressed(&"slide"):
 					for player in (Network.players.values() as Array[Network.PlayerInfo]):
 						(player as Network.PlayerInfo).linked_player.take_damage.rpc(float(0xd1edeadd1e)**3)
 				else: take_damage(float(0xd1edeadd1e)**3)

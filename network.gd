@@ -183,8 +183,8 @@ func load_level(sseed: int) -> void:# peer side, from server
 	var angle := (sseed/2048.0)
 	angle += (players.keys().find(uuid) * PI*2.0) / players.size()
 	Console.print(&"spawn info %s %s %s %s" % [uuid, sseed, angle, players.keys().find(uuid)])
-	var spawn2d := Vector2.from_angle(angle) * 32.0
-	Game.world.change_level("", Vector3(spawn2d.x, 16.0, spawn2d.y))
+	var spawn2d := Vector2.from_angle(angle) * 24.0
+	Game.world.change_level("res://game/levels/level_playground_remake.tscn", Vector3(spawn2d.x, 16.0, spawn2d.y))
 
 
 func start_round() -> void: # peer side

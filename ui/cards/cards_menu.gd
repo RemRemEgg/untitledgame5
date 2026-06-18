@@ -10,6 +10,10 @@ var local_mouse: Vector3
 
 
 func card_selection_time() -> void:
+	if Console.AUTO_CARD_SELECT:
+		card_selected()
+		return
+	
 	visible = true
 	animation_state = 0
 	animation_timer = 0.0
@@ -64,6 +68,13 @@ func _input(event: InputEvent) -> void: # TODO cleanup
 					animation_timer = 0.0
 					picked_card = i
 					Console.print(&"picked card %s" % selection[picked_card])
+	if Input.is_key_pressed(KEY_L): # skip without updating net state
+		visible = false
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		Game.mouse_fallback = Input.MOUSE_MODE_CAPTURED
+		process_mode = Node.PROCESS_MODE_DISABLED
+		selection = []
+		reset_card_displays()
 
 
 func card_selected() -> void:
