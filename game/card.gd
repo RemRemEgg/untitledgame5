@@ -194,11 +194,11 @@ static func register_all_cards() -> void:
 	
 	register_card(BASE_DECK, &"big_bullets", &"Big Bullets", &"BB", RARITY_COMMON, STYLE_BASIC,
 		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-		&"$p+80% Bullet Size\n\
-		$n-40% Bullet Speed",
+		&"$p+2 Bullet Size\n\
+		$n-50 Bullet Speed",
 		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
-			proj.scale.multiplier *= 1.8 ** n # TODO fix: projectiles are synced before card effect applies
-			gun.b_speed.multiplier *= 0.6 ** n
+			proj.scale.adder += 2.0 * n # TODO fix: projectiles are synced before card effect applies
+			gun.b_speed.adder -= 50 * n
 	)
 	
 	register_card(BASE_DECK, &"fastball", &"Fastball", &"FB", RARITY_UNUSUAL, STYLE_BASIC,
@@ -225,17 +225,28 @@ static func register_all_cards() -> void:
 	
 	register_card(BASE_DECK, &"iron_cannon", &"Iron Cannon", &"IC", RARITY_RARE, STYLE_BASIC,
 		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-		&"$p+25 Knockback\n\
+		&"$p+20 Knockback\n\
 		+25% Bullet Size\n\
 		+15% Damage\n\
 		$n-50% Fire Rate\n\
 		-2 Ammo",
 		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
-			proj.knockback.adder += 25.0 * n
+			proj.knockback.adder += 20.0 * n
 			proj.scale.multiplier *= 1.25 ** n
 			proj.damage.multiplier *= 1.15 ** n
 			gun.fire_rate.multiplier *= 0.5 ** n
 			gun.clip_size.adder += -2 * n
+	)
+	
+	register_card(BASE_DECK, &"wd_40", &"WD-40", &"WD", RARITY_RARE, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"$p+30% Reload Speed\n\
+		+25% Bullet Speed\n\
+		$n-15% Damage",
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			gun.reload_time.multiplier *= 0.7 ** n
+			gun.b_speed.multiplier *= 1.25 ** n
+			proj.damage.multiplier *= 0.85 ** n
 	)
 	
 	#endregion
@@ -278,11 +289,11 @@ static func register_all_cards() -> void:
 	register_card(BLOCK_DECK, &"impact_plates", &"Impact Plates", &"IP", RARITY_EPIC, STYLE_BASIC,
 		[.77, 0.0, 0.0, 0.0, 0.0, 0.0],
 		&"$dConverts 35% of damage taken to knockback taken\n\
-		$p+20 Max Health\n\
+		$p+10 Max Health\n\
 		$n-20% Speed\n\
 		-10% Jump Height",
 		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
-			player.max_health.adder += 20.0
+			player.max_health.adder += 10.0
 			player.speed.multiplier *= 0.8
 			player.jump.multiplier *= 0.9
 			player.damage_hook.add_effect(n, func(de:DamageEvent) -> void:
@@ -294,12 +305,12 @@ static func register_all_cards() -> void:
 	
 	register_card(BLOCK_DECK, &"fat_fucking_chud", &"Fat Fucking Chud", &"FC", RARITY_RARE, STYLE_BASIC,
 		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-		&"$p+50% Health\n\
+		&"$p+50 Health\n\
 		$n-10% Speed\n\
 		-10% Jump Height\n\
 		-10% Acceleration",
 		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
-			player.max_health.multiplier *= 1.5 ** n
+			player.max_health.adder += 50 * n
 			player.speed.multiplier *= 0.9 ** n
 			player.jump.multiplier *= 0.9 ** n
 			player.accel.multiplier *= 0.9 ** n
@@ -307,15 +318,24 @@ static func register_all_cards() -> void:
 	
 	register_card(BLOCK_DECK, &"get_yoked", &"Get Yoked", &"GY", RARITY_UNUSUAL, STYLE_BASIC,
 		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-		&"$p+15% Speed\n\
+		&"$p+2 Speed\n\
 		+15% Jump\n\
 		+15% Acceleration\n\
 		+1 Max Stamina",
 		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
-			player.speed.multiplier *= 1.15 ** n
+			player.speed.adder += 2 * n
 			player.jump.multiplier *= 1.07238052947636087 ** n # jump might be exp
 			player.accel.multiplier *= 1.15 ** n
 			player.stamina_max.adder += n
+	)
+	
+	register_card(BLOCK_DECK, &"defender", &"Defender", &"DF", RARITY_UNUSUAL, STYLE_BASIC,
+		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		&"$p-25% Block Cooldown\n\
+		+10% Max Health",
+		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			player.block_cd.multiplier *= 0.75 ** n
+			player.max_health.multiplier *= 1.1 ** n
 	)
 	
 	#endregion
@@ -328,11 +348,11 @@ static func register_all_cards() -> void:
 	register_card(TEMP_DECK, &"ultralight", &"Ultralight", &"UL", RARITY_COMMON, STYLE_BASIC,
 		[-0.5, 0.0, 1.5, 0.0, 0.0, 0.0],
 		&"$dNow with 10% more Speed per Speed!\n\
-		$p+60% Movement Speed\n\
+		$p+3 Movement Speed\n\
 		+30% Acceleration\n\
 		$n+80% Knockback Taken",
 		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
-			player.speed.multiplier *= 1.6 ** n
+			player.speed.adder += 3 * n
 			player.accel.multiplier *= 1.3 ** n
 			player.damage_hook.add_effect(n, ultralight_effect)
 	)
@@ -346,17 +366,17 @@ static func register_all_cards() -> void:
 			#proj.collide_hook.add_effect(n, spacial_warp_effect)
 	#)
 	
-	var swap_effect := func(n:int, bullet:Projectile, hit_player:Player) -> void:
-		if bullet.ownr:
-			var pos := hit_player.position
-			Network.move_object.rpc(hit_player.get_path(), bullet.ownr.position)
-			bullet.ownr.position = pos
-	register_card(TEMP_DECK, &"swap", &"Swap", &"SW", RARITY_RARE, STYLE_BASIC,
-		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-		&"$pSwap positions with a player you hit",
-		func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
-			proj.damage_hook.add_effect(n, swap_effect)
-	)
+	#var swap_effect := func(n:int, bullet:Projectile, hit_player:Player) -> void:
+		#if bullet.ownr:
+			#var pos := hit_player.position
+			#Network.move_object.rpc(hit_player.get_path(), bullet.ownr.position)
+			#bullet.ownr.position = pos
+	#register_card(TEMP_DECK, &"swap", &"Swap", &"SW", RARITY_RARE, STYLE_BASIC,
+		#[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+		#&"$pSwap positions with a player you hit",
+		#func(n:int, player: Player, gun: ProcGun, proj: ProcProj) -> void:
+			#proj.damage_hook.add_effect(n, swap_effect)
+	#)
 	
 	
 	#var scavenger_effect := func(n:int, bullet:Projectile, hit_player:Player) -> void:

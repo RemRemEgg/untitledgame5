@@ -9,6 +9,18 @@
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_2nkcm"]
 plane = Plane(0, -1, 0, 0)
 
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_bb1n0"]
+plane = Plane(1, 0, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_7xihh"]
+plane = Plane(-1, 0, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_xuocq"]
+plane = Plane(0, 0, 1, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_6ddl8"]
+plane = Plane(0, 0, -1, 0)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2nkcm"]
 render_priority = 0
 shader = ExtResource("3_j8nxo")
@@ -37,12 +49,28 @@ metadata/_custom_type_script = "uid://dp04o0itt8kw3"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15.99, 0)
 visible = false
 
-[node name="collider" type="CollisionShape3D" parent="bounds" unique_id=2145233243]
+[node name="iy" type="CollisionShape3D" parent="bounds" unique_id=2145233243]
 shape = SubResource("WorldBoundaryShape3D_j8nxo")
 
-[node name="collider_up" type="CollisionShape3D" parent="bounds" unique_id=1432846645]
+[node name="y" type="CollisionShape3D" parent="bounds" unique_id=1432846645]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 32.1, 0)
 shape = SubResource("WorldBoundaryShape3D_2nkcm")
+
+[node name="ix" type="CollisionShape3D" parent="bounds" unique_id=1416109563]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_bb1n0")
+
+[node name="x" type="CollisionShape3D" parent="bounds" unique_id=1622043698]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_7xihh")
+
+[node name="iz" type="CollisionShape3D" parent="bounds" unique_id=1132849226]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -96)
+shape = SubResource("WorldBoundaryShape3D_xuocq")
+
+[node name="z" type="CollisionShape3D" parent="bounds" unique_id=1487344927]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 96)
+shape = SubResource("WorldBoundaryShape3D_6ddl8")
 
 [node name="mesh" type="MeshInstance3D" parent="bounds" unique_id=209597760]
 mesh = SubResource("PlaneMesh_7xihh")
