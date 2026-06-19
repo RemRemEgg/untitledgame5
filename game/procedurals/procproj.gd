@@ -143,6 +143,10 @@ func update(proj: Projectile, delta: float) -> void:
 			var normal: Vector3 = r_col.get(&"normal", -proj.velocity.normalized()) as Vector3
 			var pos := r_col.get(&"position", lvlb.global_position) as Vector3
 			hit_levelbody(proj, lvlb, normal, pos)
+		if colc is StaticBody3D:
+			var sttb := colc as StaticBody3D
+			var normal: Vector3 = r_col.get(&"normal", -proj.velocity.normalized()) as Vector3
+			hit_staticbody(proj, sttb, normal)
 	
 	proj.time += dist
 
@@ -167,6 +171,15 @@ func hit_levelbody(proj: Projectile, lvlb: LevelBody, normal: Vector3, pos: Vect
 		proj.time = time.value
 		for effect:EventHook.EventEffect in collide_hook:
 			effect.execute(proj, lvlb)
+
+func hit_staticbody(proj: Projectile, sttb: StaticBody3D, normal: Vector3) -> void:
+	if proj.bounces > 0:
+		proj.bounces -= 1
+		proj.velocity = proj.velocity.bounce(normal)
+	else:
+		proj.time = time.value
+		for effect:EventHook.EventEffect in collide_hook:
+			effect.execute(proj, sttb)
 
 
 ##region MODIFIERS

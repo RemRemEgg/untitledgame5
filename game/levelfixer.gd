@@ -13,8 +13,8 @@ var mat_normal := load("res://shaders/tile.res") as ShaderMaterial
 func _run() -> void:
 	print(&"Fixing level...")
 	root = EditorInterface.get_edited_scene_root()
-	if root is not Level:
-		printerr(&"This scene is not a level!")
+	if !(root is Level || root is Room):
+		printerr(&"This scene is not a level/room!")
 		return
 	
 	scan_node(root)

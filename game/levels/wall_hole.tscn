@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://c5y7mmtqcv7my"]
+
+[ext_resource type="Material" uid="uid://cig7xysbcfiqj" path="res://shaders/level/solid.res" id="1_c5dgf"]
+[ext_resource type="ArrayMesh" uid="uid://cp1wndrn7g4as" path="res://models/wall_hole.res" id="2_oln60"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xuocq"]
+size = Vector3(2, 32, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_aa7w5"]
+size = Vector3(2, 8, 16)
+
+[node name="wall_x" type="StaticBody3D" unique_id=352301469]
+collision_layer = 255
+collision_mask = 255
+
+[node name="mesh" type="MeshInstance3D" parent="." unique_id=335671198]
+material_override = ExtResource("1_c5dgf")
+mesh = ExtResource("2_oln60")
+skeleton = NodePath("../../..")
+
+[node name="v1" type="CollisionShape3D" parent="." unique_id=1632034225]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+shape = SubResource("BoxShape3D_xuocq")
+
+[node name="v2" type="CollisionShape3D" parent="." unique_id=762350043]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20)
+shape = SubResource("BoxShape3D_xuocq")
+
+[node name="h1" type="CollisionShape3D" parent="." unique_id=1046155197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0)
+shape = SubResource("BoxShape3D_aa7w5")
+
+[node name="h2" type="CollisionShape3D" parent="." unique_id=28168804]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12, 0)
+shape = SubResource("BoxShape3D_aa7w5")

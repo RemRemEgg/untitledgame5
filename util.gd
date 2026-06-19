@@ -59,6 +59,7 @@ static func vec3_inv_lerp(a: Vector3, b: Vector3, v: Vector3) -> float:
 
 
 static func remove_and_free(node: Node) -> void:
+	if !node: return
 	node.get_parent().remove_child(node)
 	node.queue_free()
 

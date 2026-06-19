@@ -14,5 +14,5 @@ static func movement_update_full(ent: Entity, dir: Vector3, delta: float) -> voi
 
 var health: float = 100.0
 var max_health: Stat = Stat.new(100.0, 1.0)
-var speed := Stat.new(6.0, 0.5)
+var speed := Stat.new(8.0, 0.5)
 var accel := Stat.new(32.0, 0.5)

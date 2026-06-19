@@ -11,21 +11,15 @@ func _ready() -> void:
 	bounds.visible = true
 	
 	var rng := Network.get_synced_rng()
-	var mesh := BoxMesh.new()
-	var coll := BoxShape3D.new()
 	
-	for x in 6: for z in 6: for y in rng.randi_range(0, 10):
-		var lvlb := LEVELBODY.instantiate() as LevelBody
-		
-		lvlb.mesh = mesh
-		lvlb.shape = coll
-		lvlb.is_static = false
-		lvlb.bodytype = LevelBody.Type.BREAKABLE if rng.randf() < 0.8 else (LevelBody.Type.SOLID if rng.randf() < 0.5 else LevelBody.Type.SCAFFOLD)
-		lvlb.sleeping = true
-		lvlb.name = &"box%sl%sl%s" % [x, y, z]
-		
-		add_child(lvlb)
-		lvlb.position = Vector3((x*1.5)+86.0, (y*1.1)+2.0, (z*1.5)+86.0)
+	var ROOM_PCK_1 := load("res://game/levels/test_level_1.tscn") as PackedScene
+	var ROOM_PCK_2 := load("res://game/levels/test_level_2.tscn") as PackedScene
+	var ROOM_PCK_3 := load("res://game/levels/test_level_3.tscn") as PackedScene
+	var room_lvls: Array[PackedScene] = [ROOM_PCK_1, ROOM_PCK_2, ROOM_PCK_3]
+	for x in 3: for z in 3:
+		var room_inst := room_lvls[rng.randi_range(0, 2)].instantiate() as Node3D
+		add_child(room_inst)
+		room_inst.position = Vector3(x-1, 0.0, z-1) * 64.0
 
 func _process(_delta: float) -> void:
 	pass

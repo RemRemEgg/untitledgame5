@@ -1,8 +1,6 @@
 class_name Player
 extends Entity
 
-# TODO wallclimbing
-
 func get_seralized_projectiles() -> Array[Dictionary]:
 	return [procgun.pproj.seralize()]
 func set_seralized_projectiles(info: Dictionary) -> void:
@@ -157,7 +155,7 @@ func _process(delta: float) -> void:
 	# wall jump
 	if wall_cyote >= 0.0 && cyote >= 0.0:
 		var wall := get_wall_normal()
-		velocity += wall * jump.value
+		velocity += wall * jump.value * 0.8
 		velocity.y = jump.value
 		cyote = -1.0
 	
@@ -180,7 +178,7 @@ func _process(delta: float) -> void:
 		if shape is CollisionShape3D: # hit bounds
 			if (shape as CollisionShape3D).shape is WorldBoundaryShape3D && bounds_ignore <= 0.0:
 				take_damage(maxf(max_health.value * 0.2, health * 0.5),
-						col.get_normal() * (48.0 if block_timer >= 0.0 else 24.0))
+						col.get_normal() * (32.0 if block_timer >= 0.0 else 16.0))
 				bounds_ignore = 0.1
 		
 		var colc := col.get_collider()
@@ -193,7 +191,9 @@ func _process(delta: float) -> void:
 	# TODO bullets dont clip camera. Fixed?
 	# TODO make bullets fire from "gun"
 	b_trans.origin += Vector3(0.0, -0.2, 0.0)
-	procgun.process(gun, b_trans, self, delta, Input.is_action_pressed(&"fire") && can_shoot)
+	# TODO fix input processing with menus during gameplay
+	var update_gun: bool = Input.is_action_pressed(&"fire") && can_shoot && !Input.is_action_pressed(&"view_info") && !Console.visible
+	procgun.process(gun, b_trans, self, delta, update_gun)
 	#procgun.process(gun, b_trans.rotated_local(Vector3.RIGHT, 0.1), self, delta, Input.is_action_pressed(&"fire") && can_shoot)
 
 
@@ -223,7 +223,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var iek := event as InputEventKey
 		match iek.keycode:
-			KEY_X when iek.pressed:
+			KEY_J when iek.pressed:
 				var pp := camera.compositor.compositor_effects[0] as PanniniProjection
 				pp.enabled = !pp.enabled
 			KEY_C:
@@ -242,7 +242,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				gun.reload = 0.0
 				gun.fire_timer = 1.0
 				can_shoot = true
-			KEY_H:
+			KEY_M:
 				health = max_health.value
 			KEY_I:
 				is_immortal = !is_immortal
@@ -357,7 +357,7 @@ func exit_spectator() -> void:
 
 func add_card(card: Card, count: int = 1) -> void:
 	cards[card] = cards.get(card, 0) + count
-	#Network.update_card_picked.rpc(card.uuid) # TODO netsync cards
+	Network.update_card_picked.rpc(card.uuid) # TODO netsync cards
 	if cards[card] <= 0:
 		cards.erase(card)
 

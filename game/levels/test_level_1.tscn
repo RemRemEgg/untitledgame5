@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://17ktgrmdgk27"]
+
+[ext_resource type="Script" uid="uid://cm4gqancuf0sr" path="res://game/levels/room.gd" id="1_okdvu"]
+[ext_resource type="PackedScene" uid="uid://b5r0t8pi8r5fv" path="res://game/levelbody.tscn" id="1_vxedy"]
+[ext_resource type="PackedScene" uid="uid://djyh17x22xv0r" path="res://game/levels/room_walls.tscn" id="2_okdvu"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_xq4bw"]
+size = Vector3(32, 2, 32)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xpa4l"]
+size = Vector3(32, 2, 32)
+
+[sub_resource type="BoxMesh" id="BoxMesh_i3uus"]
+size = Vector3(8, 8, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b3flv"]
+size = Vector3(8, 8, 8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_yyoqx"]
+size = Vector3(2, 12, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hbeka"]
+size = Vector3(2, 12, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_a5d50"]
+size = Vector3(8, 2, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eb2ql"]
+size = Vector3(8, 2, 8)
+
+[node name="test_level_1" type="Node3D" unique_id=1177707274]
+script = ExtResource("1_okdvu")
+metadata/_custom_type_script = "uid://dp04o0itt8kw3"
+
+[node name="room_walls" parent="." unique_id=1101882642 instance=ExtResource("2_okdvu")]
+
+[node name="light_center" type="OmniLight3D" parent="." unique_id=741254977]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11, 0)
+light_energy = 2.0
+shadow_enabled = true
+omni_range = 48.0
+omni_attenuation = 0.2
+
+[node name="levelbody3" parent="." unique_id=1689446186 instance=ExtResource("1_vxedy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7, 0)
+collision_mask = 17
+mass = 409.6
+mesh = SubResource("BoxMesh_xq4bw")
+shape = SubResource("BoxShape3D_xpa4l")
+
+[node name="levelbody8" parent="." unique_id=1180842895 instance=ExtResource("1_vxedy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7, 0)
+collision_mask = 17
+mass = 102.4
+mesh = SubResource("BoxMesh_i3uus")
+shape = SubResource("BoxShape3D_b3flv")
+
+[node name="levelbody9" parent="." unique_id=1049259754 instance=ExtResource("1_vxedy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, -4, 16)
+collision_mask = 17
+mass = 9.6
+mesh = SubResource("BoxMesh_yyoqx")
+shape = SubResource("BoxShape3D_hbeka")
+
+[node name="levelbody10" parent="." unique_id=291652605 instance=ExtResource("1_vxedy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, -4, -16)
+collision_mask = 17
+mass = 9.6
+mesh = SubResource("BoxMesh_yyoqx")
+shape = SubResource("BoxShape3D_hbeka")
+
+[node name="levelbody11" parent="." unique_id=840115761 instance=ExtResource("1_vxedy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, -7, -16)
+collision_mask = 17
+mass = 9.6
+mesh = SubResource("BoxMesh_yyoqx")
+shape = SubResource("BoxShape3D_hbeka")
+
+[node name="levelbody12" parent="." unique_id=1279925211 instance=ExtResource("1_vxedy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, -7, 16)
+collision_mask = 17
+mass = 9.6
+mesh = SubResource("BoxMesh_yyoqx")
+shape = SubResource("BoxShape3D_hbeka")
+
+[node name="levelbody4" parent="." unique_id=371467810 instance=ExtResource("1_vxedy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, -8, 0)
+collision_mask = 17
+mass = 25.6
+mesh = SubResource("BoxMesh_a5d50")
+shape = SubResource("BoxShape3D_eb2ql")
+
+[node name="levelbody5" parent="." unique_id=1685758769 instance=ExtResource("1_vxedy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, -24)
+collision_mask = 17
+mass = 25.6
+mesh = SubResource("BoxMesh_a5d50")
+shape = SubResource("BoxShape3D_eb2ql")
+
+[node name="levelbody6" parent="." unique_id=1778930527 instance=ExtResource("1_vxedy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -8, 0)
+collision_mask = 17
+mass = 25.6
+mesh = SubResource("BoxMesh_a5d50")
+shape = SubResource("BoxShape3D_eb2ql")
+
+[node name="levelbody7" parent="." unique_id=1203012129 instance=ExtResource("1_vxedy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, 24)
+collision_mask = 17
+mass = 25.6
+mesh = SubResource("BoxMesh_a5d50")
+shape = SubResource("BoxShape3D_eb2ql")

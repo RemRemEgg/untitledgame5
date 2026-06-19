@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://djyh17x22xv0r"]
+
+[ext_resource type="Material" uid="uid://cig7xysbcfiqj" path="res://shaders/level/solid.res" id="1_1s0xu"]
+[ext_resource type="Script" uid="uid://bmdyg1i5ny7ya" path="res://game/levels/room_walls.gd" id="1_3pdvo"]
+[ext_resource type="PackedScene" uid="uid://c5y7mmtqcv7my" path="res://game/levels/wall_hole.tscn" id="3_hbth3"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_o8gud"]
+size = Vector3(64, 2, 64)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4rvcx"]
+size = Vector3(64, 2, 64)
+
+[sub_resource type="BoxMesh" id="BoxMesh_noope"]
+size = Vector3(64, 64, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gjvi8"]
+size = Vector3(64, 64, 2)
+
+[node name="room_walls" type="Node3D" unique_id=163690256]
+script = ExtResource("1_3pdvo")
+metadata/_custom_type_script = "uid://bmdyg1i5ny7ya"
+
+[node name="ceiling" type="StaticBody3D" parent="." unique_id=2023848053]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17, 0)
+collision_layer = 17
+collision_mask = 17
+
+[node name="mesh" type="MeshInstance3D" parent="ceiling" unique_id=1809314441]
+material_override = ExtResource("1_1s0xu")
+mesh = SubResource("BoxMesh_o8gud")
+skeleton = NodePath("../../../..")
+
+[node name="collider" type="CollisionShape3D" parent="ceiling" unique_id=912013126]
+shape = SubResource("BoxShape3D_4rvcx")
+
+[node name="floor" type="StaticBody3D" parent="." unique_id=866565191]
+transform = Transform3D(-1, 1.509958e-07, -6.600236e-15, 0, -4.371139e-08, -1, -1.509958e-07, -1, 4.371139e-08, 0, -17, 0)
+collision_layer = 17
+collision_mask = 17
+
+[node name="mesh" type="MeshInstance3D" parent="floor" unique_id=1159173148]
+material_override = ExtResource("1_1s0xu")
+mesh = SubResource("BoxMesh_noope")
+skeleton = NodePath("../../../..")
+
+[node name="collider" type="CollisionShape3D" parent="floor" unique_id=1431388896]
+shape = SubResource("BoxShape3D_gjvi8")
+
+[node name="wall_x" type="StaticBody3D" parent="." unique_id=352301469 instance=ExtResource("3_hbth3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 0, 0)
+collision_layer = 255
+collision_mask = 255
+
+[node name="wall_ix" type="StaticBody3D" parent="." unique_id=1750381417 instance=ExtResource("3_hbth3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -31, 0, 0)
+collision_layer = 255
+collision_mask = 255
+
+[node name="wall_z" type="StaticBody3D" parent="." unique_id=481995383 instance=ExtResource("3_hbth3")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 31)
+collision_layer = 255
+collision_mask = 255
+
+[node name="wall_iz" type="StaticBody3D" parent="." unique_id=493878182 instance=ExtResource("3_hbth3")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, -31)
+collision_layer = 255
+collision_mask = 255

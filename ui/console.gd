@@ -10,9 +10,9 @@ var load_call: Callable
 
 
 static var DEBUG: bool = true
-static var AUTO_START_GAME: bool = 1
-static var AUTO_FULLSCREEN: bool = 1
-static var AUTO_CARD_SELECT: bool = 1
+static var AUTO_START_GAME: bool = 0
+static var AUTO_FULLSCREEN: bool = 0
+static var AUTO_CARD_SELECT: bool = 0
 
 
 func _ready() -> void:
