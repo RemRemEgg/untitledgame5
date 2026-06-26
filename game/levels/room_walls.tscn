@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://djyh17x22xv0r"]
 
-[ext_resource type="Material" uid="uid://cig7xysbcfiqj" path="res://shaders/level/solid.res" id="1_1s0xu"]
 [ext_resource type="Script" uid="uid://bmdyg1i5ny7ya" path="res://game/levels/room_walls.gd" id="1_3pdvo"]
+[ext_resource type="Material" uid="uid://bgesf51sw86dh" path="res://shaders/level/solid_new.res" id="2_h0ka7"]
 [ext_resource type="Texture2D" uid="uid://b4w2soxjaag46" path="res://textures/3d/prototype.png" id="3_h0ka7"]
 [ext_resource type="PackedScene" uid="uid://c5y7mmtqcv7my" path="res://game/levels/wall_hole.tscn" id="3_hbth3"]
 
@@ -37,7 +37,7 @@ collision_layer = 17
 collision_mask = 17
 
 [node name="mesh" type="MeshInstance3D" parent="ceiling" unique_id=1809314441]
-material_override = ExtResource("1_1s0xu")
+material_override = ExtResource("2_h0ka7")
 mesh = SubResource("BoxMesh_606q4")
 skeleton = NodePath("../../../..")
 
@@ -59,12 +59,20 @@ shape = SubResource("BoxShape3D_gjvi8")
 
 [node name="wall_x" parent="." unique_id=352301469 instance=ExtResource("3_hbth3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 0, 0)
+collision_layer = 17
+collision_mask = 17
 
 [node name="wall_ix" parent="." unique_id=511624313 instance=ExtResource("3_hbth3")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -31, 0, 0)
+collision_layer = 17
+collision_mask = 17
 
 [node name="wall_z" parent="." unique_id=2000607292 instance=ExtResource("3_hbth3")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 31)
+collision_layer = 17
+collision_mask = 17
 
 [node name="wall_iz" parent="." unique_id=1027225771 instance=ExtResource("3_hbth3")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, -31)
+collision_layer = 17
+collision_mask = 17

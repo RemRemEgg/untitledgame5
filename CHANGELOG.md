@@ -1,39 +1,5 @@
 ## Changes
-- Added changelog
-- Spider graphs should properly display stats now
-- Abbv is now 4 letters
-- Unified descriptions for stats
-- Random card algorithm weights cards
-- Events have objects holding all event data
-- World is 5x5 rooms
-- Added player animations
-- Added card decks
-- Added card rarity
-- Added card trees and progression
-- New card art
-- Many new cards
-- Players can be biased towards specific decks
-- Block is now magic
-  - Magic will be short-range high-damage attacks, with many defensive options
-- Added ADS
-- Added initial gun cards
-- Added `Full Auto` as a stat
-- Added melee
-  - Melee can be used to kick players or walls
-  - Kicking walls and other objects lets you bounce off of them
-- Changed killbind mechanics
-- Knockback is calculated for the entire clip rather than by bullet
-- Increased base projectile size
-- Added win/lose cards to end of each round
-- Changed keybinds for magic (e) and melee (q,v,f)
-- Updated card visuals
-- Updated card icons
-- `card` command uses card uuids now
-- Updated crosshair to better represent cooldown and reloading
-- Added hit markers
-- Hovering card icons in info menu now shows the card
-- Reordered spider graphs
+- Bug Fixes
 
 ## Bug Fixes
-- Z+ Wall was flipped
-- Some menu inputs no longer conflit with gameplay
+- Fixed wallkicking off room walls
