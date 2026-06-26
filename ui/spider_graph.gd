@@ -18,6 +18,7 @@ extends Control
 @export var inline_color: Color = Color(1.0, 1.0, 1.0, 0.25)
 
 @export_group("Data")
+@export_range(0, 127) var axis_offset: int = 0
 @export var values: Array[float]
 @export var data_min: float = 0.0
 @export var data_max: float = 1.0
@@ -48,7 +49,8 @@ func recalculate_graph() -> void:
 		inlines[i].resize(axis_count+1)
 	
 	for i in axis_count*2+1:
-		colors[i] = Color.from_hsv((i-0.35) / (axis_count*2), 1.0, 1.0)
+		var o := i + (axis_offset * 2)
+		colors[i] = Color.from_hsv((o-0.35) / (axis_count*2), 1.0, 1.0)
 		if i % 2 == 0:
 			outline[i] = get_vec(i) * radius
 			for j:int in inline_count: inlines[j][floori(i/2.0)] = get_vec(i) * radius * (j+1.0)/(inline_count+1.0)
@@ -61,8 +63,9 @@ func recalculate_graph() -> void:
 	data_points.resize(axis_count+1)
 	data_fill_points.resize(axis_count)
 	for i in data_points.size():
+		var o := i - axis_offset
 		var dist := clampf((values[i%axis_count] - data_min) / (data_max - data_min), 0.0, 1.0)
-		data_points[i] = get_vec(i*2) * radius * (0.5 + data_scale*(dist-0.5))
+		data_points[i] = get_vec(o*2) * radius * (0.5 + data_scale*(dist-0.5))
 		if i < data_fill_points.size(): data_fill_points[i] = data_points[i]
 
 
@@ -80,9 +83,10 @@ func _draw() -> void:
 	for i in axis_count:
 		var pos := get_vec(i*2) * (radius + axis_label_size*0.75)
 		
-		var t_size := font.get_string_size(axis_labels[i], HORIZONTAL_ALIGNMENT_LEFT, -1, axis_label_size)
+		var text := axis_labels[(i+axis_offset) % axis_labels.size()]
+		var t_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, axis_label_size)
 		var h_offset := -0.5 if absf(pos.x)<0.1 else (-1.0 if pos.x < 0.0 else 0.0)
 		pos += Vector2(t_size.x*h_offset, t_size.y*0.25)
 		
-		draw_string_outline(font, pos, axis_labels[i], HORIZONTAL_ALIGNMENT_CENTER, -1, axis_label_size, 8, Color.BLACK)
-		draw_string(font, pos, axis_labels[i], HORIZONTAL_ALIGNMENT_CENTER, -1, axis_label_size, colors[i*2])
+		draw_string_outline(font, pos, text, HORIZONTAL_ALIGNMENT_CENTER, -1, axis_label_size, 8, Color.BLACK)
+		draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_CENTER, -1, axis_label_size, colors[i*2])

@@ -72,16 +72,16 @@ func _ready() -> void:
 func change_level(lvl: String, stasis_pos: Vector3) -> void:
 	# move player to spawn pos and wait
 	var stasis := Game.player.create_tween()
-	stasis.tween_property(Game.player, "position", stasis_pos, 1.0)
+	stasis.tween_property(Game.player, "position", stasis_pos, 0.5)
 	await stasis.finished
 	Game.player.stasis = stasis_pos
 	await get_tree().create_timer(0.5).timeout
 	
 	# shrink old level
 	var tween := levelgeo.create_tween()
-	tween.tween_property(levelgeo, "rotation:y", PI, 1.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_EXPO)
+	tween.tween_property(levelgeo, "rotation:y", PI, 1.0).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUINT)
 	tween = levelgeo.create_tween()
-	tween.tween_property(levelgeo, "scale", Vector3.ONE*0.001, 1.5)
+	tween.tween_property(levelgeo, "scale", Vector3.ONE*0.001, 1.0)
 	await tween.finished
 	
 	# setup new level
@@ -99,12 +99,12 @@ func change_level(lvl: String, stasis_pos: Vector3) -> void:
 	levelgeo.rotation.y = -PI
 	levelgeo.scale = Vector3.ONE*0.001
 	tween = levelgeo.create_tween()
-	tween.tween_property(levelgeo, "rotation:y", 0.0, 1.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
+	tween.tween_property(levelgeo, "rotation:y", 0.0, 1.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUINT)
 	tween = levelgeo.create_tween()
-	tween.tween_property(levelgeo, "scale", Vector3.ONE, 1.5)
+	tween.tween_property(levelgeo, "scale", Vector3.ONE, 1.0)
 	await tween.finished
 	
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(0.25).timeout
 	Network.change_to_state(Network.NS_IDLE)
 
 

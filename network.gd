@@ -117,6 +117,11 @@ func change_to_state(new_state: int) -> void: # peer side
 			Console.print(&"change to  NS_DRAWING")
 			next_state = NS_PROJ_SYNC
 			get_tree().current_scene.process_mode = Node.PROCESS_MODE_INHERIT
+			Game.player.deck_weights[Card.DECK_INIT] = 0.0
+			if round_count == 0: # first card draw
+				for deck in Game.player.deck_weights:
+					Game.player.deck_weights[deck] = 0.0
+				Game.player.deck_weights[Card.DECK_INIT] = 1.0
 			Game.player.cards_menu.card_selection_time()
 		NS_PROJ_SYNC:
 			Console.print(&"change to  NS_PROJ_SYNC")
@@ -184,14 +189,13 @@ func load_level(sseed: int) -> void:# peer side, from server
 	angle += (players.keys().find(uuid) * PI*2.0) / players.size()
 	Console.print(&"spawn info %s %s %s %s" % [uuid, sseed, angle, players.keys().find(uuid)])
 	var spawn2d := Vector2.from_angle(angle) * 24.0
-	Game.world.change_level("res://game/levels/level_base.tscn", Vector3(spawn2d.x, 2.0, spawn2d.y))
+	Game.world.change_level("res://game/levels/level_base.tscn", Vector3(spawn2d.x, 0.0, spawn2d.y))
 
 
 func start_round() -> void: # peer side
 	Console.print(&"starting round")
 	Game.world.game_start()
 	Game.player.game_start()
-	round_count += 1
 
 
 @rpc("any_peer", "call_local", "reliable")
@@ -224,7 +228,9 @@ func determine_winner() -> void: # server side
 @rpc("authority", "call_local", "reliable")
 func player_won_game(id: int) -> void:
 	Console.print(&"recieved [%s] won" % id)
+	round_count += 1
 	self_player.linked_player.respawn()
+	self_player.linked_player.on_round_end(id == uuid)
 	players[id].wins += 1
 	if id == uuid: # won
 		Console.print(&"i won, skip card draw")
@@ -244,7 +250,7 @@ func chat_message(msg: String) -> void:
 	Game.player.hud.add_chat_message(&"%s: " % [players[id].name, msg])
 
 @rpc("any_peer", "call_local", "reliable")
-func update_card_picked(card_uuid: StringName) -> void:
+func update_card_picked(card_uuid: StringName, count: int) -> void:
 	var id := multiplayer.get_remote_sender_id()
 	
 	var card := Card.get_card(card_uuid)
@@ -254,8 +260,13 @@ func update_card_picked(card_uuid: StringName) -> void:
 	
 	var card_list := players[id].cards
 	card_list[card_uuid] = card_list.get(card_uuid, 0) + 1
-	
-	Game.player.hud.add_chat_message(&"%s picked [color=%s]%s[/color]" % [players[id].name, Card.RARITY_COLORS[card.rarity], card.name])
+	if card_list[card_uuid] <= 0.0:
+		card_list.erase(card_uuid)
+		Game.player.hud.add_chat_message(&"%s removed [color=%s]%s[/color] %s" %\
+			[players[id].name, Card.RARITY_COLORS[card.rarity], card.name, (&"x%s"%count) if count > 1 else ("")])
+	else:
+		Game.player.hud.add_chat_message(&"%s picked [color=%s]%s[/color] %s" %\
+			[players[id].name, Card.RARITY_COLORS[card.rarity], card.name, (&"x%s"%count) if count > 1 else ("")])
 
 #endregion
 
@@ -268,9 +279,9 @@ func get_round_seed() -> int:
 	var keys := players.keys().duplicate() as Array[int]
 	keys.sort()
 	return int(keys.reduce(_round_seed_func, 0xB100D1EDB00B5))
-func get_synced_rng() -> RandomNumberGenerator:
+func get_synced_rng(include_round_count: bool = false) -> RandomNumberGenerator:
 	var rng := RandomNumberGenerator.new()
-	rng.seed = get_round_seed()
+	rng.seed = get_round_seed() + (round_count**2 if include_round_count else 0)
 	return rng
 
 const NS_NAME: PackedStringArray = ["NS_UNINIT", "NS_IDLE", "NS_LOBBY", "NS_LOAD_GAME", "NS_DRAWING", "NS_PROJ_SYNC", "NS_LOAD_LEVEL", "NS_BATTLE"]
@@ -320,7 +331,8 @@ class PlayerInfo:
 
 var out_proj_spawner: MultiplayerSpawner
 
-func _send_projectile(trans: Transform3D) -> Projectile:
+func send_projectile(trans: Transform3D) -> Projectile:
+	# TODO sometimes returns null
 	var node := out_proj_spawner.spawn({"trans":trans, "uuid":uuid})
 	return node as Projectile
 
@@ -328,8 +340,11 @@ func add_proj_spawner(mps: MultiplayerSpawner, is_out: bool = false) -> void:
 	mps.spawn_function = _recieve_projectile
 	if is_out: out_proj_spawner = mps
 
+var dbg_proj: Dictionary
 # transform (rotation, position, ) 
 func _recieve_projectile(data: Dictionary) -> Projectile:
+	ProcGun.dbg_proj = data
+	dbg_proj = data
 	var id := data.get("uuid", 0) as int
 	if id > 0:
 		var proj := Projectile.deseralize(data)
@@ -351,5 +366,19 @@ func move_object(path: NodePath, pos: Vector3) -> void: # spacial warp
 	print("warp %s to %s" % [path, pos])
 	var node: Node3D = get_tree().root.get_node(path) as Node3D
 	if node: node.global_position = pos
+
+
+@rpc("any_peer", "call_local", "reliable")
+func spawn_levelbody(pos: Vector3, type: LevelBody.Type) -> void:
+	var lvlb_scn := load("res://game/levelbody.tscn") as PackedScene
+	var lvlb := lvlb_scn.instantiate() as LevelBody
+	Game.world.levelgeo.get_child(0).add_child(lvlb)
+	lvlb.global_position = pos
+	lvlb.bodytype = type
+	lvlb.shape = BoxShape3D.new()
+	lvlb.is_static = false
+	lvlb.update_display()
+	lvlb.update_bodytype()
+
 
 #endregion

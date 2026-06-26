@@ -7,7 +7,7 @@ const OUTLINE_UNUSUAL := preload("uid://b8j6y8svxyb2q") as ShaderMaterial
 const OUTLINE_RARE = preload("uid://fif1sx8k4w8f") as ShaderMaterial
 const OUTLINE_EPIC = preload("uid://caexkypvp4txu") as ShaderMaterial
 
-var background: ColorRect
+var background: Panel
 
 var content: MarginContainer
 var card_name: Label
@@ -30,10 +30,6 @@ static func from_card(card: Card, deck: CardDeck) -> CardDisplay:
 	
 	cdisp.outline.modulate = Color(Card.RARITY_COLORS[card.rarity])
 	match card.rarity:
-		#Card.RARITY_COMMON: cdisp.outline.material = OUTLINE_COMMON
-		#Card.RARITY_UNUSUAL: cdisp.outline.material = OUTLINE_UNUSUAL
-		#Card.RARITY_RARE: cdisp.outline.material = OUTLINE_RARE
-		#Card.RARITY_EPIC: cdisp.outline.material = OUTLINE_EPIC
 		Card.RARITY_COMMON: cdisp.material = OUTLINE_COMMON
 		Card.RARITY_UNUSUAL: cdisp.material = OUTLINE_UNUSUAL
 		Card.RARITY_RARE: cdisp.material = OUTLINE_RARE
@@ -50,7 +46,7 @@ static func from_card(card: Card, deck: CardDeck) -> CardDisplay:
 
 
 func _node_initilization() -> void:
-	background = $background as ColorRect
+	background = $background as Panel
 	
 	content = $content as MarginContainer
 	card_name = $content/vbox/name as Label
@@ -60,7 +56,7 @@ func _node_initilization() -> void:
 	extras = $extras as Control
 	outline = $extras/outline as Panel
 	spider_graph = $extras/spider_graph as SpiderGraph
-	card_icon = $extras/card_mini_icon as MarginContainer
+	card_icon = $extras/icon_clip/mini_icon as MarginContainer
 
 
 

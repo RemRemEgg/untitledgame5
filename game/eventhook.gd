@@ -45,6 +45,23 @@ class EventEffect extends RefCounted:
 		count = count_
 	
 	
-	func execute(...args: Array) -> void:
-		args.push_front(count)
+	func execute(ed:EventData, ...args: Array) -> void:
+		ed.n = count
+		args.push_front(ed)
 		effect.callv(args)
+
+
+class EventData:
+	var n: int
+	var player: Player
+	var gun: ProcGun
+	var proj: ProcProj
+	var position: Vector3
+	
+	
+	static func from_player(p: Player) -> EventData:
+		var ed := EventData.new()
+		ed.player = p
+		ed.gun = ed.player.procgun
+		ed.proj = ed.gun.pproj
+		return ed

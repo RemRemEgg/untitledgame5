@@ -20,15 +20,14 @@ func _ready() -> void:
 	Network.players_changed.connect(load_players)
 	load_players()
 	
+	if Console.AUTO_FULLSCREEN: DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 	if Network.is_server:
 		start.visible = true
-		if Console.AUTO_FULLSCREEN: DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 		if Console.AUTO_START_GAME: get_tree().create_timer(0.2).timeout.connect(Network.start_game)
 
 
 func _process(_delta: float) -> void:
-	#start.disabled = !Network.players.values().all(func(p: Network.PlayerInfo): return p.ready)
-	pass
+	start.disabled = !Network.players.values().all(func(p: Network.PlayerInfo)->bool: return p.ready)
 
 func load_players() -> void:
 	for c in playerlist.get_children():

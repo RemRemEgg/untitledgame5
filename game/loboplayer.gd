@@ -6,11 +6,11 @@ func _init() -> void: pass
 func set_data(data: Network.PlayerInfo) -> void:
 	mesh = $mesh as MeshInstance3D
 	nodepth_mesh = $nodepth_mesh as MeshInstance3D
-	dingus = $dingus
+	player_model = $player_model as PlayerModel
 	
 	var mat := mesh.material_override as StandardMaterial3D
 	mat.albedo_color = data.color
-	set_color_recur(dingus, mat)
+	player_model.set_color_recur(mat)
 	
 	var col := (data.color + Color.WHITE*0.5) / 1.5
 	(nodepth_mesh.material_override as ShaderMaterial).set_shader_parameter(&"color", Vector3(col.r, col.g, col.b))
@@ -31,3 +31,4 @@ func _process(_delta: float) -> void:
 
 func _input(_event: InputEvent) -> void: pass
 func _unhandled_input(_event: InputEvent) -> void: pass
+func _unhandled_key_input(_event: InputEvent) -> void: pass

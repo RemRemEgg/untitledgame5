@@ -30,7 +30,7 @@ func add_wall(has_hole: bool, pos: Vector3, n: StringName) -> void:
 	else: wall = WALL_SOLID.instantiate() as StaticBody3D
 	
 	wall.position = pos
-	wall.rotation.y = pos.angle_to(Vector3.RIGHT)
+	wall.rotation.y = pos.angle_to(Vector3.RIGHT) * -sign(pos.x + pos.z)
 	wall.name = n
 	add_child(wall)
 	wall.owner = self

@@ -1,6 +1,8 @@
 class_name Stat
 extends RefCounted
 
+var name: StringName
+var is_good: bool
 var _base_value: float = 1.0
 var adder: float = 0.0
 var multiplier: float = 1.0
@@ -11,7 +13,9 @@ var value: float = _base_value
 var value_int: int = int(_base_value)
 
 
-func _init(base: float, vmin: float = min_val, vmax: float = max_val) -> void:
+func _init(name_: StringName, base: float, vmin: float = min_val, vmax: float = max_val, is_good_: bool = true) -> void:
+	name = name_
+	is_good = is_good_
 	_base_value = base
 	min_val = vmin
 	max_val = vmax

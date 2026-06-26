@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8krwtbql3iuu"
-path.s3tc="res://.godot/imported/cursor.png-4a6c9cbc7d12af26a5f0d9ddd83bc907.s3tc.ctex"
+uid="uid://cfdmpy2yl3jlq"
+path.s3tc="res://.godot/imported/deck_gun.png-4b568de478a23b96fac860b5864af3dd.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://ui/cursor.png"
-dest_files=["res://.godot/imported/cursor.png-4a6c9cbc7d12af26a5f0d9ddd83bc907.s3tc.ctex"]
+source_file="res://textures/cards/deck_gun.png"
+dest_files=["res://.godot/imported/deck_gun.png-4b568de478a23b96fac860b5864af3dd.s3tc.ctex"]
 
 [params]
 

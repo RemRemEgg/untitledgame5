@@ -13,6 +13,11 @@ const PLAYER_ICON = preload("uid://caqvxbw61lbnt") as PackedScene
 
 @onready var card_list: FlowContainer = $card_list as FlowContainer
 
+@onready var card_disp_handler: CanvasLayer = $card_disp_handler as CanvasLayer
+
+var hovered_icon: CardIcon
+var card_display: CardDisplay
+
 
 func _ready() -> void:
 	for p in Network.players:
@@ -26,17 +31,27 @@ func _ready() -> void:
 		pcard.id = p
 
 
-
-
 func _process(_delta: float) -> void:
 	var mouse := get_global_mouse_position()
 	var margin := 12.0
-	for ico:Control in card_list.get_children():
+	var current_hover: CardIcon
+	for ico:CardIcon in card_list.get_children():
 		if (mouse.x > ico.global_position.x + margin && mouse.y > ico.global_position.y + margin &&\
 				mouse.x < ico.global_position.x + ico.size.x - margin && mouse.y < ico.global_position.y + ico.size.y - margin):
-			ico.modulate = Color.GOLD
-		else:
 			ico.modulate = Color.WHITE
+			current_hover = ico
+		else:
+			ico.modulate = Color.LIGHT_GRAY
+	if current_hover != hovered_icon: # change card hover
+		Util.remove_and_free_all_children(card_disp_handler)
+		if current_hover: # is hovering
+			hovered_icon = current_hover
+			card_display = CardDisplay.from_card(hovered_icon.card, hovered_icon.card.deck)
+			card_disp_handler.add_child(card_display)
+	elif !card_display: hovered_icon = null
+	if card_display: card_display.position = get_global_mouse_position() - Vector2(128.0, 0.0)
+
+
 
 
 func swap_to_player(id: int) -> void:
@@ -60,7 +75,8 @@ func swap_to_player(id: int) -> void:
 		
 		for i:int in 6: spider[i] += card.spider[i]*count
 		
-		var ico := CARD_ICON.instantiate()
+		var ico := CARD_ICON.instantiate() as CardIcon
+		ico.card = card
 		var bg := ico.get_node(^"background") as ColorRect
 		var abbv := bg.get_node(^"abbv") as Label
 		var mult := bg.get_node(^"mult") as Label
@@ -74,8 +90,8 @@ func swap_to_player(id: int) -> void:
 	for v in spider:
 		if v < smin: smin = v
 		if v > smax: smax = v
-	smin -= 1.0
-	smax += 1.0
+	smin -= 0.5
+	smax += 0.5
 	spider_graph.data_min = smin
 	spider_graph.data_max = smax
 	spider_graph.values = spider

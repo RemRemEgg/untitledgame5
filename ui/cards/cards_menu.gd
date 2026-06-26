@@ -22,10 +22,7 @@ func card_selection_time() -> void:
 	Game.mouse_fallback = Input.MOUSE_MODE_VISIBLE
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	selection = []
-	while selection.size() < mini(Card.ALL_CARDS.size(), 5): #TODO shitassery
-		var random_card: Card = Card.ALL_CARDS.pick_random() as Card
-		if !selection.has(random_card): selection.append(random_card)
+	selection = CardDeck.pick_weighted_cards(Card.ALL_CARDS, Game.player, 115 if Console.DEBUG else 5, false)
 	flip_animations.resize(selection.size())
 	flip_animations.fill(-1.0)
 	for card in selection:

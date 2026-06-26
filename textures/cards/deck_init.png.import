@@ -2,20 +2,21 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxacs6c330q5v"
-path="res://.godot/imported/card_example_2.png-62e516c100f2e69fbcb66c4f5ee7814b.ctex"
+uid="uid://cu3fe2k455lav"
+path.s3tc="res://.godot/imported/deck_init.png-ce21fdbcf8d8493115aefbdc37a26c60.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
-source_file="res://textures/cards/card_example_2.png"
-dest_files=["res://.godot/imported/card_example_2.png-62e516c100f2e69fbcb66c4f5ee7814b.ctex"]
+source_file="res://textures/cards/deck_init.png"
+dest_files=["res://.godot/imported/deck_init.png-ce21fdbcf8d8493115aefbdc37a26c60.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -23,7 +24,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
@@ -37,4 +38,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

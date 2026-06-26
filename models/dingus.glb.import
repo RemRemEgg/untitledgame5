@@ -13,11 +13,9 @@ dest_files=["res://.godot/imported/dingus.glb-b53c7a7ba0a4217518e835c8aa9a57e3.s
 
 [params]
 
-nodes/root_type=""
-nodes/root_name=""
-nodes/root_script=null
-mesh_library/use_node_names_as_mesh_names=false
-array_mesh/deduplicate_surfaces=true
+nodes/root_type="res://models/player_model.gd"
+nodes/root_name="player_model"
+nodes/root_script=Resource("uid://bp8y0lk8m7j5o", "res://models/player_model.gd")
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
 nodes/import_as_skeleton_bones=false
@@ -42,4 +40,3 @@ materials/extract_path=""
 _subresources={}
 gltf/naming_version=2
 gltf/embedded_image_handling=1
-gltf/texture_map_mode=0

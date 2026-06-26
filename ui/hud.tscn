@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://c7ltvs5te3onl"]
 
 [ext_resource type="Script" uid="uid://8f8lny64t5hf" path="res://ui/hud.gd" id="1_3dnit"]
+[ext_resource type="Texture2D" uid="uid://c0o27sjvn0li6" path="res://textures/cards/crosshair.png" id="2_546lt"]
 [ext_resource type="PackedScene" uid="uid://gbvy6duhr7d4" path="res://ui/info.tscn" id="3_546lt"]
-[ext_resource type="Texture2D" uid="uid://8krwtbql3iuu" path="res://ui/cursor.png" id="3_bqox4"]
+[ext_resource type="Texture2D" uid="uid://cres7m2mn2rdv" path="res://textures/cards/hit_marker.png" id="3_en2x2"]
+[ext_resource type="Texture2D" uid="uid://0gdlg3hdiaxk" path="res://textures/cards/reloading.png" id="4_1v5rv"]
+[ext_resource type="Texture2D" uid="uid://cu3fe2k455lav" path="res://textures/cards/deck_init.png" id="5_1v5rv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ihmi"]
 bg_color = Color(0.08208982, 0.082089834, 0.082089774, 1)
@@ -41,29 +44,103 @@ bg_color = Color(0.40419623, 0.8858689, 0.9999998, 1)
 corner_radius_top_right = 32
 corner_detail = 1
 
+[sub_resource type="SystemFont" id="SystemFont_en2x2"]
+font_names = PackedStringArray("High Tower Text")
+
+[sub_resource type="LabelSettings" id="LabelSettings_en2x2"]
+font = SubResource("SystemFont_en2x2")
+font_size = 64
+font_color = Color(1, 0.41000003, 0.41000003, 1)
+outline_size = 8
+outline_color = Color(0.0153989885, 0.015399001, 0.015398995, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_1v5rv"]
+font = SubResource("SystemFont_en2x2")
+font_size = 64
+font_color = Color(0.41000003, 1, 0.52800006, 1)
+outline_size = 8
+outline_color = Color(0.0153989885, 0.015399001, 0.015398995, 1)
+
 [node name="hud" type="CanvasLayer" unique_id=1071044547]
 script = ExtResource("1_3dnit")
 
-[node name="crosshair" type="TextureRect" parent="." unique_id=1111072082]
+[node name="crosshairs" type="Control" parent="." unique_id=143086947]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="crosshair" type="TextureRect" parent="crosshairs" unique_id=1111072082]
 modulate = Color(1, 1, 1, 0.5019608)
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(32, 32)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("2_546lt")
+stretch_mode = 3
+
+[node name="reloading" type="TextureRect" parent="crosshairs" unique_id=718676718]
+modulate = Color(0.64, 0.39946666, 0.3776, 0.87058824)
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(32, 32)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("4_1v5rv")
+stretch_mode = 3
+
+[node name="hit_marker" type="TextureRect" parent="." unique_id=1226577420]
+modulate = Color(0.77, 0.023099978, 0.023099978, 1)
 texture_filter = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -8.0
-offset_top = -8.0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(2, 2)
-pivot_offset = Vector2(8, 8)
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(32, 32)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
-texture = ExtResource("3_bqox4")
+texture = ExtResource("3_en2x2")
 stretch_mode = 3
 
 [node name="chat" type="Control" parent="." unique_id=1616353826]
@@ -111,6 +188,7 @@ horizontal_alignment = 2
 vertical_alignment = 2
 
 [node name="stats" type="Control" parent="." unique_id=1292417783]
+custom_minimum_size = Vector2(96, 96)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -170,7 +248,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_en2x2")
 value = 50.0
 show_percentage = false
 
-[node name="block" type="ProgressBar" parent="stats" unique_id=1252213781]
+[node name="magic" type="ProgressBar" parent="stats" unique_id=1252213781]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -196,6 +274,56 @@ grow_horizontal = 0
 mouse_filter = 2
 text = "00"
 horizontal_alignment = 2
+
+[node name="win_lose_display" type="TextureRect" parent="." unique_id=1593554576]
+visible = false
+self_modulate = Color(0.12712777, 0.12712789, 0.12712783, 0.63529414)
+texture_filter = 1
+custom_minimum_size = Vector2(64, 96)
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("5_1v5rv")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="lose" type="Label" parent="win_lose_display" unique_id=418022659]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -203.5
+offset_top = -28.5
+offset_right = 203.5
+offset_bottom = 36.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "POINT LOST"
+label_settings = SubResource("LabelSettings_en2x2")
+
+[node name="win" type="Label" parent="win_lose_display" unique_id=1130062499]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -206.0
+offset_top = -28.5
+offset_right = 206.0
+offset_bottom = 36.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "POINT WON"
+label_settings = SubResource("LabelSettings_1v5rv")
 
 [node name="info_holder" type="Control" parent="." unique_id=812456712]
 visible = false

@@ -6,8 +6,6 @@ var pproj: ProcProj
 
 
 func reset_stats() -> void:
-	mod_stack = []
-	mod_data = []
 	fire_rate.reset_value()
 	b_speed.reset_value()
 	inaccuracy.reset_value()
@@ -23,27 +21,24 @@ func calculate_stats() -> void:
 	bullets_per_shot.calculate_value()
 	clip_size.calculate_value()
 	reload_time.calculate_value()
+	pproj.knockback.multiplier *= 1.0 / clip_size.value
 	pproj.calculate_stats()
 
-enum {MOD_LINE, MOD_SHOTGUN, MOD_SPREAD}
-var mod_stack: PackedInt32Array
-var mod_data: PackedFloat32Array
-var fire_rate := Stat.new(3.0)
-var b_speed := Stat.new(320.0)
-var inaccuracy := Stat.new(0.0) #TODO NYI
-var bullets_per_shot := Stat.new(1, 1) #TODO NYI
-var clip_size := Stat.new(6, 1)
-var reload_time := Stat.new(1.2)
 
-func _init() -> void:
-	mod_stack = []
-	mod_data = []
+## Bullets per Second. Default 1.0
+var fire_rate := Stat.new(&"Rate of Fire", 1.0)
+## Bullet speed in u/s. Default 300.0
+var b_speed := Stat.new(&"Bullet Speed", 300.0)
+## Spread in 1/200th rad from true direction. Default 3.0. Max value is 157; approx 45 deg off of center / 90 deg cone.
+var inaccuracy := Stat.new(&"Spread", 3.0, 0.0, 157, false)
+## Number of bullets fired pre trigger press. Default 1
+var bullets_per_shot := Stat.new(&"Bullets/Shot", 1, 1)
+## Total clip size. Default 1
+var clip_size := Stat.new(&"Clip Size", 1, 1)
+## Reload time, in seconds. Default 1.0
+var reload_time := Stat.new(&"Reload Time", 1.0, 0.01, 9e9, false)
 
-func add_modifier(type: int, data: Array[float]) -> void:
-	mod_stack.append(type)
-	mod_data.append_array(data)
 
-# TODO cleanup, bullets_per_shot
 func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire: bool) -> void:
 	if gun.reload:
 		gun.reload -= delta
@@ -51,79 +46,35 @@ func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire:
 			gun.reload = 0.0
 			gun.clip = clip_size.value_int
 			gun.fire_timer = 1.0
-	if gun.reload: return
+		else:return
+	
 	gun.fire_timer += delta * fire_rate.value
 	if !can_fire:
 		gun.fire_timer = minf(gun.fire_timer, 1.0)
 		return
-	while gun.fire_timer >= 1.0:
-		if gun.clip <= 0:
-			gun.reload = reload_time.value
-			gun.fire_timer = 0.0
-			return
-		fire(gun, trans, ownr, (gun.fire_timer - 1.0) / fire_rate.value)
+	
+	while gun.fire_timer >= 1.0 && gun.clip > 0:
+		if ownr is Player: (ownr as Player).run_shoot_hook()
+		for __ in mini(bullets_per_shot.value_int, gun.clip):
+			fire_one_bullet(trans, ownr, (gun.fire_timer - 1.0) / fire_rate.value)
+			gun.clip -= 1
 		gun.fire_timer -= 1.0
-		gun.clip -= 1
+	
 	if gun.clip <= 0:
 		gun.reload = reload_time.value
 		gun.fire_timer = 0.0
-		return
-
-#func __process(gun: Gun, trans: Transform2D, entity: Entity, delta: float) -> int:
-	#var fire_count := 0
-	#trans = trans.translated_local(Vector2.RIGHT * front_dist)
-	#match style:
-		#STYLE_GUN:
-			#gun.fire_timer += delta * fire_rate
-			#while gun.fire_timer >= 1.0:
-				#fire(gun, trans, entity, (gun.fire_timer - 1.0) / fire_rate)
-				#fire_count += 1
-				#gun.fire_timer -= 1.0
-		#STYLE_REPEATER:
-			#if gun.fire_timer < 0:
-				#var inc: float = gun.fire_timer + delta * style_data_f
-				#var vop: int = absi(int(minf(inc, 0.0)) - int(gun.fire_timer))
-				#while vop > 0:
-					#fire(gun, trans, entity, (inc - floorf(inc) + vop - 1) / style_data_f)
-					#fire_count += 1
-					#vop -= 1
-				#gun.fire_timer = minf(inc, 0.0)
-			#else:
-				#gun.fire_timer += delta * fire_rate
-				#if gun.fire_timer >= 1.0: gun.fire_timer = -style_data_i
-	#return fire_count
 
 
-func fire(_gun: Gun, trans: Transform3D, ownr: Entity, delta: float) -> void:
-	process_modifier(Vector3(0, 0, -b_speed.value), Vector2i.ZERO, trans, ownr, delta)
+func fire_one_bullet(trans: Transform3D, ownr: Entity, delta: float) -> void:
+	var inacc_trans := trans \
+		.rotated_local(Vector3.FORWARD, randf_range(0, PI*2.0)) \
+		.rotated_local(Vector3.RIGHT, randf() * inaccuracy.value/200.0)
+	make_bullet(Vector3(0, 0, -b_speed.value), inacc_trans, ownr, delta)
 
 
-func process_modifier(vel: Vector3, i: Vector2i, trans: Transform3D, ownr: Entity, delta: float) -> void:
-	#make_bullets(vel, trans, ownr, delta)
-	if i.x >= mod_stack.size(): return make_bullets(vel, trans, ownr, delta)
-	match mod_stack[i.x]:
-		#MOD_LINE: # [ count, dist ]
-			#var o := (mod_data[i.y]-1) / 2.0
-			#for j in int(mod_data[i.y]):
-				#process_modifier(trans.translated_local(Vector2.DOWN * (j - o) * mod_data[i.y+1]), i+Vector2i(1, 1), ownr, delta)
-				
-		#MOD_SHOTGUN: # [ count, spread ]
-			#for __ in int(mod_data[i.y]):
-				##process_modifier(trans.rotated_local((randf()-0.5)*mod_data[i.y+1]), i+Vector2i(1, 2), ownr, delta)
-				#process_modifier(vel.rotated(V), i+Vector2i(1, 2), trans, ownr, delta)
-		MOD_SPREAD: # [ count, angle ]
-			var o := (mod_data[i.y]-1) / 2.0
-			for j in int(mod_data[i.y]):
-				#process_modifier(trans.rotated_local((j - o) * mod_data[i.y+1]), i+Vector2i(1, 1), ownr, delta)
-				process_modifier(vel.rotated(Vector3.UP, (j - o) * mod_data[i.y+1]), i+Vector2i(1, 2), trans, ownr, delta)
-		#MOD_SURROUND: # [ count ]
-			#for s in mod_data[i.y]:
-				#process_modifier(trans.rotated_local(s*((2*PI)/mod_data[i.y])), i+Vector2i(1, 1), ownr, delta)
-
-
-
-func make_bullets(vel: Vector3, trans: Transform3D, ownr: Entity, delta: float) -> void:
-	var proj := Network._send_projectile(trans)
+static var dbg_proj: Dictionary
+func make_bullet(vel: Vector3, trans: Transform3D, ownr: Entity, delta: float) -> void:
+	var proj := Network.send_projectile(trans)
 	proj.ownr = ownr
 	proj.velocity = trans.basis * vel
 	pproj.update(proj, delta)

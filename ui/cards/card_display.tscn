@@ -5,6 +5,14 @@
 [ext_resource type="Theme" uid="uid://bg5liorxv7qwu" path="res://ui/ui_theme.tres" id="2_y4850"]
 [ext_resource type="PackedScene" uid="uid://ba8bixelqjeyx" path="res://ui/cards/card_icon.tscn" id="6_5kb46"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4850"]
+bg_color = Color(0.05, 0.05, 0.05, 0.8627451)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+corner_detail = 1
+
 [sub_resource type="SystemFont" id="SystemFont_m1mul"]
 font_names = PackedStringArray("Cascadia Mono")
 font_weight = 450
@@ -13,6 +21,8 @@ subpixel_positioning = 0
 [sub_resource type="LabelSettings" id="LabelSettings_m1mul"]
 font = SubResource("SystemFont_m1mul")
 font_size = 24
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_hhwgi"]
 noise_type = 2
@@ -30,16 +40,26 @@ generate_mipmaps = false
 noise = SubResource("FastNoiseLite_hhwgi")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_05gny"]
+bg_color = Color(0.71, 0.71, 0.71, 0.53333336)
 draw_center = false
 border_width_left = 8
 border_width_top = 8
 border_width_right = 8
 border_width_bottom = 8
 border_color = Color(1, 1, 1, 0.5568628)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
 corner_detail = 1
 
 [sub_resource type="Theme" id="Theme_y4850"]
 Panel/styles/panel = SubResource("StyleBoxFlat_05gny")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1mul"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_bottom_left = 20
+corner_detail = 1
 
 [node name="card_display" type="TextureRect" unique_id=2030955788]
 custom_minimum_size = Vector2(256, 384)
@@ -59,14 +79,14 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 script = ExtResource("2_p1uqy")
 
-[node name="background" type="ColorRect" parent="." unique_id=1897555730]
+[node name="background" type="Panel" parent="." unique_id=1448278104]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.0490397, 0.049039796, 0.049039714, 0.81960785)
+theme_override_styles/panel = SubResource("StyleBoxFlat_y4850")
 
 [node name="content" type="MarginContainer" parent="." unique_id=822583490]
 layout_mode = 1
@@ -100,7 +120,7 @@ size_flags_horizontal = 4
 texture = SubResource("NoiseTexture2D_03cmn")
 
 [node name="spacer" type="ColorRect" parent="content/vbox" unique_id=114733787]
-custom_minimum_size = Vector2(0, 8)
+custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
 color = Color(1, 1, 1, 0)
 
@@ -116,6 +136,8 @@ text = "[color=#fff]description
 "
 scroll_active = false
 horizontal_alignment = 1
+threaded = true
+progress_bar_delay = 100
 
 [node name="extras" type="Control" parent="." unique_id=1281850431]
 layout_mode = 1
@@ -126,6 +148,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="outline" type="Panel" parent="extras" unique_id=1491946273]
+clip_children = 2
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -135,39 +158,77 @@ grow_vertical = 2
 theme = SubResource("Theme_y4850")
 
 [node name="spider_graph" type="Control" parent="extras" unique_id=1636597622]
-z_index = 1
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 98.0
+offset_left = 97.0
 offset_top = 159.0
-offset_right = 98.0
+offset_right = 97.0
 offset_bottom = 159.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_m1mul")
-radius = 24.0
+radius = 21.0
 outline_width = 1.0
-axis_labels = PackedStringArray("", "", "", "", "", "")
 inline_count = 1
-values = Array[float]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+axis_offset = 1
 data_min = -1.0
 data_scale = 1.0
 data_outline_width = 0.5
 data_fill_color = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://b842d5orwjbbc"
 
-[node name="card_mini_icon" parent="extras" unique_id=78439861 instance=ExtResource("6_5kb46")]
+[node name="TODO_spider_background" type="Control" parent="extras/spider_graph" unique_id=99473500]
+modulate = Color(0, 0, 0, 1)
+self_modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 0.5235988
+script = ExtResource("2_m1mul")
+radius = 21.0
+outline_width = 0.0
+axis_width = 24.0
+axis_color = Color(0.066070534, 0.06607054, 0.066070504, 1)
+inline_count = 1
+inline_width = 0.0
+inline_color = Color(0, 0, 0, 0.2509804)
+axis_offset = null
+data_scale = 0.001
+data_outline_width = 0.0
+data_outline_color = Color(1, 1, 1, 0)
+data_fill_color = Color(1, 1, 1, 0)
+metadata/_custom_type_script = "uid://b842d5orwjbbc"
+
+[node name="icon_clip" type="Panel" parent="extras" unique_id=1518039497]
+clip_children = 1
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 2.0
-offset_top = -59.0
-offset_right = 116.0
-offset_bottom = 55.0
+offset_top = -48.0
+offset_right = 48.0
 grow_vertical = 0
-scale = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_m1mul")
+
+[node name="mini_icon" parent="extras/icon_clip" unique_id=78439861 instance=ExtResource("6_5kb46")]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -52.0
+offset_right = 115.0
+offset_bottom = 62.0
+grow_vertical = 0
+scale = Vector2(0.45, 0.45)

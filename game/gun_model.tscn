@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://mhcupvcv6mbn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6wdty"]
+albedo_color = Color(0.41598046, 0.41598043, 0.4159804, 1)
+metallic = 1.0
+roughness = 0.61
+
+[sub_resource type="BoxMesh" id="BoxMesh_6wdty"]
+material = SubResource("StandardMaterial3D_6wdty")
+size = Vector3(0.2, 0.2, 1)
+
+[node name="gun_model" type="Node3D" unique_id=1805574]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=739337711]
+transform = Transform3D(0.84999996, 0, 0, 0, 0.42171958, 0.5209452, 0, -0.73800576, 0.2976844, 0, -0.04622376, -0.005677283)
+mesh = SubResource("BoxMesh_6wdty")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=737414146]
+transform = Transform3D(1, 0, 0, 0, 0.9999901, 0.00445053, 0, -0.00445053, 0.9999901, 0, 0.2533547, 0.35387206)
+mesh = SubResource("BoxMesh_6wdty")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=1675676849]
+transform = Transform3D(0.099999994, 0, 0, 0, -0.00044505298, 0.099998996, 0, -0.099998996, -0.00044505298, 0, 0.3354378, 0.75131404)
+mesh = SubResource("BoxMesh_6wdty")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="." unique_id=480130267]
+transform = Transform3D(0.096592575, 0.014115606, -0.021693833, 0.02175644, 0.0011170954, 0.097598195, 0.01401892, -0.09899242, -0.0019920245, 0.05, 0.355, 0.806)
+mesh = SubResource("BoxMesh_6wdty")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="." unique_id=2032595629]
+transform = Transform3D(0.096592575, -0.014115606, 0.021693833, -0.02175644, 0.0011170954, 0.097598195, -0.01401892, -0.09899242, -0.0019920245, -0.05, 0.355, 0.806)
+mesh = SubResource("BoxMesh_6wdty")

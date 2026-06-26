@@ -6,27 +6,38 @@ var card_art: Texture2D
 
 var cards: Array[Card]
 
+
 func _init(name: StringName, art: Texture2D) -> void:
 	deck_name = name
 	card_art = art
 
 
-func get_random_card() -> Card:
-	return cards[randi_range(0, cards.size()-1)] if !cards.is_empty() else null
-
-
-func get_random_cards(n: int, allow_duplicates: bool = true) -> Array[Card]:
-	var m := mini(n, cards.size())
-	if m == 0: return []
-	if m == 1: return [get_random_card()]
+static func pick_weighted_cards(deck: Array[Card], player: Player, n: int, allow_duplicates: bool = true) -> Array[Card]:
+	var valid_cards: Array[Card] = []
+	var total_weight: float = 0.0
 	
-	if allow_duplicates:
-		var arr: Array[Card] = []
-		arr.resize(n)
-		for i:int in n: arr[i] = get_random_card()
-		return arr
+	for card in deck:
+		if card.rarity_eval.can_draw(player):
+			var weight := card.get_weight(player)
+			if weight <= 0.0: continue
+			total_weight += weight
+			valid_cards.append(card)
 	
-	else:
-		var arr: Array[Card] = cards.duplicate(false) as Array[Card]
-		arr.shuffle()
-		return arr.slice(0, m)
+	if !allow_duplicates && n >= valid_cards.size():
+		valid_cards.shuffle()
+		return valid_cards
+	
+	var random_cards: Array[Card] = []
+	for ni in n:
+		var rngw := randf_range(0, total_weight)
+		for ci in valid_cards.size():
+			var weight := valid_cards[ci].get_weight(player)
+			rngw -= weight
+			if rngw <= 0.0:
+				random_cards.append(valid_cards[ci])
+				if !allow_duplicates:
+					valid_cards.remove_at(ci)
+					total_weight -= weight
+				break
+	
+	return random_cards

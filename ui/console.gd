@@ -9,7 +9,8 @@ var load_status: int = 0
 var load_call: Callable
 
 
-static var DEBUG: bool = true
+static var DEBUG: bool = 0
+static var AUTO_JOIN: bool = 0
 static var AUTO_START_GAME: bool = 0
 static var AUTO_FULLSCREEN: bool = 0
 static var AUTO_CARD_SELECT: bool = 0
@@ -146,13 +147,13 @@ func run_command(args: Array[String]) -> void:
 			if !min_args(args, 1): return
 			match args[1]:
 				&"list":
-					self.print(&"All Cards:\n%s" % Util.format_array(Card.ALL_CARDS.map(func(c:Card)->String:return c.name)))
+					self.print(&"All Cards:\n%s" % Util.format_array(Card.ALL_CARDS.map(func(c:Card)->String:return c.uuid)))
 				&"give":
 					var target := args[2].trim_prefix(&'"').trim_suffix(&'"')
-					var idx := Card.ALL_CARDS.find_custom(func(c:Card)->bool: return c.name==target)
+					var idx := Card.ALL_CARDS.find_custom(func(c:Card)->bool: return c.uuid==target)
 					if idx != -1:
 						var count := 1
-						if args.size() == 4: count = maxi(int(args[3]), 1)
+						if args.size() == 4: count = int(args[3])
 						Game.player.add_card(Card.ALL_CARDS[idx], count)
 						Game.player.update_cards()
 						self.print(&"Give card %s x %s" % [args[2], count])

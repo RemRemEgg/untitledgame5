@@ -43,12 +43,12 @@ func calculate_stats() -> void:
 	bounces.calculate_value()
 	knockback.calculate_value()
 
-#modifiable stats
-var time := Stat.new(4.0)
-var scale := Stat.new(1.0)
-var damage := Stat.new(20.0)
-var bounces := Stat.new(0)
-var knockback := Stat.new(0.0)
+
+var time := Stat.new(&"Bullet Time", 4.0)
+var scale := Stat.new(&"Bullet Size", 1.0, 0.15)
+var damage := Stat.new(&"Bullet Damage", 20.0)
+var bounces := Stat.new(&"Bullet Bounces", 0)
+var knockback := Stat.new(&"Bullet Knockback", 0.0)
 ## Hook for projectile hitting an object or entity, without bouncing
 ## [codeblock]func(n:int, bullet:Projectile, collider:CollisionObject3D) -> void:[/codeblock]
 var collide_hook := EventHook.new()
@@ -64,7 +64,8 @@ func _init() -> void:
 	mesh = SphereMesh.new()
 	mesh.radial_segments = 4
 	mesh.rings = 1
-	mesh.radius = 0.1; mesh.height = mesh.radius*2
+	mesh.radius = 15 / 100.0
+	mesh.height = mesh.radius*2
 	mesh.material = shader_mat
 	shape = SphereShape3D.new()
 	shape.radius = mesh.radius
@@ -73,9 +74,6 @@ func _init() -> void:
 	psqp.collision_mask = 0b0110
 	prqp = PhysicsRayQueryParameters3D.new()
 	prqp.collision_mask = 0b0001
-	
-	travel_mod_stack = []
-	travel_mod_data = []
 
 
 func create_projectile() -> Projectile:
@@ -83,6 +81,8 @@ func create_projectile() -> Projectile:
 	bind(proj)
 	count += 1
 	return proj
+
+
 func bind(proj: Projectile) -> void:
 	proj.proc = self
 	
@@ -93,6 +93,8 @@ func bind(proj: Projectile) -> void:
 	proj.scale *= scale.value
 	proj.bounces = bounces.value_int
 	proj.knockback = knockback.value
+
+
 func destroy_projectile(proj: Projectile) -> void:
 	var p := proj.get_parent(); if p: p.remove_child(proj)
 	proj.queue_free()
@@ -103,11 +105,11 @@ func process(proj: Projectile, delta: float) -> void:
 	update(proj, delta)
 	if proj.time >= time.value: destroy_projectile(proj)
 
+
 func update(proj: Projectile, delta: float) -> void:
 	var dss: PhysicsDirectSpaceState3D = Game.world.get_world_3d().direct_space_state
 	#TODO custom collision api?
 	#TODO pserver rids over refs? see psqp
-	
 	
 	prqp.from = proj.global_position
 	prqp.to = prqp.from + proj.velocity*delta
@@ -125,7 +127,6 @@ func update(proj: Projectile, delta: float) -> void:
 	var dist := delta*s_dist*r_dist
 	proj.transform.origin += proj.velocity * dist
 	proj.velocity += Vector3(0.0, -32.0, 0.0) * dist
-	#process_modifier(proj, Vector2i.ZERO, delta * dist) # TODO proj modifiers
 	
 	if s_dist < 1.0: # hit entity before wall
 		psqp.transform = proj.transform
@@ -150,16 +151,22 @@ func update(proj: Projectile, delta: float) -> void:
 	
 	proj.time += dist
 
+
 func hit_entity(proj: Projectile, ent: Entity) -> void:
 	proj.time = time.value
 	
 	if ent is Player:
 		var hit_player := ent as Player
 		hit_player.take_damage.rpc(proj.damage, proj.velocity.normalized() * proj.knockback)
+		if proj.ownr is Player:
+			var from_player := proj.ownr as Player
+			from_player.hud.hit_marker_timer = 0.15
+		var ed := EventHook.EventData.from_player(proj.ownr)
 		for effect:EventHook.EventEffect in collide_hook:
-			effect.execute(proj, ent)
+			effect.execute(ed, ent)
 		for effect:EventHook.EventEffect in damage_hook:
-			effect.execute(proj, ent)
+			effect.execute(ed, ent)
+
 
 func hit_levelbody(proj: Projectile, lvlb: LevelBody, normal: Vector3, pos: Vector3) -> void:
 	pos -= lvlb.global_position
@@ -169,8 +176,11 @@ func hit_levelbody(proj: Projectile, lvlb: LevelBody, normal: Vector3, pos: Vect
 		proj.velocity = proj.velocity.bounce(normal)
 	else:
 		proj.time = time.value
+		var ed := EventHook.EventData.from_player(proj.ownr)
+		ed.position = proj.global_position
 		for effect:EventHook.EventEffect in collide_hook:
-			effect.execute(proj, lvlb)
+			effect.execute(ed, lvlb)
+
 
 func hit_staticbody(proj: Projectile, sttb: StaticBody3D, normal: Vector3) -> void:
 	if proj.bounces > 0:
@@ -178,53 +188,7 @@ func hit_staticbody(proj: Projectile, sttb: StaticBody3D, normal: Vector3) -> vo
 		proj.velocity = proj.velocity.bounce(normal)
 	else:
 		proj.time = time.value
+		var ed := EventHook.EventData.from_player(proj.ownr)
+		ed.position = proj.global_position
 		for effect:EventHook.EventEffect in collide_hook:
-			effect.execute(proj, sttb)
-
-
-##region MODIFIERS
-#
-#enum {MOD_DECELERATE, MOD_ACCELERATE, MOD_TIMESCALE, MOD_SIN, MOD_HOME}
-var travel_mod_stack: PackedInt32Array
-var travel_mod_data: PackedFloat32Array
-
-var coll_mod_stack: PackedInt32Array
-var coll_mod_data: PackedFloat32Array
-#
-#func add_modifier(type: int, data: Array[float]) -> void:
-	#mod_stack.append(type)
-	#mod_data.append_array(data)
-#
-#func process_modifier(proj: Projectile, i: Vector2i, delta: float) -> void:
-	#if i.x >= mod_stack.size(): return
-	#match mod_stack[i.x]:
-		#MOD_DECELERATE: # [ strength ]
-			#var x := proj.health / health
-			#var s_a := x * x
-			#x = (proj.health - delta * mod_data[i.y]) / health
-			#var s_b := x * x
-			#proj.vel *= s_b / s_a
-			#process_modifier(proj, i+Vector2i(1, 1), delta)
-		#MOD_ACCELERATE: # [ strength ]
-			#var x := proj.health / health
-			#var s_a := x * x
-			#x = (proj.health - delta * mod_data[i.y]) / health
-			#var s_b := x * x
-			#proj.vel *= s_a / s_b
-			#process_modifier(proj, i+Vector2i(1, 1), delta)
-		#MOD_TIMESCALE: # [ strength ]
-			#process_modifier(proj, i+Vector2i(1, 1), delta * mod_data[i.y])
-		#MOD_SIN: # [ sin-rad/sec? ]
-			#var s_a := sin((proj.health - health) * mod_data[i.y])
-			#var s_b := sin((proj.health - health - delta) * mod_data[i.y])
-			##proj.basis = proj.basis.rotated(proj.basis.y, s_b - s_a)
-			#proj.vel = proj.vel.rotated(s_b - s_a)
-			#process_modifier(proj, i+Vector2i(1, 1), delta)
-		#MOD_HOME: # [ strength ]
-			#if !proj.ownr || !proj.ownr.target: return process_modifier(proj, i+Vector2i(1, 1), delta)
-			#var targ := proj.ownr.target.position - proj.trans.origin
-			#var ang := targ.angle_to(proj.vel)
-			#proj.vel = proj.vel.rotated(minf(absf(ang), delta * mod_data[i.y]) * -signf(ang))
-			#process_modifier(proj, i+Vector2i(1, 1), delta)
-#
-##endregion
+			effect.execute(ed, sttb)

@@ -28,7 +28,7 @@ size = Vector3(15.999997, 15.999999, 15.999997)
 [sub_resource type="BoxShape3D" id="BoxShape3D_h6xgs"]
 size = Vector3(15.999997, 15.999999, 15.999997)
 
-[node name="test_level_1" type="Node3D" unique_id=1177707274]
+[node name="test_level_2" type="Node3D" unique_id=1177707274]
 script = ExtResource("1_mm11t")
 metadata/_custom_type_script = "uid://dp04o0itt8kw3"
 

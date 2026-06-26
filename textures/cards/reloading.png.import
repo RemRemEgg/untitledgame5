@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8krwtbql3iuu"
-path.s3tc="res://.godot/imported/cursor.png-4a6c9cbc7d12af26a5f0d9ddd83bc907.s3tc.ctex"
+uid="uid://0gdlg3hdiaxk"
+path.s3tc="res://.godot/imported/reloading.png-f77f0a2e9895a269207cc208252deeee.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://ui/cursor.png"
-dest_files=["res://.godot/imported/cursor.png-4a6c9cbc7d12af26a5f0d9ddd83bc907.s3tc.ctex"]
+source_file="res://textures/cards/reloading.png"
+dest_files=["res://.godot/imported/reloading.png-f77f0a2e9895a269207cc208252deeee.s3tc.ctex"]
 
 [params]
 

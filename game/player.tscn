@@ -80,6 +80,9 @@ properties/3/replication_mode = 2
 properties/4/path = NodePath(".:max_health")
 properties/4/spawn = true
 properties/4/replication_mode = 2
+properties/5/path = NodePath(".:animation_data")
+properties/5/spawn = true
+properties/5/replication_mode = 1
 
 [node name="player" type="CharacterBody3D" unique_id=541339310]
 collision_layer = 34
@@ -91,19 +94,20 @@ floor_max_angle = 1.0471976
 shape = SubResource("CapsuleShape3D_sh265")
 
 [node name="mesh" type="MeshInstance3D" parent="." unique_id=357712946]
+visible = false
 material_override = SubResource("StandardMaterial3D_4flbx")
 mesh = SubResource("CapsuleMesh_4flbx")
 
 [node name="nodepth_mesh" type="MeshInstance3D" parent="." unique_id=1353467298]
+visible = false
 material_override = ExtResource("1_p0vpi")
 mesh = SubResource("CapsuleMesh_p0vpi")
 
-[node name="dingus" parent="." unique_id=889406392 instance=ExtResource("5_d631c")]
-transform = Transform3D(-0.235, 0, -3.5484014e-08, 0, 0.235, 0, 3.5484014e-08, 0, -0.235, 0, -0.92523444, -0.034322128)
-visible = false
+[node name="player_model" parent="." unique_id=216068627 instance=ExtResource("5_d631c")]
+transform = Transform3D(-0.235, 0, -3.5484014e-08, 0, 0.235, 0, 3.5484014e-08, 0, -0.235, 0, -0.9314044, -0.035021186)
 
 [node name="camera" type="Camera3D" parent="." unique_id=1844707478]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75650024, -0.054464996)
 cull_mask = 1
 attributes = SubResource("CameraAttributesPractical_w5y0b")
 compositor = SubResource("Compositor_p0vpi")

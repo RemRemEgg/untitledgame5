@@ -1,10 +1,33 @@
 [gd_scene format=3 uid="uid://ba8bixelqjeyx"]
 
+[ext_resource type="Script" uid="uid://dy13pntmh566x" path="res://ui/cards/card_icon.gd" id="1_u1r18"]
+
+[sub_resource type="SystemFont" id="SystemFont_iktto"]
+font_names = PackedStringArray("Cascadia Mono")
+
+[sub_resource type="LabelSettings" id="LabelSettings_u1r18"]
+line_spacing = -22.0
+font = SubResource("SystemFont_iktto")
+font_size = 52
+font_color = Color(0.07683582, 0.07683582, 0.0768358, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_fb3s7"]
+font_names = PackedStringArray("Cascadia Code")
+
+[sub_resource type="LabelSettings" id="LabelSettings_wny5f"]
+font = SubResource("SystemFont_fb3s7")
+font_color = Color(0, 0, 0, 1)
+outline_size = 2
+outline_color = Color(0.5890953, 0.5890957, 0.5890954, 1)
+
 [node name="card_icon" type="MarginContainer" unique_id=78439861]
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
+script = ExtResource("1_u1r18")
 
 [node name="background" type="ColorRect" parent="." unique_id=1027045722]
 custom_minimum_size = Vector2(90, 90)
@@ -20,11 +43,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 48
-text = "EX"
+text = "ABBV"
+label_settings = SubResource("LabelSettings_u1r18")
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 1
 
 [node name="mult" type="Label" parent="background" unique_id=624918376]
 layout_mode = 1
@@ -34,8 +57,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 16
-text = "x2"
+text = "x10"
+label_settings = SubResource("LabelSettings_wny5f")
 horizontal_alignment = 2
 vertical_alignment = 2

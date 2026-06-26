@@ -3,7 +3,7 @@ extends MarginContainer
 func _ready() -> void:
 	($vbox/host as Button).pressed.connect(_host_game)
 	($vbox/join as Button).pressed.connect(_join_game)
-	#dbg_auto_join()
+	if Console.AUTO_JOIN: dbg_auto_join()
 
 func dbg_auto_join() -> void:
 	var error := Network.start_server()
