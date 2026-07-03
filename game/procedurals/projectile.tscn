@@ -8,11 +8,25 @@ properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/replication_mode = 1
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5huln"]
-cull_mode = 2
-shading_mode = 0
-albedo_color = Color(0.6160995, 0.6160995, 0.6160995, 1)
-grow_amount = 1.0
+[sub_resource type="Shader" id="Shader_5huln"]
+code = "shader_type spatial;
+render_mode cull_disabled, unshaded;
+
+uniform vec3 albedo : source_color;
+
+void vertex() {
+	VERTEX += INV_VIEW_MATRIX[1].xyz * UV.y * 0.05;
+}
+
+void fragment() {
+	ALBEDO = albedo;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4c65i"]
+render_priority = 0
+shader = SubResource("Shader_5huln")
+shader_parameter/albedo = Color(0.6160995, 0.6160995, 0.6160995, 1)
 
 [node name="projectile" type="MeshInstance3D" unique_id=2101233643]
 script = ExtResource("1_73wlm")
@@ -21,6 +35,6 @@ script = ExtResource("1_73wlm")
 replication_config = SubResource("SceneReplicationConfig_73wlm")
 
 [node name="trail" type="MeshInstance3D" parent="." unique_id=164034907]
-material_override = SubResource("StandardMaterial3D_5huln")
+material_override = SubResource("ShaderMaterial_4c65i")
 script = ExtResource("2_5huln")
 metadata/_custom_type_script = "uid://bq2l7cpadfchj"

@@ -15,18 +15,15 @@ size = Vector3(0.2, 0.2, 1)
 transform = Transform3D(0.84999996, 0, 0, 0, 0.42171958, 0.5209452, 0, -0.73800576, 0.2976844, 0, -0.04622376, -0.005677283)
 mesh = SubResource("BoxMesh_6wdty")
 
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=698448918]
+transform = Transform3D(0.35355335, 0.35355338, 0, -0.35355335, 0.35355338, 0, 0, 0, 0.35299996, 0, 0.048049703, 0.7662965)
+mesh = SubResource("BoxMesh_6wdty")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="MeshInstance3D3" unique_id=1111474314]
+transform = Transform3D(0, 2, 1.2363454e-07, 2, 0, -1.2363449e-07, -1.7511972e-07, 1.7511975e-07, -2.8328617, 0, 0, 0.28328633)
+spot_range = 15.0
+spot_angle = 30.0
+
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=737414146]
 transform = Transform3D(1, 0, 0, 0, 0.9999901, 0.00445053, 0, -0.00445053, 0.9999901, 0, 0.2533547, 0.35387206)
-mesh = SubResource("BoxMesh_6wdty")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=1675676849]
-transform = Transform3D(0.099999994, 0, 0, 0, -0.00044505298, 0.099998996, 0, -0.099998996, -0.00044505298, 0, 0.3354378, 0.75131404)
-mesh = SubResource("BoxMesh_6wdty")
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="." unique_id=480130267]
-transform = Transform3D(0.096592575, 0.014115606, -0.021693833, 0.02175644, 0.0011170954, 0.097598195, 0.01401892, -0.09899242, -0.0019920245, 0.05, 0.355, 0.806)
-mesh = SubResource("BoxMesh_6wdty")
-
-[node name="MeshInstance3D5" type="MeshInstance3D" parent="." unique_id=2032595629]
-transform = Transform3D(0.096592575, -0.014115606, 0.021693833, -0.02175644, 0.0011170954, 0.097598195, -0.01401892, -0.09899242, -0.0019920245, -0.05, 0.355, 0.806)
 mesh = SubResource("BoxMesh_6wdty")

@@ -7,7 +7,7 @@ varying vec3 barys;
 uniform vec3 color = vec3(1.0, 0.0, 0.0);
 
 void vertex() {
-	int index = VERTEX_ID % 3;
+	int index = (VERTEX_ID+2) % 3;
 	switch (index) {
 		case 0:
 			barys = vec3(1.0, 0.0, 0.0);

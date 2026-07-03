@@ -88,3 +88,7 @@ static func normalize_array(arr: Array[float]) -> Array[float]:
 	for i in arr.size():
 		normalized[i] = (arr[i] - avg) / diff
 	return normalized
+
+
+static func has_frac(f: float) -> bool:
+	return !is_zero_approx(f - roundf(f))

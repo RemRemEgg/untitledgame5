@@ -18,7 +18,6 @@ static func deseralize(info: Dictionary) -> ProcProj:
 	return proc
 
 
-
 static var count: int = 0
 
 var psqp: PhysicsShapeQueryParameters3D
@@ -43,11 +42,15 @@ func calculate_stats() -> void:
 	bounces.calculate_value()
 	knockback.calculate_value()
 
-
+## Duration of the bullet. Default 4.0
 var time := Stat.new(&"Bullet Time", 4.0)
+## Size of the bullet. Default 1.0
 var scale := Stat.new(&"Bullet Size", 1.0, 0.15)
+## Damage of the bullet. Default 20.0
 var damage := Stat.new(&"Bullet Damage", 20.0)
+## bounces of the bullet. Default 0
 var bounces := Stat.new(&"Bullet Bounces", 0)
+## Knockback of the bullet. Default 0.0
 var knockback := Stat.new(&"Bullet Knockback", 0.0)
 ## Hook for projectile hitting an object or entity, without bouncing
 ## [codeblock]func(n:int, bullet:Projectile, collider:CollisionObject3D) -> void:[/codeblock]
@@ -96,8 +99,8 @@ func bind(proj: Projectile) -> void:
 
 
 func destroy_projectile(proj: Projectile) -> void:
-	var p := proj.get_parent(); if p: p.remove_child(proj)
-	proj.queue_free()
+	#proj.kill()
+	proj.proc = null
 	count -= 1
 
 

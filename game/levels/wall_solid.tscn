@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dudbkofs7l6x0"]
 
-[ext_resource type="Material" uid="uid://cig7xysbcfiqj" path="res://shaders/level/solid.res" id="1_jgit6"]
+[ext_resource type="Material" uid="uid://bgesf51sw86dh" path="res://shaders/level/solid_triplanar_fast.res" id="1_jgit6"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_fq0ar"]
 size = Vector3(2, 32, 64)

@@ -20,14 +20,16 @@ func _ready() -> void:
 	Network.players_changed.connect(load_players)
 	load_players()
 	
-	if Console.AUTO_FULLSCREEN: DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+	if Console.AUTO_FULLSCREEN && !(!Network.is_server && Console.CLIENT_DUMMY): DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	if Console.AUTO_FULLSCREEN && (!Network.is_server && Console.CLIENT_DUMMY): DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED); Engine.max_fps = 15
 	if Network.is_server:
 		start.visible = true
-		if Console.AUTO_START_GAME: get_tree().create_timer(0.2).timeout.connect(Network.start_game)
+		if Console.AUTO_START_GAME: get_tree().create_timer(0.25).timeout.connect(Network.start_game)
 
 
 func _process(_delta: float) -> void:
 	start.disabled = !Network.players.values().all(func(p: Network.PlayerInfo)->bool: return p.ready)
+
 
 func load_players() -> void:
 	for c in playerlist.get_children():
@@ -42,6 +44,7 @@ func load_players() -> void:
 		pcard.dispname.text = pi.name
 		pcard.dispcolor.color = pi.color
 
+
 func _on_player_name_edit(new_name: String) -> void:
 	if new_name.ends_with("Player") && !new_name.begins_with("Player"):
 		new_name = new_name.trim_suffix("Player")
@@ -52,8 +55,10 @@ func _on_player_name_edit(new_name: String) -> void:
 		p_name.text = new_name
 	Network.update_player.rpc({&"name":new_name})
 
+
 func _on_player_color_edit(new_color: Color) -> void:
 	Network.update_player.rpc({&"color":new_color})
+
 
 func _on_player_ready_edit(is_ready: bool) -> void:
 	Network.update_player.rpc({&"ready":is_ready})

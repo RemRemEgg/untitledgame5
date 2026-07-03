@@ -6,6 +6,7 @@ extends MeshInstance3D
 #var next: Projectile # ll # fuck you ll you aint even real
 
 const PROJECTILE := preload("uid://djlg0ybtmd4im")
+@onready var trail: Trail = $trail as Trail
 
 var proc: ProcProj
 var ownr: Entity
@@ -27,6 +28,7 @@ func _init() -> void:
 func _process(delta: float) -> void:
 	if !is_multiplayer_authority(): return
 	if proc: proc.process(self, delta)
+	else: kill()
 
 static func deseralize(data: Dictionary) -> Projectile:
 	#var proj := new()
@@ -36,3 +38,14 @@ static func deseralize(data: Dictionary) -> Projectile:
 	proj.position = trans.origin
 	
 	return proj
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		trail.unbind()
+
+
+func kill() -> void:
+	Network.spawn_visual(Network.NV_PARTICLE_BURST, global_position, 0.5)
+	var p := get_parent(); if p: p.remove_child(self)
+	queue_free()

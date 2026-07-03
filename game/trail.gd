@@ -4,6 +4,7 @@ extends MeshInstance3D
 var _points: Array[Vector3] = []
 var _life: Array[float] = []
 var ppos: Vector3
+var kill_when_gone: bool = false
 
 
 func _ready() -> void:
@@ -30,18 +31,29 @@ func _process(delta: float) -> void:
 			_points.remove_at(p)
 			_life.remove_at(p)
 		else: p += 1
+	if kill_when_gone && _points.is_empty():
+		Util.remove_and_free(self)
 	
 	var imesh := mesh as ImmediateMesh
 	imesh.clear_surfaces()
 	if _points.size() < 2: return
 	
 	imesh.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP)
-	for i in range(_points.size()):
-		var t := (i + 1.0) / (_points.size())
-		var w := t * Vector3.UP * 0.07
-		
-		imesh.surface_set_uv(Vector2(0, 0))
-		imesh.surface_add_vertex(to_local(_points[i] + w))
-		imesh.surface_set_uv(Vector2(1, 0))
-		imesh.surface_add_vertex(to_local(_points[i] - w))
+	var ps := _points.size()
+	for i in ps:
+		var t := (i * 2.0) / (ps - 1.0)
+		imesh.surface_set_uv(Vector2(1, t))
+		imesh.surface_add_vertex(to_local(_points[i]))
+		imesh.surface_set_uv(Vector2(-1, -t))
+		imesh.surface_add_vertex(to_local(_points[i]))
 	imesh.surface_end()
+
+
+func unbind() -> void:
+	kill_when_gone = true
+	var p := get_parent()
+	if p:
+		p.remove_child(self)
+		owner = null
+		Game.world.visuals.add_child(self)
+		global_position = ppos

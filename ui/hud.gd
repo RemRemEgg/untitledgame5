@@ -1,10 +1,16 @@
 class_name HUD
 extends CanvasLayer
 
+@onready var hurt_visual: Panel = $hurt_visual as Panel
+
 @onready var crosshairs: Control = $crosshairs as Control
 @onready var crosshair: TextureRect = $crosshairs/crosshair as TextureRect
 @onready var reloading: TextureRect = $crosshairs/reloading as TextureRect
 @onready var hit_marker: TextureRect = $hit_marker as TextureRect
+@onready var hit_marker_invul: TextureRect = $hit_marker_invul as TextureRect
+
+@onready var charge_1: RichTextLabel = $spells/charge1 as RichTextLabel
+@onready var charge_2: RichTextLabel = $spells/charge2 as RichTextLabel
 
 @onready var chatbox: RichTextLabel = $chat/chatbox as RichTextLabel
 var chatduration: Array[float] = []
@@ -14,7 +20,6 @@ var chatduration: Array[float] = []
 @onready var health: ProgressBar = $stats/health as ProgressBar
 @onready var stam_true: ProgressBar = $stats/stam_true as ProgressBar
 @onready var stam_round: ProgressBar = $stats/stam_round as ProgressBar
-@onready var magic: ProgressBar = $stats/magic as ProgressBar
 
 @onready var debug: RichTextLabel = $debug as RichTextLabel
 
@@ -26,11 +31,14 @@ var chatduration: Array[float] = []
 @onready var info: Info = $info_holder/info as Info
 
 
-
+const SPELL_READY := &"[color=#cfc]"
+const SPELL_WAITING := &"[color=#caa]"
 
 
 var player: Player
+var hurt_timer: float = -1.0
 var hit_marker_timer: float = -1.0
+var hit_marker_invul_timer: float = -1.0
 var win_lose_timer: float = -1.0
 var is_win: bool = true
 
@@ -40,8 +48,13 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	hurt_timer -= delta
 	hit_marker_timer -= delta
+	hit_marker_invul_timer -= delta
 	win_lose_timer -= delta
+	
+	# hurt indicator
+	hurt_visual.visible = (hurt_timer >= 0.0)
 	
 	# crosshairs
 	crosshairs.rotation = (player.gun.fire_timer * (PI/2.0)) \
@@ -51,17 +64,21 @@ func _process(delta: float) -> void:
 	crosshair.visible = !player.gun.reload
 	reloading.visible = player.gun.reload
 	hit_marker.visible = (hit_marker_timer >= 0.0)
+	hit_marker_invul.visible = (hit_marker_invul_timer >= 0.0)
 	if hit_marker.visible: hit_marker.scale = Vector2.ONE * (1.5 - hit_marker_timer**2*10.0)
 	if player.gun.fire_timer != 1.0:
 		crosshair.modulate = Color(0.5, 0.65, 1.0, 1.0)
 	
+	charge_1.text = &"[color=#b85]%s[color=#5af]%s" %\
+			[&"≡" if Util.has_frac(player.spell_1.charges) else &"", &"■".repeat(floori(player.spell_1.charges))]
+	charge_2.text = &"[color=#5af]%s[color=#b85]%s" %\
+			[&"■".repeat(floori(player.spell_2.charges)), &"≡" if Util.has_frac(player.spell_2.charges) else &""]
+	
 	# stats
 	health.value = player.health
 	health.max_value = player.max_health.value
-	stam_true.value = player.stamina*100.0 / player.stamina_max.value
-	stam_round.value = floorf(player.stamina)*100.0 / player.stamina_max.value
-	magic.value = (-player.magic_timer*100.0) / player.magic_cd.value
-	magic.modulate = Color.WHITE if player.magic_timer <= -player.magic_cd.value else Color.WEB_GRAY
+	stam_true.value = player.stamina*100.0 / player.max_stamina.value
+	stam_round.value = floorf(player.stamina)*100.0 / player.max_stamina.value
 	
 	# debug
 	var perf := Performance.get_monitor(Performance.TIME_PROCESS) *1000
@@ -98,4 +115,4 @@ func add_chat_message(msg: String) -> void:
 	Console.print("[chat] " + msg)
 	if chatbox.text: chatbox.text += &"\n"+msg
 	else: chatbox.text += msg
-	chatduration.append(5.0)
+	chatduration.append(10.0)

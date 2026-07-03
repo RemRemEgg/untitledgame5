@@ -1,78 +1,81 @@
 [gd_scene format=3 uid="uid://djyh17x22xv0r"]
 
-[ext_resource type="Script" uid="uid://bmdyg1i5ny7ya" path="res://game/levels/room_walls.gd" id="1_3pdvo"]
-[ext_resource type="Material" uid="uid://bgesf51sw86dh" path="res://shaders/level/solid_new.res" id="2_h0ka7"]
-[ext_resource type="Texture2D" uid="uid://b4w2soxjaag46" path="res://textures/3d/prototype.png" id="3_h0ka7"]
-[ext_resource type="PackedScene" uid="uid://c5y7mmtqcv7my" path="res://game/levels/wall_hole.tscn" id="3_hbth3"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_606q4"]
-size = Vector3(64, 32, 64)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_h0ka7"]
-size = Vector3(64, 32, 64)
+[ext_resource type="Script" uid="uid://bmdyg1i5ny7ya" path="res://game/levels/room_walls.gd" id="1_n8alw"]
+[ext_resource type="Texture2D" uid="uid://b4w2soxjaag46" path="res://textures/3d/prototype.png" id="2_5j80u"]
+[ext_resource type="PackedScene" uid="uid://b5r0t8pi8r5fv" path="res://game/levelbody.tscn" id="3_fafg0"]
+[ext_resource type="Shader" uid="uid://b3moxqeqah5b5" path="res://shaders/level/solid_triplanar_fast.gdshader" id="4_jqava"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h0ka7"]
-albedo_texture = ExtResource("3_h0ka7")
-metallic = 1.0
-roughness = 0.75
-roughness_texture = ExtResource("3_h0ka7")
-uv1_scale = Vector3(0.25, 0.25, 0.25)
-uv1_triplanar = true
-texture_filter = 2
+transparency = 1
+shading_mode = 2
+albedo_color = Color(1.3183123, 1.3183123, 1.3183123, 0.27058825)
+albedo_texture = ExtResource("2_5j80u")
+uv1_scale = Vector3(48, 32, 48)
+texture_filter = 0
 
-[sub_resource type="BoxMesh" id="BoxMesh_noope"]
-lightmap_size_hint = Vector2i(334, 966)
-size = Vector3(64, 64, 2)
+[sub_resource type="BoxMesh" id="BoxMesh_h0ka7"]
+material = SubResource("StandardMaterial3D_h0ka7")
+flip_faces = true
+size = Vector3(64, 64, 64)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_gjvi8"]
-size = Vector3(64, 64, 2)
+[sub_resource type="BoxMesh" id="BoxMesh_606q4"]
+size = Vector3(64.01, 64.01, 64.01)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h0ka7"]
+size = Vector3(64, 64, 64)
+
+[sub_resource type="SphereMesh" id="SphereMesh_hbth3"]
+radius = 2.0
+height = 4.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hbth3"]
+render_priority = 0
+shader = ExtResource("4_jqava")
+shader_parameter/tex = ExtResource("2_5j80u")
+shader_parameter/modulo = Color(0.93972605, 1.4771864, 1.5720325, 1)
+shader_parameter/roughness = 1.0
+shader_parameter/specular = 0.0
+shader_parameter/scale = Vector3(0.25, 0.25, 0.25)
+shader_parameter/offset = Vector3(0, 0, 0)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tf8vp"]
+radius = 2.0
 
 [node name="room_walls" type="Node3D" unique_id=163690256]
-script = ExtResource("1_3pdvo")
+script = ExtResource("1_n8alw")
 metadata/_custom_type_script = "uid://bmdyg1i5ny7ya"
+metadata/_edit_lock_ = true
 
-[node name="ceiling" type="StaticBody3D" parent="." unique_id=2023848053]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 32, 0)
-collision_layer = 17
-collision_mask = 17
+[node name="bounds_visualizer" type="MeshInstance3D" parent="." unique_id=352624968]
+mesh = SubResource("BoxMesh_h0ka7")
 
-[node name="mesh" type="MeshInstance3D" parent="ceiling" unique_id=1809314441]
-material_override = ExtResource("2_h0ka7")
+[node name="ceiling" parent="." unique_id=1096154872 instance=ExtResource("3_fafg0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 64, 0)
+visible = false
 mesh = SubResource("BoxMesh_606q4")
-skeleton = NodePath("../../../..")
-
-[node name="collider" type="CollisionShape3D" parent="ceiling" unique_id=912013126]
+is_harmful = true
 shape = SubResource("BoxShape3D_h0ka7")
 
-[node name="floor" type="StaticBody3D" parent="." unique_id=866565191]
-transform = Transform3D(-1, 1.509958e-07, -6.600236e-15, 0, -4.371139e-08, -1, -1.509958e-07, -1, 4.371139e-08, 0, -17, 0)
-collision_layer = 17
+[node name="floor" parent="." unique_id=1772760505 instance=ExtResource("3_fafg0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -64, 0)
+visible = false
 collision_mask = 17
+mesh = SubResource("BoxMesh_606q4")
+is_harmful = true
+shape = SubResource("BoxShape3D_h0ka7")
 
-[node name="mesh" type="MeshInstance3D" parent="floor" unique_id=1159173148]
-material_override = SubResource("StandardMaterial3D_h0ka7")
-mesh = SubResource("BoxMesh_noope")
-skeleton = NodePath("../../../..")
+[node name="light_orb" parent="." unique_id=1067459580 instance=ExtResource("3_fafg0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16, 0)
+gravity_scale = 0.0
+freeze = false
+is_static = false
+mesh = SubResource("SphereMesh_hbth3")
+material = SubResource("ShaderMaterial_hbth3")
+shape = SubResource("SphereShape3D_tf8vp")
 
-[node name="collider" type="CollisionShape3D" parent="floor" unique_id=1431388896]
-shape = SubResource("BoxShape3D_gjvi8")
-
-[node name="wall_x" parent="." unique_id=352301469 instance=ExtResource("3_hbth3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 0, 0)
-collision_layer = 17
-collision_mask = 17
-
-[node name="wall_ix" parent="." unique_id=511624313 instance=ExtResource("3_hbth3")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -31, 0, 0)
-collision_layer = 17
-collision_mask = 17
-
-[node name="wall_z" parent="." unique_id=2000607292 instance=ExtResource("3_hbth3")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 31)
-collision_layer = 17
-collision_mask = 17
-
-[node name="wall_iz" parent="." unique_id=1027225771 instance=ExtResource("3_hbth3")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, -31)
-collision_layer = 17
-collision_mask = 17
+[node name="light" type="OmniLight3D" parent="light_orb" unique_id=1602486898]
+light_color = Color(0.91666377, 0.9665944, 0.9697841, 1)
+light_energy = 3.0
+omni_range = 64.0
+omni_attenuation = 0.5
+omni_shadow_mode = 0

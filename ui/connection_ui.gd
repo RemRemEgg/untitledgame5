@@ -9,12 +9,12 @@ func dbg_auto_join() -> void:
 	var error := Network.start_server()
 	if error:
 		Console.print(&"dbg_auto_join: error detected, moving right")
-		await get_tree().create_timer(0.1).timeout
+		await get_tree().create_timer(0.15).timeout
 		get_window().position.x += 380
 		Network.start_client("127.0.0.1")
 	else:
 		Console.print(&"dbg_auto_join: no error detected, moving left")
-		await get_tree().create_timer(0.1).timeout
+		await get_tree().create_timer(0.15).timeout
 		get_window().position.x -= 380
 	Network.change_to_state(Network.NS_LOBBY)
 

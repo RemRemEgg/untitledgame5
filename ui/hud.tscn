@@ -7,6 +7,26 @@
 [ext_resource type="Texture2D" uid="uid://0gdlg3hdiaxk" path="res://textures/cards/reloading.png" id="4_1v5rv"]
 [ext_resource type="Texture2D" uid="uid://cu3fe2k455lav" path="res://textures/cards/deck_init.png" id="5_1v5rv"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spcu4"]
+draw_center = false
+border_width_left = 24
+border_width_top = 24
+border_width_right = 24
+border_width_bottom = 24
+border_color = Color(0.5801085, 0.07680515, 0.08510884, 0.4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ff8ar"]
+draw_center = false
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.58, 0.075399995, 0.08380987, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_1v5rv"]
+font_names = PackedStringArray("Elephant")
+subpixel_positioning = 0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ihmi"]
 bg_color = Color(0.08208982, 0.082089834, 0.082089774, 1)
 corner_radius_bottom_right = 32
@@ -34,18 +54,9 @@ bg_color = Color(0.24835697, 0.6065302, 0.3192812, 1)
 corner_radius_bottom_right = 16
 corner_detail = 1
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q43x7"]
-bg_color = Color(0.08208982, 0.082089834, 0.082089774, 1)
-corner_radius_top_right = 32
-corner_detail = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_srpbi"]
-bg_color = Color(0.40419623, 0.8858689, 0.9999998, 1)
-corner_radius_top_right = 32
-corner_detail = 1
-
 [sub_resource type="SystemFont" id="SystemFont_en2x2"]
 font_names = PackedStringArray("High Tower Text")
+subpixel_positioning = 0
 
 [sub_resource type="LabelSettings" id="LabelSettings_en2x2"]
 font = SubResource("SystemFont_en2x2")
@@ -63,6 +74,25 @@ outline_color = Color(0.0153989885, 0.015399001, 0.015398995, 1)
 
 [node name="hud" type="CanvasLayer" unique_id=1071044547]
 script = ExtResource("1_3dnit")
+
+[node name="hurt_visual" type="Panel" parent="." unique_id=463878895]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_spcu4")
+
+[node name="extra" type="Panel" parent="hurt_visual" unique_id=2049974502]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ff8ar")
 
 [node name="crosshairs" type="Control" parent="." unique_id=143086947]
 layout_mode = 3
@@ -143,6 +173,98 @@ mouse_filter = 2
 texture = ExtResource("3_en2x2")
 stretch_mode = 3
 
+[node name="hit_marker_invul" type="TextureRect" parent="." unique_id=1581858976]
+modulate = Color(2.8878452e-07, 0.4038196, 0.40466115, 1)
+texture_filter = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(32, 32)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("3_en2x2")
+stretch_mode = 3
+
+[node name="spells" type="Control" parent="." unique_id=1659062769]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="charge1" type="RichTextLabel" parent="spells" unique_id=858038526]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = 27.0
+offset_right = -2.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_fonts/normal_font = SubResource("SystemFont_1v5rv")
+bbcode_enabled = true
+text = "■■■■"
+scroll_active = false
+autowrap_mode = 0
+shortcut_keys_enabled = false
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="charge2" type="RichTextLabel" parent="spells" unique_id=557330872]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 2.0
+offset_top = 27.0
+offset_right = 170.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_fonts/normal_font = SubResource("SystemFont_1v5rv")
+bbcode_enabled = true
+text = "■■■■"
+scroll_active = false
+autowrap_mode = 0
+shortcut_keys_enabled = false
+vertical_alignment = 1
+
+[node name="box" type="ColorRect" parent="spells" unique_id=545106259]
+custom_minimum_size = Vector2(2, 2)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.0
+offset_top = 40.00003
+offset_right = 1.0
+offset_bottom = 42.00003
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+color = Color(0.47299236, 0.72547203, 1, 1)
+
 [node name="chat" type="Control" parent="." unique_id=1616353826]
 layout_mode = 3
 anchors_preset = 15
@@ -157,6 +279,11 @@ layout_mode = 0
 offset_right = 574.0
 offset_bottom = 46.0
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 20
+theme_override_font_sizes/bold_italics_font_size = 20
+theme_override_font_sizes/italics_font_size = 20
+theme_override_font_sizes/mono_font_size = 20
 bbcode_enabled = true
 fit_content = true
 scroll_active = false
@@ -246,22 +373,6 @@ mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxEmpty_7ihmi")
 theme_override_styles/fill = SubResource("StyleBoxFlat_en2x2")
 value = 50.0
-show_percentage = false
-
-[node name="magic" type="ProgressBar" parent="stats" unique_id=1252213781]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -64.0
-offset_right = 276.0
-offset_bottom = -56.0
-grow_vertical = 0
-mouse_filter = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_q43x7")
-theme_override_styles/fill = SubResource("StyleBoxFlat_srpbi")
-value = 100.0
 show_percentage = false
 
 [node name="debug" type="RichTextLabel" parent="." unique_id=972726535]

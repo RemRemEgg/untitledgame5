@@ -9,9 +9,7 @@ func set_seralized_projectiles(info: Dictionary) -> void:
 var uuid: int = 0
 
 var camera: Camera3D
-var mesh: MeshInstance3D
 var player_model: PlayerModel
-var nodepth_mesh: MeshInstance3D
 const NODEPTH_ALPHA: float = 0.25
 @onready var hud: HUD
 @onready var cards_menu: CardsMenu = $camera/ui3d_container/ui3d_vp/cards_menu as CardsMenu
@@ -24,25 +22,21 @@ var is_spectator: bool = false
 var is_immortal: bool = true
 var stasis: Vector3 = Vector3.ZERO
 var time_survived: float = 0.0
-## [velocity, melee, block, flags, reload]
-var animation_data: Array[float] = [0.0, 2.0, 0.0, 0, 0.0]
+
 
 func set_data(data: Network.PlayerInfo) -> void:
 	camera = $camera as Camera3D
 	camera.current = true
-	mesh = $mesh as MeshInstance3D
-	nodepth_mesh = $nodepth_mesh as MeshInstance3D
 	player_model = $player_model as PlayerModel
 	
-	var mat := mesh.material_override as StandardMaterial3D
+	var col := (data.color + Color.WHITE*0.5) / 1.5
+	var mat := player_model.material as StandardMaterial3D
 	mat.albedo_color = data.color
-	player_model.set_color_recur(mat)
+	(mat.next_pass as ShaderMaterial).set_shader_parameter(&"color", Vector3(col.r, col.g, col.b))
 	
-	nodepth_mesh.visible = false
 	($nametag as Label3D).visible = false
 	hud = $camera/hud as HUD
 	uuid = data.uuid
-
 
 
 var cards: Dictionary[Card, int]
@@ -51,7 +45,10 @@ var stamina: float = 0.0
 var magic_timer: float = 0.0
 var melee_timer: float = -1.0
 var is_floor: bool = 0
-var is_ads: bool = false
+var is_use: bool = false
+var is_use_alt: bool = false
+var is_prep_cast: bool = false
+var is_firing: bool = false
 var dash_type: int = 5
 var cyote: float = -1
 var wall_cyote: float = 0.0
@@ -64,17 +61,20 @@ var gun: Gun
 
 # TODO lifesteal, spread damage over mag?
 # max_health speed accel
+## Default false
 var full_auto := false
-## Default 9.0
-var jump := Stat.new(&"Jump Height", 9.0, 0.5)
+## Default 8.0
+var jump := Stat.new(&"Jump Height", 8.0, 0.5)
+## Default 2
+var max_jumps := Stat.new(&"Jumps", 2, 1)
 ## Default 1
-var max_jumps := Stat.new(&"Jumps", 1, 1)
-## Default 1
-var stamina_max := Stat.new(&"Stamina", 1.0, 0.0)
-## Default 6.0
-var magic_cd := Stat.new(&"Magic Cooldown", 6.0, 0.01, 9e9, false)
+var max_stamina := Stat.new(&"Stamina", 1.0, 0.0)
 ## Default 0.7
-var melee_cd := Stat.new(&"Melee Cooldown", 0.7, 0.01, 9e9, false)
+var melee_cd := Stat.new(&"Melee CD", 0.7, 0.01, 9e9, false)
+## Default 1.0
+var magic_cd := Stat.new(&"All Spell CD", 1.0, 0.01, 9e9, false)
+## [b]Multiplier[/b] for all spell potency. Default 1.0
+var magic_potency := Stat.new(&"All Spell Potency", 1.0, 0.0, 9e9)
 
 ## Hook for player shooting their gun
 ## [codeblock]func(n:int, p:Player) -> void:[/codeblock]
@@ -82,9 +82,14 @@ var shooting_hook := EventHook.new()
 ## Hook for player taking damage. Player is [code]de.target_entity[/code].
 ## [codeblock]func(n:int, de:DamageEvent) -> void:[/codeblock]
 var damage_hook := EventHook.new()
-## Hook for magic effects (ie implode or emp)
+## Hook for player casting any spells. Called once per spell cast, not once per effect
+var spell_hook := EventHook.new()
+## First spell
 ## [codeblock]func(n:int, p:Player) -> void:[/codeblock]
-var magic_hook := EventHook.new()
+var spell_1 := Spell.new()
+## Second spell
+## [codeblock]func(n:int, p:Player) -> void:[/codeblock]
+var spell_2 := Spell.new()
 ## [b]NYI[/b][br][s]Hook for magic chains (ie shield charge or echo)
 ## Set [code]player.magic_chain_delay[/code] to change delay between chains. Default 0.25 sec.
 ## [codeblock]func(n:int, p:Player) -> void:[/codeblock][/s]
@@ -101,15 +106,17 @@ func reset_stats() -> void:
 	jump.reset_value()
 	max_jumps.reset_value()
 	accel.reset_value()
-	stamina_max.reset_value()
-	magic_cd.reset_value()
+	max_stamina.reset_value()
 	melee_cd.reset_value()
+	magic_cd.reset_value()
 	
 	shooting_hook.clear_effects()
 	damage_hook.clear_effects()
-	magic_hook.clear_effects()
+	spell_hook.clear_effects()
 	
 	procgun.reset_stats()
+	spell_1.reset_stats()
+	spell_2.reset_stats()
 
 
 func calculate_stats() -> void:
@@ -118,11 +125,13 @@ func calculate_stats() -> void:
 	jump.calculate_value()
 	max_jumps.calculate_value()
 	accel.calculate_value()
-	stamina_max.calculate_value()
-	magic_cd.calculate_value()
+	max_stamina.calculate_value()
 	melee_cd.calculate_value()
+	magic_cd.calculate_value()
 	
 	procgun.calculate_stats()
+	spell_1.calculate_stats()
+	spell_2.calculate_stats()
 
 
 func _ready() -> void:
@@ -133,12 +142,22 @@ func _ready() -> void:
 	reset_stats()
 	calculate_stats()
 	
-	#proj_spawner.spawn_function = Network._spawn_projectile
 	Network.add_proj_spawner(proj_spawner, true)
 
 
 func _process(delta: float) -> void:
-	update_healthbar()
+	max_health.update(delta)
+	speed.update(delta)
+	jump.update(delta)
+	max_jumps.update(delta)
+	accel.update(delta)
+	max_stamina.update(delta)
+	melee_cd.update(delta)
+	magic_cd.update(delta)
+	
+	spell_1.process(self, delta)
+	spell_2.process(self, delta)
+	
 	if stasis:
 		velocity = Vector3.ZERO
 		global_position = stasis
@@ -147,16 +166,20 @@ func _process(delta: float) -> void:
 	if is_spectator: return spectator_process(delta)
 	
 	is_floor = is_on_floor()
-	is_ads = Input.is_action_pressed(&"ads")
-	camera.fov = 45 if is_ads else 130
-	stamina = minf(stamina + delta * (1.2 if is_floor else 0.6), stamina_max.value) # dash recharge
+	is_use = Input.is_action_pressed(&"use")
+	is_use_alt = Input.is_action_pressed(&"use_alt")
+	is_prep_cast = Input.is_action_pressed(&"magic")
+	camera.fov = move_toward(camera.fov, (40.0) if (is_use_alt && !is_prep_cast) else (115.0), delta*800.0)
+	stamina = minf(stamina + delta * (1.2 if is_floor else 0.6), max_stamina.value) # dash recharge
 	time_survived += delta
-	bounds_ignore -= delta
+	#magic_charges = minf(magic_charges + (delta / magic_cd.value), max_magic.value_int)
 	magic_timer -= delta
+	bounds_ignore -= delta
 	melee_timer -= delta
 	if is_floor: jumps = max_jumps.value_int
 	
-	velocity += Vector3(0.0, -32.0, 0.0) * delta # gravity
+	# gravity
+	velocity += Vector3(0.0, -32.0, 0.0) * delta
 	
 	# jumps
 	cyote -= delta
@@ -170,6 +193,7 @@ func _process(delta: float) -> void:
 		velocity.y = jump.value * (1.0+boost)
 		jumps -= 1
 		cyote = -1.0
+		Network.spawn_visual(Network.NV_PARTICLE_BURST, global_position-Vector3(0.0, 1.0, 0.0), 1.0)
 	# high jump
 	if velocity.y > 0 && Input.is_action_pressed(&"jump"): velocity -= Vector3(0.0, -32.0, 0.0) * delta * 0.35
 	# wall jump
@@ -178,6 +202,7 @@ func _process(delta: float) -> void:
 		velocity += wall * jump.value * 0.8
 		velocity.y = jump.value
 		cyote = -1.0
+		Network.spawn_visual(Network.NV_PARTICLE_BURST, global_position-Vector3(0.0, 1.0, 0.0), 1.0)
 	
 	
 	# handle movement
@@ -194,17 +219,13 @@ func _process(delta: float) -> void:
 	for col_idx in get_slide_collision_count():
 		var col := get_slide_collision(col_idx)
 		
-		# hit bounds
-		var shape := col.get_collider_shape()
-		if shape is CollisionShape3D:
-			if (shape as CollisionShape3D).shape is WorldBoundaryShape3D && bounds_ignore <= 0.0:
-				take_damage(maxf(max_health.value * 0.2, health * 0.5),
-						col.get_normal() * (32.0 if magic_timer >= 0.0 else 16.0))
-				bounds_ignore = 0.1
-		
 		# push objects
 		var colc := col.get_collider()
 		if colc is RigidBody3D:
+			if (colc is LevelBody && (colc as LevelBody).is_harmful) && bounds_ignore <= 0.0:
+				take_damage(maxf(max_health.value * 0.2, health * 0.5),
+						col.get_normal() * (32.0 if magic_timer >= 0.0 else 16.0))
+				bounds_ignore = 0.1
 			if (colc as RigidBody3D).freeze: continue
 			var impact := -col.get_normal() * pvel.length()
 			(colc as RigidBody3D).apply_central_impulse.rpc(impact * 0.5)
@@ -217,16 +238,19 @@ func _process(delta: float) -> void:
 	if melee_timer >= 0.0:
 		melee()
 	
+	# cast magic
+	if is_prep_cast && (is_use || is_use_alt) && (magic_timer <= 0.0):
+		(spell_2 if is_use_alt else spell_1).attempt_cast(self)
+	
 	# fire gun
 	var b_trans := camera.global_transform
 	# TODO bullets dont clip camera. Fixed?
 	# TODO make bullets fire from "gun"
 	b_trans.origin += Vector3(0.0, -0.2, 0.0)
 	# TODO fix input processing with menus during gameplay
-	var is_firing := (Input.is_action_pressed(&"fire")) if full_auto else (Input.is_action_just_pressed(&"fire"))
-	var update_gun: bool = is_firing && can_shoot && !Input.is_action_pressed(&"view_info") && !Console.visible
+	is_firing = (is_use) if full_auto else (Input.is_action_just_pressed(&"use"))
+	var update_gun: bool = is_firing && can_shoot && !Input.is_action_pressed(&"view_info") && !Console.visible && !is_prep_cast
 	procgun.process(gun, b_trans, self, delta, update_gun)
-	#procgun.process(gun, b_trans.rotated_local(Vector3.RIGHT, 0.1), self, delta, Input.is_action_pressed(&"fire") && can_shoot)
 	
 	update_animation_data(delta)
 
@@ -242,7 +266,7 @@ func spectator_process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		var iemm := event as InputEventMouseMotion
-		var sens := 0.333 if is_ads else 1.0
+		var sens := 0.333 if is_use_alt else 1.0
 		var delta_y := deg_to_rad(-iemm.relative.x * 0.2 * sens)
 		rotate_y(delta_y)
 		camera.rotation.x = clampf(deg_to_rad(-iemm.relative.y * 0.2 * sens) + camera.rotation.x, -PI/2, PI/2)
@@ -253,20 +277,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			stamina -= 1.0
 		if event.is_action_pressed(&"reload") && gun.reload == 0:
 			gun.reload = procgun.reload_time.value
-		if event.is_action_pressed(&"magic") && magic_timer <= -magic_cd.value:
-			initalize_magic()
 		if event.is_action_pressed(&"melee") && melee_timer <= -melee_cd.value:
 			melee_timer = 0.333
-			animation_data[1] = 0.0
+			animation_data[ANIM_MELEE] = 0.0
+
 
 func _unhandled_key_input(event: InputEvent) -> void:
 		var iek := event as InputEventKey
+		if !Input.is_action_pressed(&"dbg_button"): return
 		match iek.keycode:
 			KEY_J when iek.pressed:
 				var pp := camera.compositor.compositor_effects[0] as PanniniProjection
 				pp.enabled = !pp.enabled
-			KEY_C:
-				camera.fov = 30 if iek.pressed else 130
 			KEY_K when iek.pressed:
 				if hud.info_holder.visible && !hud.info.player_name.text.is_empty():
 					for pi:Network.PlayerInfo in Network.players.values():
@@ -286,13 +308,13 @@ func _unhandled_key_input(event: InputEvent) -> void:
 				can_shoot = true
 			KEY_N:
 				health = max_health.value
-			KEY_I:
+			KEY_I when iek.pressed:
 				is_immortal = !is_immortal
-			KEY_T:
+			KEY_T when iek.pressed:
 				update_cards()
-			#KEY_M:
-				#for i in 10: add_card(Card.ALL_CARDS.pick_random() as Card)
-			KEY_J:
+			KEY_M when iek.pressed:
+				for i in 10: add_card(Card.ALL_CARDS.pick_random() as Card)
+			KEY_J when iek.pressed:
 				full_auto = !full_auto
 
 
@@ -322,41 +344,18 @@ func run_shoot_hook() -> void:
 		effect.execute(ed)
 
 
-#region magic
-
-func initalize_magic() -> void:
-	magic_timer = 0.75
-	process_magic_effects()
-
-
-#func process_magic_chain(delta: float) -> void: # NYI
-	#magic_chain_delay -= delta
-	#if magic_chain_delay <= 0.0 && magic_chain_index < magic_chain_hooks.size():
-		#magic_chain_delay = 0.25
-		#magic_chain_hooks[magic_chain_index].call()
-		#process_magic_effects()
-		#magic_chain_index += 1
-
-
-func process_magic_effects() -> void:
-	var ed := EventHook.EventData.from_player(self)
-	for effect:EventHook.EventEffect in magic_hook:
-		effect.execute(ed)
-
-#endregion
-
-
-func melee() -> void:
+func melee() -> void: # TODO cleanup
 	var dss: PhysicsDirectSpaceState3D = Game.world.get_world_3d().direct_space_state
 	var shape := SphereShape3D.new()
-	shape.radius = 0.5
 	var psqp := PhysicsShapeQueryParameters3D.new()
 	psqp.exclude = [get_rid()]
 	psqp.shape = shape
-	var pos := global_position + (camera.global_basis * Vector3(0.0, 0.0, -0.7))
+	var pos := global_position + (camera.global_basis * Vector3(0.0, 0.0, -0.85))
 	psqp.transform.origin = pos
 	
+	# hit players
 	psqp.collision_mask = 0b0010_0010
+	shape.radius = 1.2
 	var rest := dss.get_rest_info(psqp)
 	if !rest.is_empty():
 		var cid := rest[&"collider_id"] as int
@@ -364,51 +363,73 @@ func melee() -> void:
 		if colc is Player:
 			var pl := colc as Player
 			var dir := global_position.direction_to(pl.global_position) * 12.0
-			pl.take_damage.rpc(0.0, dir + velocity*1.2)
-			melee_timer = -0.01
+			pl.take_damage.rpc(5.0, dir + velocity*1.2)
+			hud.hit_marker_timer = 0.15
+		
+		var norm := rest[&"normal"] as Vector3
+		var point := rest[&"point"] as Vector3
+		_melee_hit(point, norm)
 		return
 	
+	# hit objects
 	psqp.collision_mask = 0b0001_0001
+	shape.radius = 1.0
 	rest = dss.get_rest_info(psqp)
 	if !rest.is_empty():
-		var norm := rest.get(&"normal", -velocity.normalized()) as Vector3
-		velocity = velocity.bounce(norm)
-		melee_timer = -0.01
+		var cid := rest[&"collider_id"] as int
+		var colc := instance_from_id(cid) as PhysicsBody3D
+		if colc is RigidBody3D:
+			var dir := global_position.direction_to(colc.global_position) * 16.0
+			(colc as RigidBody3D).apply_central_impulse.rpc(dir + velocity*1.2)
+		
+		var norm := rest[&"normal"] as Vector3
+		var point := rest[&"point"] as Vector3
+		_melee_hit(point, norm)
+
+
+func _melee_hit(pos: Vector3, normal: Vector3) -> void:
+	velocity = velocity.bounce(normal)
+	if velocity:
+		velocity *= 1.0 + maxf(velocity.normalized().dot(normal)*0.1, 0.0)
+	melee_timer = -0.01
+	jumps = max_jumps.value_int
+	Network.spawn_visual(Network.NV_PARTICLE_BURST, pos, 4.0)
 
 
 func game_start() -> void:
 	stasis = Vector3.ZERO
 	time_survived = 0.0
 	can_shoot = true
-	is_immortal = false
 	update_cards()
+	await get_tree().create_timer(1.0).timeout
+	is_immortal = false
+	if (!Network.is_server && Console.CLIENT_DUMMY):
+		enter_spectator()
 
 
 @rpc("any_peer", "call_local", "reliable")
 # TODO fix bounds, split take_hit / take_damage?
 func take_damage(amount: float, knockback: Vector3 = Vector3.ZERO) -> void:
-	if !is_multiplayer_authority() || magic_timer >= 0.0: return
+	if !is_multiplayer_authority(): return
+	
 	var de := DamageEvent.new(amount, knockback)
 	de.target_entity = self
+	
 	var ed := EventHook.EventData.from_player(self)
 	for effect:EventHook.EventEffect in damage_hook:
 		effect.execute(ed, de)
+	
 	velocity += de.knockback
-	#Console.print(&"%s %08.2f damage" % [(&"ignored" if is_immortal else &"took"), de.damage])
 	if is_immortal: return
+	
 	health -= de.damage
-	health_update()
-
-
-func update_healthbar() -> void:
-	var percent := health / max_health.value
-	health_gradient.offsets = [percent - 0.001, percent]
-
-
-func health_update() -> void:
+	Network.spawn_visual(Network.NV_PARTICLE_BURST, global_position, 1.0)
+	hud.hurt_timer = 0.35
 	if health <= 0.0 && !is_immortal:
+		var rsi := multiplayer.get_remote_sender_id()
+		if rsi: Network.death_message.rpc(rsi)
 		Console.print(&"im so dead..... bleh")
-		die()
+		death()
 
 
 func on_round_end(won: bool) -> void:
@@ -418,7 +439,8 @@ func on_round_end(won: bool) -> void:
 		hud.is_win = true
 
 
-func die() -> void:
+func death() -> void:
+	Network.spawn_visual(Network.NV_DEATH, global_position, 1.0, uuid)
 	can_shoot = false
 	is_immortal = true
 	enter_spectator.rpc()
@@ -447,19 +469,43 @@ func exit_spectator() -> void:
 
 #region cards
 
+func _card_adder(deck: Dictionary[Card, int], card: Card, count: int = 1, netsync: bool = true) -> void:
+	count = deck.get(card, 0) + count
+	deck[card] = count
+	if netsync: Network.update_card_picked.rpc(card.uuid, count) # TODO netsync cards
+	if count <= 0: deck.erase(card)
+
+
 func add_card(card: Card, count: int = 1) -> void:
-	cards[card] = cards.get(card, 0) + count
-	Network.update_card_picked.rpc(card.uuid, count) # TODO netsync cards
-	if cards[card] <= 0:
-		cards.erase(card)
+	_card_adder(cards, card, count)
+
+
+func add_spell_card(card: Card, spell: Spell, count: int = 1) -> void:
+	_card_adder(cards, card, count)
+	_card_adder(spell.cards, card, count, false)
 
 
 func update_cards() -> void:
 	reset_stats()
 	var cd := Card.CardData.from_player(self)
+	
 	for card in cards: # for each card
+		if card.use_spell_selection: continue
 		cd.n = cards[card]
 		card.card_effect.call(cd)
+	
+	cd.selected_spell = spell_1
+	for card in spell_1.cards: # for each card spell 1
+		if !card.use_spell_selection: continue
+		cd.n = spell_1.cards[card]
+		card.card_effect.call(cd)
+	
+	cd.selected_spell = spell_2
+	for card in spell_2.cards: # for each card spell 2
+		if !card.use_spell_selection: continue
+		cd.n = spell_2.cards[card]
+		card.card_effect.call(cd)
+	
 	calculate_stats()
 	gun.clip = procgun.clip_size.value_int
 	gun.reload = 0.0
@@ -467,9 +513,21 @@ func update_cards() -> void:
 
 #endregion
 
+#region animations
+
+enum {ANIM_STATE, ANIM_VELOCITY, ANIM_DIRECTION, ANIM_MELEE, ANIM_MAGIC, ANIM_RELOAD, ANIM_HEALTH, ANIM_HURT}
+var animation_data: Array[float] = [0.0, 0.0, 0.0, 2.0, 0.0, 0, 0.0, 0.5, 1.0]
+
 func update_animation_data(delta: float) -> void:
-	animation_data[0] = velocity.length_squared()
-	animation_data[1] += delta * 3.0
-	animation_data[2] = (magic_timer) if (magic_timer >= 0.0) else (magic_timer / magic_cd.value)
-	animation_data[3] = (is_floor)
-	animation_data[4] = (-gun.reload/procgun.reload_time.value) if (gun.reload) else (1.0-gun.fire_timer)
+	animation_data[ANIM_STATE] = (is_floor)
+	
+	animation_data[ANIM_VELOCITY] = velocity.length_squared()
+	animation_data[ANIM_DIRECTION] = Vector2(velocity.x, velocity.z).angle()
+	animation_data[ANIM_MELEE] += delta * 3.0
+	animation_data[ANIM_MAGIC] = magic_timer
+	animation_data[ANIM_RELOAD] = (-gun.reload/procgun.reload_time.value) if (gun.reload) else (1.0-gun.fire_timer)
+	animation_data[ANIM_HEALTH] = health / max_health.value
+	animation_data[ANIM_HURT] = move_toward(animation_data[ANIM_HURT], health / max_health.value, delta*2.0)
+	animation_data[ANIM_HURT] = max(animation_data[ANIM_HURT], animation_data[ANIM_HEALTH])
+
+#endregion

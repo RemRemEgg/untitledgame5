@@ -4,6 +4,7 @@
 
 [sub_resource type="SystemFont" id="SystemFont_iktto"]
 font_names = PackedStringArray("Cascadia Mono")
+subpixel_positioning = 0
 
 [sub_resource type="LabelSettings" id="LabelSettings_u1r18"]
 line_spacing = -22.0
@@ -15,12 +16,32 @@ outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="SystemFont" id="SystemFont_fb3s7"]
 font_names = PackedStringArray("Cascadia Code")
+subpixel_positioning = 0
 
 [sub_resource type="LabelSettings" id="LabelSettings_wny5f"]
 font = SubResource("SystemFont_fb3s7")
 font_color = Color(0, 0, 0, 1)
 outline_size = 2
 outline_color = Color(0.5890953, 0.5890957, 0.5890954, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u1r18"]
+bg_color = Color(0, 0, 0, 1)
+draw_center = false
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(1, 1, 1, 0.8980392)
+border_blend = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fb3s7"]
+bg_color = Color(0, 0, 0, 1)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.47788018, 0.47788012, 0.47788012, 1)
 
 [node name="card_icon" type="MarginContainer" unique_id=78439861]
 theme_override_constants/margin_left = 12
@@ -61,3 +82,22 @@ text = "x10"
 label_settings = SubResource("LabelSettings_wny5f")
 horizontal_alignment = 2
 vertical_alignment = 2
+
+[node name="draw_once" type="Panel" parent="background" unique_id=104791906]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u1r18")
+
+[node name="sub" type="Panel" parent="background/draw_once" unique_id=292470956]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fb3s7")

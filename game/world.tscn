@@ -1,37 +1,103 @@
 [gd_scene format=3 uid="uid://bninn4jr1in7u"]
 
 [ext_resource type="Script" uid="uid://bo6xcf3euvm31" path="res://game/world.gd" id="1_aseec"]
-[ext_resource type="PackedScene" uid="uid://28120xtw4fhx" path="res://game/levels/level_base.tscn" id="2_4xpgs"]
+[ext_resource type="PackedScene" uid="uid://b5r0t8pi8r5fv" path="res://game/levelbody.tscn" id="3_4xpgs"]
+[ext_resource type="Shader" uid="uid://b3moxqeqah5b5" path="res://shaders/level/solid_triplanar_fast.gdshader" id="3_fhh06"]
 [ext_resource type="Sky" uid="uid://6lwbxfeym4w4" path="res://shaders/space.res" id="3_tvmmn"]
+[ext_resource type="Texture2D" uid="uid://o6uolq8s7wlq" path="res://textures/3d/prototype_harmful.png" id="4_m4twg"]
 
 [sub_resource type="Environment" id="Environment_4xpgs"]
-background_mode = 2
+background_energy_multiplier = 0.0
 sky = ExtResource("3_tvmmn")
+ambient_light_source = 1
+ambient_light_energy = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0q2ew"]
+render_priority = 0
+shader = ExtResource("3_fhh06")
+shader_parameter/tex = ExtResource("4_m4twg")
+shader_parameter/modulo = Color(0.10590724, 0.16689098, 0.16008803, 1)
+shader_parameter/roughness = 0.2250000106875
+shader_parameter/specular = 1.0
+shader_parameter/scale = Vector3(0.25, 0.25, 0.25)
+shader_parameter/offset = Vector3(0, 0, 0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_805w3"]
+material = SubResource("ShaderMaterial_0q2ew")
+flip_faces = true
+size = Vector3(320, 64, 320)
+
+[sub_resource type="PlaceholderMesh" id="PlaceholderMesh_4xpgs"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_4xpgs"]
 
 [node name="world" type="Node3D" unique_id=86432918]
 script = ExtResource("1_aseec")
 metadata/_custom_type_script = "uid://bo6xcf3euvm31"
 
-[node name="levelgeo" type="Node3D" parent="." unique_id=864621693]
-
-[node name="level_base" parent="levelgeo" unique_id=1057810757 instance=ExtResource("2_4xpgs")]
-
-[node name="enviroment" type="Node3D" parent="." unique_id=2113932307]
-
-[node name="world_enviro" type="WorldEnvironment" parent="enviroment" unique_id=1155159120]
+[node name="enviroment" type="WorldEnvironment" parent="." unique_id=1155159120]
 environment = SubResource("Environment_4xpgs")
 
-[node name="light_main" type="DirectionalLight3D" parent="enviroment" unique_id=525810616]
-transform = Transform3D(0.82977283, 0.5228489, 0.19520792, -0.53271586, 0.63771224, 0.5563605, 0.16640596, -0.56564313, 0.80768615, 0, 0, 0)
-light_color = Color(0.99999946, 0.7616562, 0.7229244, 1)
-light_energy = 0.6
-shadow_enabled = true
+[node name="editor_light1" type="DirectionalLight3D" parent="enviroment" unique_id=460004481]
+transform = Transform3D(0.70710677, 0.61237246, -0.35355335, 0, 0.49999997, 0.86602545, 0.70710677, -0.61237246, 0.35355335, 0, 0, 0)
+light_indirect_energy = 10.0
+editor_only = true
 
-[node name="light_key" type="DirectionalLight3D" parent="enviroment" unique_id=1002332448]
-transform = Transform3D(0.6685954, 0.1472536, -0.728901, -0.48116988, 0.8330102, -0.27307436, 0.5669708, 0.5333014, 0.62780076, 0, 0, 0)
-light_color = Color(0.80131865, 0.9234274, 0.9999997, 1)
-light_energy = 0.25
+[node name="editor_light2" type="DirectionalLight3D" parent="enviroment" unique_id=1189840723]
+transform = Transform3D(0.35355344, 0.73919886, 0.57322335, 0.61237234, 0.2803301, -0.7391989, -0.7071068, 0.61237246, -0.3535533, 0, 0, 0)
+light_indirect_energy = 10.0
+editor_only = true
+
+[node name="bounds" type="Node3D" parent="." unique_id=196022629]
+
+[node name="mesh" type="MeshInstance3D" parent="bounds" unique_id=633165386]
+mesh = SubResource("BoxMesh_805w3")
+
+[node name="x" parent="bounds" unique_id=1568560937 instance=ExtResource("3_4xpgs")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 160, 0, 0)
+collision_mask = 17
+mesh = SubResource("PlaceholderMesh_4xpgs")
+is_harmful = true
+shape = SubResource("WorldBoundaryShape3D_4xpgs")
+
+[node name="xi" parent="bounds" unique_id=1096154872 instance=ExtResource("3_4xpgs")]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -160, 0, 0)
+collision_mask = 17
+mesh = SubResource("PlaceholderMesh_4xpgs")
+is_harmful = true
+shape = SubResource("WorldBoundaryShape3D_4xpgs")
+
+[node name="y" parent="bounds" unique_id=631682558 instance=ExtResource("3_4xpgs")]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0, 32, 0)
+collision_mask = 17
+mesh = SubResource("PlaceholderMesh_4xpgs")
+is_harmful = true
+shape = SubResource("WorldBoundaryShape3D_4xpgs")
+
+[node name="yi" parent="bounds" unique_id=1306177331 instance=ExtResource("3_4xpgs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -32, 0)
+mesh = SubResource("PlaceholderMesh_4xpgs")
+is_harmful = true
+shape = SubResource("WorldBoundaryShape3D_4xpgs")
+
+[node name="z" parent="bounds" unique_id=596572299 instance=ExtResource("3_4xpgs")]
+transform = Transform3D(1.9106855e-15, -4.371139e-08, 1, -1, -4.371139e-08, 0, 4.371139e-08, -1, -4.371139e-08, 0, 0, 160)
+collision_mask = 17
+mesh = SubResource("PlaceholderMesh_4xpgs")
+is_harmful = true
+shape = SubResource("WorldBoundaryShape3D_4xpgs")
+
+[node name="zi" parent="bounds" unique_id=314128656 instance=ExtResource("3_4xpgs")]
+transform = Transform3D(1.9106855e-15, -4.371139e-08, -1, -1, -4.371139e-08, 0, -4.371139e-08, 1, -4.371139e-08, 0, 0, -160)
+collision_mask = 17
+mesh = SubResource("PlaceholderMesh_4xpgs")
+is_harmful = true
+shape = SubResource("WorldBoundaryShape3D_4xpgs")
 
 [node name="players" type="Node3D" parent="." unique_id=540503973]
 
 [node name="projectiles" type="Node3D" parent="." unique_id=1944024570]
+
+[node name="visuals" type="Node3D" parent="." unique_id=1565964739]
+
+[node name="levelgeo" type="Node3D" parent="." unique_id=2081258403]

@@ -1,15 +1,35 @@
 [gd_scene format=3 uid="uid://cxssws651gxow"]
 
+[sub_resource type="Gradient" id="Gradient_od0xq"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.106981985, 0.7488426)
+colors = PackedColorArray(0.195912, 0.13469139, 0.17157808, 0, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ry1au"]
+noise_type = 2
+fractal_type = 0
+cellular_distance_function = 1
+cellular_return_type = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dl7k4"]
+noise = SubResource("FastNoiseLite_ry1au")
+color_ramp = SubResource("Gradient_od0xq")
+seamless = true
+seamless_blend_skirt = 1.0
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_od0xq"]
+transparency = 1
 cull_mode = 1
-albedo_color = Color(0, 0, 0, 1)
+shading_mode = 2
+specular_mode = 1
+albedo_texture = SubResource("NoiseTexture2D_dl7k4")
 grow = true
 grow_amount = 0.03
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_ry1au"]
 next_pass = SubResource("StandardMaterial3D_od0xq")
-emission_enabled = true
-emission = Color(1, 1, 1, 1)
+shading_mode = 0
+albedo_texture = SubResource("NoiseTexture2D_dl7k4")
 
 [sub_resource type="SphereMesh" id="SphereMesh_od0xq"]
 material = SubResource("ORMMaterial3D_ry1au")

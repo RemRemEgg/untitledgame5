@@ -41,6 +41,7 @@ static func from_card(card: Card, deck: CardDeck) -> CardDisplay:
 	(cdisp.card_icon.get_node(^"background") as ColorRect).color = Color(Card.RARITY_COLORS[card.rarity])
 	(cdisp.card_icon.get_node(^"background/abbv") as Label).text = card.abbv
 	(cdisp.card_icon.get_node(^"background/mult") as Label).text = &""
+	(cdisp.card_icon.get_node(^"background/draw_once") as Panel).visible = card.is_draw_once
 	
 	return cdisp
 

@@ -1,14 +1,24 @@
 class_name World
 extends Node3D
 
+## Player scene
 const PLAYER := preload("uid://c2wfggr4eiia1")
+## Player script
 const P_SCRIPT = preload("uid://dqe5og2n28eku")
+## LoboPlayer script
 const L_SCRIPT = preload("uid://y4dp2cqltcrw")
 
+## Speed of the sudden death walls
+const SD_SPEED := 6.0
+## Delay before sudden death starts, in seconds
+const SD_DELAY := 45
+## Time between sudden death walls, as a proportion(?)
+const SD_INTERVAL := 0.95
+
 @onready var levelgeo: Node3D = $levelgeo as Node3D
-@onready var enviroment: Node3D = $enviroment as Node3D
 @onready var players: Node3D = $players as Node3D
 @onready var projectiles: Node3D = $projectiles as Node3D
+@onready var visuals: Node3D = $visuals as Node3D
 
 
 func _ready() -> void:
@@ -16,7 +26,6 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	Game.mouse_fallback = Input.MOUSE_MODE_CAPTURED
 	process_mode = Node.PROCESS_MODE_DISABLED
-	
 	
 	for pi in (Network.players.values() as Array[Network.PlayerInfo]): # typesafe
 		var p_scn := PLAYER.instantiate()
@@ -37,39 +46,22 @@ func _ready() -> void:
 		pi.linked_player = p_scn as Player
 		players.add_child(p_scn)
 	
-	#var noise: FastNoiseLite = FastNoiseLite.new()
-	#noise.seed = int(Time.get_unix_time_from_system())
-	#noise.noise_type = FastNoiseLite.TYPE_CELLULAR
-	#noise.fractal_type = FastNoiseLite.FRACTAL_NONE
-	#noise.domain_warp_enabled = true
-	#noise.domain_warp_type = FastNoiseLite.DOMAIN_WARP_BASIC_GRID
-	#noise.domain_warp_fractal_type = FastNoiseLite.DOMAIN_WARP_FRACTAL_NONE
-	#var tgen := TerrainGen.new()
-	#
-	#
-	#var terrain_res: Vector2i = Vector2i(420, 420)
-	#tgen.quick_build(terrain_res, func(p: Vector2) -> Vector3:
-		#var pos := Vector3(p.x, 0.0, p.y)
-		#var n := noise.get_noise_2dv(p)
-		#pos.y = n*35.0 + 10.0
-		#
-		#var d := Vector2.ZERO.distance_squared_to(p)
-		#d *= d
-		#pos.y *= d/(d+1600.0)
-		#
-		#p *= 2.0
-		#if absi(p.x) == terrain_res.x || absi(p.y) == terrain_res.y:
-			#pos.y = -64.0
-		#
-		#return pos
-		#)
-	#
-	#($StaticBody3D/Sprite2D as MeshInstance3D).mesh = tgen.mesh
-	#($StaticBody3D/CollisionShape3D as CollisionShape3D).shape = tgen.mesh.create_trimesh_shape()
+	load_levelgeo(Network.get_synced_rng_seed(false))
 	
 	Network.change_to_state(Network.NS_IDLE)
 
-func change_level(lvl: String, stasis_pos: Vector3) -> void:
+
+func change_level(sseed: int, stasis_pos: Vector3) -> void:
+	if Console.AUTO_LEVEL_LOAD:
+		Game.player.stasis = stasis_pos
+		
+		load_levelgeo(sseed)
+		levelgeo.process_mode = Node.PROCESS_MODE_DISABLED
+		
+		await get_tree().create_timer(0.25).timeout
+		Network.change_to_state(Network.NS_IDLE)
+		return
+	
 	# move player to spawn pos and wait
 	var stasis := Game.player.create_tween()
 	stasis.tween_property(Game.player, "position", stasis_pos, 0.5)
@@ -85,15 +77,8 @@ func change_level(lvl: String, stasis_pos: Vector3) -> void:
 	await tween.finished
 	
 	# setup new level
-	var cur_level := levelgeo.get_child(0) as Level
-	levelgeo.remove_child(cur_level)
-	cur_level.queue_free()
-	#var packed := preload("res://game/levels/level_playground.tscn")
-	#var packed := preload("res://game/levels/fixtest2.tscn")
-	var packed := load(lvl)
-	cur_level = packed.instantiate() as Level
-	cur_level.process_mode = Node.PROCESS_MODE_DISABLED
-	levelgeo.add_child(cur_level)
+	load_levelgeo(sseed)
+	#levelgeo.process_mode = Node.PROCESS_MODE_DISABLED
 	
 	# grow new level
 	levelgeo.rotation.y = -PI
@@ -109,4 +94,22 @@ func change_level(lvl: String, stasis_pos: Vector3) -> void:
 
 
 func game_start() -> void:
-	levelgeo.get_child(0).process_mode = Node.PROCESS_MODE_INHERIT
+	levelgeo.process_mode = Node.PROCESS_MODE_INHERIT
+
+
+func load_levelgeo(sseed: int) -> void:
+	Util.remove_and_free_all_children(levelgeo)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = sseed
+	
+	var room_lvls: Array[PackedScene] = []
+	for i in 10: room_lvls.append(load("res://game/levels/test_level_%d.tscn" % (i+1)) as PackedScene)
+	
+	for x in 5: for y in 2: for z in 5:
+		var room_inst := room_lvls[rng.randi_range(0, room_lvls.size()-1)].instantiate() as Node3D
+		levelgeo.add_child(room_inst)
+		room_inst.position = Vector3(x-2, (y-0.501)*0.75, z-2) * 64.0
+		
+		var t := (absf(room_inst.position.x) + absf(room_inst.position.z)) / 64.0 # distance from center
+		t = 6 - t # invert
+		(room_inst.get_node(^"room_walls") as RoomWalls).ceilingsb.position.y = (SD_DELAY + SD_INTERVAL*SD_SPEED*t) * SD_SPEED

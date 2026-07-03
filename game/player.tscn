@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://c2wfggr4eiia1"]
 
 [ext_resource type="PackedScene" uid="uid://c7ltvs5te3onl" path="res://ui/hud.tscn" id="1_dadds"]
-[ext_resource type="Material" uid="uid://v0dku6hcgd0b" path="res://shaders/xrayinline.res" id="1_p0vpi"]
 [ext_resource type="Script" uid="uid://yeplb42dhx0e" path="res://shaders/pannini/pannini_projection.gd" id="1_w5y0b"]
+[ext_resource type="Shader" uid="uid://daalacrnlapxw" path="res://shaders/player_outline.gdshader" id="2_d631c"]
 [ext_resource type="PackedScene" uid="uid://byfoxwpg4svqx" path="res://ui/cards/cards_menu.tscn" id="3_du4nq"]
 [ext_resource type="PackedScene" uid="uid://0rgy345h86et" path="res://models/dingus.glb" id="5_d631c"]
 
@@ -10,25 +10,30 @@
 radius = 0.35
 height = 1.9
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_d631c"]
+length = 0.5
+slide_on_slope = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d631c"]
 resource_local_to_scene = true
+render_priority = 16
+shader = ExtResource("2_d631c")
+shader_parameter/color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4fto2"]
+resource_local_to_scene = true
+next_pass = SubResource("ShaderMaterial_d631c")
 albedo_color = Color(0, 1, 1, 1)
+metallic = 1.0
+roughness = 0.85
 stencil_flags = 2
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p0vpi"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
-material = SubResource("StandardMaterial3D_p0vpi")
-radius = 0.35
-height = 1.9
-radial_segments = 9
-rings = 4
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_p0vpi"]
-radius = 0.35
-height = 1.9
-radial_segments = 6
-rings = 1
+[sub_resource type="Environment" id="Environment_d631c"]
+ambient_light_source = 1
+reflected_light_source = 1
+tonemap_mode = 4
+tonemap_exposure = 1.2
+glow_enabled = true
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_w5y0b"]
 dof_blur_far_distance = 150.0
@@ -52,8 +57,9 @@ compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_du4n
 
 [sub_resource type="Gradient" id="Gradient_p0vpi"]
 resource_local_to_scene = true
-offsets = PackedFloat32Array(0.75, 0.75)
-colors = PackedColorArray(1, 0, 0, 1, 0.10747974, 0.10747973, 0.107479684, 0.85882354)
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.4351852, 0.75)
+colors = PackedColorArray(0.9537489, 0.76877403, 0.42525625, 1, 1, 0, 0, 1, 0.21350348, 0.21350351, 0.21350348, 0.9843137)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_d631c"]
 resource_local_to_scene = true
@@ -74,15 +80,12 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath("camera:rotation")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath(".:health")
+properties/3/path = NodePath(".:animation_data")
 properties/3/spawn = true
-properties/3/replication_mode = 2
-properties/4/path = NodePath(".:max_health")
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:velocity")
 properties/4/spawn = true
-properties/4/replication_mode = 2
-properties/5/path = NodePath(".:animation_data")
-properties/5/spawn = true
-properties/5/replication_mode = 1
+properties/4/replication_mode = 1
 
 [node name="player" type="CharacterBody3D" unique_id=541339310]
 collision_layer = 34
@@ -93,38 +96,22 @@ floor_max_angle = 1.0471976
 [node name="collider" type="CollisionShape3D" parent="." unique_id=1996107302]
 shape = SubResource("CapsuleShape3D_sh265")
 
-[node name="mesh" type="MeshInstance3D" parent="." unique_id=357712946]
-visible = false
-material_override = SubResource("StandardMaterial3D_4flbx")
-mesh = SubResource("CapsuleMesh_4flbx")
+[node name="seperation_ray" type="CollisionShape3D" parent="." unique_id=561018243]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.4568354, -0.5)
+shape = SubResource("SeparationRayShape3D_d631c")
 
-[node name="nodepth_mesh" type="MeshInstance3D" parent="." unique_id=1353467298]
-visible = false
-material_override = ExtResource("1_p0vpi")
-mesh = SubResource("CapsuleMesh_p0vpi")
-
-[node name="player_model" parent="." unique_id=216068627 instance=ExtResource("5_d631c")]
+[node name="player_model" parent="." unique_id=1803498987 instance=ExtResource("5_d631c")]
 transform = Transform3D(-0.235, 0, -3.5484014e-08, 0, 0.235, 0, 3.5484014e-08, 0, -0.235, 0, -0.9314044, -0.035021186)
+material = SubResource("StandardMaterial3D_4fto2")
 
 [node name="camera" type="Camera3D" parent="." unique_id=1844707478]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75650024, -0.054464996)
 cull_mask = 1
+environment = SubResource("Environment_d631c")
 attributes = SubResource("CameraAttributesPractical_w5y0b")
 compositor = SubResource("Compositor_p0vpi")
-fov = 130.0
+fov = 115.0
 size = 38.13
-
-[node name="flashlight" type="SpotLight3D" parent="camera" unique_id=1712767520]
-light_energy = 2.0
-shadow_enabled = true
-shadow_bias = 2.0
-shadow_normal_bias = 2.0
-spot_range = 256.0
-spot_attenuation = 1.67
-spot_angle = 75.0
-
-[node name="hud" parent="camera" unique_id=1071044547 instance=ExtResource("1_dadds")]
-layer = 16
 
 [node name="ui3d_container" type="SubViewportContainer" parent="camera" unique_id=332088380]
 z_index = 16
@@ -155,6 +142,9 @@ layers = 2
 omni_attenuation = 0.0
 omni_shadow_mode = 0
 
+[node name="hud" parent="camera" unique_id=1071044547 instance=ExtResource("1_dadds")]
+layer = 16
+
 [node name="nametag" type="Label3D" parent="." unique_id=673160830]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1387384, 0)
 pixel_size = 0.003
@@ -169,18 +159,14 @@ vertical_alignment = 2
 cast_shadow = 0
 offset = Vector2(0, -8)
 billboard = 1
+no_depth_test = true
 texture_filter = 0
 texture = SubResource("GradientTexture2D_d631c")
-
-[node name="light_med" type="OmniLight3D" parent="." unique_id=1635548757]
-light_energy = 0.5
-shadow_enabled = true
-omni_range = 32.0
 
 [node name="light_large" type="OmniLight3D" parent="." unique_id=1045662762]
 light_energy = 0.2
 omni_range = 128.0
-omni_attenuation = 0.5
+omni_attenuation = 0.1
 omni_shadow_mode = 0
 
 [node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1011191566]

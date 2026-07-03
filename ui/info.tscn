@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bwqfk5bcerlb7" path="res://ui/info.gd" id="1_tphq3"]
 [ext_resource type="Script" uid="uid://b842d5orwjbbc" path="res://ui/spider_graph.gd" id="2_xhkx0"]
+[ext_resource type="PackedScene" uid="uid://ba8bixelqjeyx" path="res://ui/cards/card_icon.tscn" id="3_f4xp4"]
 
 [node name="info" type="BoxContainer" unique_id=653032974]
 anchors_preset = 15
@@ -51,15 +52,31 @@ script = ExtResource("2_xhkx0")
 radius = 256.0
 axis_labels = PackedStringArray("Sp. Defense", "Toughness", "Agility", "Ammo", "Lethality", "Sp. Attack")
 axis_offset = 1
+values = Array[float]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 data_min = -1.0
 data_scale = 0.85
 metadata/_custom_type_script = "uid://b842d5orwjbbc"
 
-[node name="card_list" type="FlowContainer" parent="." unique_id=15476575]
-custom_minimum_size = Vector2(50, 0)
+[node name="details" type="VBoxContainer" parent="." unique_id=390834955]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.3
+
+[node name="card_list" type="FlowContainer" parent="details" unique_id=15476575]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="card_icon" parent="details/card_list" unique_id=78439861 instance=ExtResource("3_f4xp4")]
+layout_mode = 2
+
+[node name="stats" type="RichTextLabel" parent="details" unique_id=156664003]
+custom_minimum_size = Vector2(0, 256)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "ASDASD"
 
 [node name="card_disp_handler" type="CanvasLayer" parent="." unique_id=696696655]
 layer = 100

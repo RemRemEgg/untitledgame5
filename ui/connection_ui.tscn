@@ -28,5 +28,5 @@ text = "join game"
 
 [node name="join_ip" type="LineEdit" parent="vbox" unique_id=1714737553]
 layout_mode = 2
-text = "127.0.0.1"
+text = "10.0.0.107"
 placeholder_text = "Host IP"

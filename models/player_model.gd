@@ -2,6 +2,8 @@ class_name PlayerModel
 extends Node3D
 
 var player: Player
+var time: float = 0.0
+@export var material: Material
 
 @onready var torso: MeshInstance3D = $torso as MeshInstance3D
 @onready var head: MeshInstance3D = $torso/head as MeshInstance3D
@@ -46,11 +48,12 @@ func set_color_recur(mat: StandardMaterial3D, node: Node3D = self) -> void:
 
 
 func _ready() -> void:
+	set_color_recur(material, self)
 	player = get_parent() as Player
 	if !player: process_mode = Node.PROCESS_MODE_DISABLED
 	
 	if player.uuid == Network.uuid:
-		head.visible = false
+		head.transparency = 1.0
 	
 	var gun_scn := load("res://game/gun_model.tscn") as PackedScene
 	gun = gun_scn.instantiate() as Node3D
@@ -63,19 +66,23 @@ func _ready() -> void:
 	magic.position = Vector3(0, -0.55, 0.35)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if !player: return
+	time += delta
 	
 	# walking
-	var ang := sin(Time.get_ticks_msec()/120.0)
-	var amo := player.animation_data[0]
+	#if player.animation_data[Player.ANIM_DIRECTION]:
+		#pelvis.global_rotation.y = 0.0#lerp_angle((PI/2.0)-player.animation_data[Player.ANIM_DIRECTION]*0.0, pelvis.global_rotation.y, 0.002**delta)
+	var ang := sin(time*14.0)
+	var amo := player.animation_data[Player.ANIM_VELOCITY]
 	amo = amo / (amo + 35.0)
 	hipr.rotation = Vector3(ang * amo, 0.0, 0.0)
 	hipl.rotation.x = -hipr.rotation.x
-	shoulderl.rotation.x = hipr.rotation.x * 0.7 + head.rotation.x*0.75 - 0.5
-	shoulderr.rotation.x = -hipr.rotation.x * 0.7 + head.rotation.x - 1.0
+	shoulderl.rotation.x = hipr.rotation.x * 0.5 + head.rotation.x*0.75 - 0.55
+	shoulderr.rotation.x = -hipr.rotation.x * 0.5 + head.rotation.x - 0.9
 	
-	if !player.animation_data[3]:
+	# air / ground
+	if !player.animation_data[Player.ANIM_STATE]:
 		hipr.rotation.x = hipr.rotation.x*0.2-0.7
 		hipl.rotation.x = hipl.rotation.x*0.2-0.7
 		kneer.rotation.x = 1.5
@@ -84,28 +91,50 @@ func _process(_delta: float) -> void:
 		kneer.rotation.x = 0.0
 		kneel.rotation.x = 0.0
 	
+	# gun aiming
+	if player.is_use_alt:
+		shoulderr.rotation.x =-hipr.rotation.x * 0.1 + head.rotation.x - 0.9
+		bicepr.rotation = Vector3(-0.25, 1.3, -0.55)
+		wristr.rotation = Vector3(0.0, -0.5, 0.0)
+		gun.rotation = Vector3(0.89, 0.1, 0.81)
+		gun.rotation.y -= 0.7*player.animation_data[Player.ANIM_RELOAD]
+	else:
+		bicepr.rotation = Vector3.ZERO
+		wristr.rotation = Vector3.ZERO
+		gun.rotation = Vector3.ZERO
 	# reload / fire delay
-	gun.rotation.x = 0.75-player.animation_data[4]
+	gun.rotation.x += 0.75 - (player.animation_data[Player.ANIM_RELOAD])**5.0
 	
 	# looking
 	head.rotation = -player.camera.rotation
 	
 	# meleeing
-	if player.animation_data[1] <= 1.0:
-		# player.animation_data[1] [0.0, 1.0]
-		var d := player.animation_data[1] - 0.5 # [-0.5, 0.5]
+	if player.animation_data[Player.ANIM_MELEE] <= 1.0:
+		# player.animation_data[Player.ANIM_MELEE] [0.0, 1.0]
+		var d := player.animation_data[Player.ANIM_MELEE] - 0.5 # [-0.5, 0.5]
 		d = 1.0 - (absf(d*2.0)**0.5) # [0.0, 1.0, 0.0] exp
 		hipr.rotation = Vector3(
-			(-0.7-d*2.0) + head.rotation.x*0.75,
+			(-0.7-d*2.0) + head.rotation.x*0.5,
 			d*1.2-0.5,
 			0.0
 		)
+		kneer.rotation.x = 0.0
 	
 	# magicing
-	if player.animation_data[2] >= 0.0: # during cast
+	var anim_mult := 2.0
+	magic.scale = Vector3.ONE
+	if player.is_prep_cast: shoulderl.rotation.x = head.rotation.x - 1.4 + (shoulderl.rotation.x * 0.2)
+	if player.animation_data[Player.ANIM_MAGIC] >= 0.0: # during cast
 		magic.scale = Vector3.ONE * 2.5
-	elif player.animation_data[2] >= -1.0: # recharge [0.0, -1.0]
-		var d := player.animation_data[2]*-3.02 # [0.0, 3.0]
-		magic.scale = (Vector3.ONE*d - Vector3(2.0, 0.0, 1.0)).clampf(0.1, 0.85)
-	else: # idle
-		magic.scale = Vector3.ONE
+		shoulderl.rotation.x = head.rotation.x - 1.4 + (shoulderl.rotation.x * 0.2)
+		anim_mult = 8.0
+	magic.position.y = (sin(time*2.0)*0.5 + 0.35)
+	magic.rotation.y += delta * anim_mult
+	magic.rotation.z = magic.rotation.y * -5.0
+	magic.rotation.z = magic.rotation.y * 0.5
+	
+	# health & damage
+	var pc := player.animation_data[Player.ANIM_HEALTH]
+	var ht := player.animation_data[Player.ANIM_HURT]
+	player.health_gradient.offsets = [0.0, pc - 0.0001, max(ht, pc) + 0.0001]
+	player.health_gradient.colors = [Color.FIREBRICK, Color.GOLD, Color.DIM_GRAY] as PackedColorArray

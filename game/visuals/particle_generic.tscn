@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://whsw3yxwqqwi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vfr2p"]
+resource_local_to_scene = true
+shading_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+metallic_specular = 0.1
+roughness = 0.0
+texture_filter = 0
+disable_receive_shadows = true
+distance_fade_min_distance = 32.0
+distance_fade_max_distance = 1.0
+
+[sub_resource type="Curve" id="Curve_vfr2p"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_yd6c5"]
+width = 64
+curve = SubResource("Curve_vfr2p")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vfr2p"]
+particle_flag_align_y = true
+spread = 180.0
+initial_velocity_max = 8.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.5
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_yd6c5")
+
+[sub_resource type="BoxMesh" id="BoxMesh_65416"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="GDScript" id="GDScript_vfr2p"]
+resource_name = "particle_generic"
+script/source = "extends GPUParticles3D
+
+func _ready() -> void:
+	(material_override as StandardMaterial3D).albedo_color = Color.from_hsv(randf(), randf()**0.5, 1.0)
+	emitting = true
+	await finished
+	queue_free()
+"
+
+[node name="particle_generic" type="GPUParticles3D" unique_id=1426890029]
+material_override = SubResource("StandardMaterial3D_vfr2p")
+emitting = false
+amount = 24
+one_shot = true
+explosiveness = 0.2
+randomness = 0.55
+process_material = SubResource("ParticleProcessMaterial_vfr2p")
+draw_pass_1 = SubResource("BoxMesh_65416")
+script = SubResource("GDScript_vfr2p")

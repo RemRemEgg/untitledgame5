@@ -123,6 +123,7 @@ func change_to_state(new_state: int) -> void: # peer side
 					Game.player.deck_weights[deck] = 0.0
 				Game.player.deck_weights[Card.DECK_INIT] = 1.0
 			Game.player.cards_menu.card_selection_time()
+			game_won.emit.call_deferred(-1)
 		NS_PROJ_SYNC:
 			Console.print(&"change to  NS_PROJ_SYNC")
 			next_state = NS_LOAD_LEVEL
@@ -188,8 +189,9 @@ func load_level(sseed: int) -> void:# peer side, from server
 	var angle := (sseed/2048.0)
 	angle += (players.keys().find(uuid) * PI*2.0) / players.size()
 	Console.print(&"spawn info %s %s %s %s" % [uuid, sseed, angle, players.keys().find(uuid)])
-	var spawn2d := Vector2.from_angle(angle) * 24.0
-	Game.world.change_level("res://game/levels/level_base.tscn", Vector3(spawn2d.x, 0.0, spawn2d.y))
+	var spawn2d := Vector2.from_angle(angle) * 64.0
+	#Game.world.change_level("res://game/levels/level_base.tscn", Vector3(spawn2d.x, 0.0, spawn2d.y))
+	Game.world.change_level(sseed, Vector3(spawn2d.x, 0.0, spawn2d.y))
 
 
 func start_round() -> void: # peer side
@@ -204,7 +206,7 @@ func player_died(time: float) -> void: # server side, from peers
 	Console.print(&"player [%s] died at %+010.1f" % [id, time])
 	if !players.has(id): return
 	players[id].death_time = time
-	system_message.rpc(&"%s has died" % players[id].name)
+	system_message.rpc(&"%s has died" % players[id].get_name_fancy())
 	
 	var players_left := players.values().filter(func(p:PlayerInfo)->bool:return p.death_time < 0.0).size()
 	if players_left == 1:
@@ -222,9 +224,10 @@ func determine_winner() -> void: # server side
 			win_id = player.uuid
 	if win_id == -1: assert(false, "No winner found")
 	Console.print(&"winner is [%s]" % win_id)
-	system_message.rpc(&"[b]%s won![/b]" % players[win_id].name)
+	system_message.rpc(&"[b]%s won![/b]" % players[win_id].get_name_fancy())
 	player_won_game.rpc(win_id)
 
+signal game_won(id: int)
 @rpc("authority", "call_local", "reliable")
 func player_won_game(id: int) -> void:
 	Console.print(&"recieved [%s] won" % id)
@@ -238,6 +241,7 @@ func player_won_game(id: int) -> void:
 	else:
 		Console.print(&"i lost, drawing cards")
 		change_to_state(NS_DRAWING)
+	game_won.emit(id)
 
 
 @rpc("authority", "call_local", "reliable")
@@ -247,7 +251,14 @@ func system_message(msg: String) -> void:
 @rpc("any_peer", "call_local", "reliable")
 func chat_message(msg: String) -> void:
 	var id := multiplayer.get_remote_sender_id()
-	Game.player.hud.add_chat_message(&"%s: " % [players[id].name, msg])
+	Game.player.hud.add_chat_message(&"%s: %s" % [players[id].get_name_fancy(), msg])
+
+@rpc("any_peer", "call_local", "reliable")
+func death_message(killer: int) -> void:
+	var id := multiplayer.get_remote_sender_id()
+	Game.player.hud.add_chat_message(&"%s was killed by %s" % [players[id].get_name_fancy(), players[killer].get_name_fancy()])
+	if killer == uuid: # TODO cleanup
+		self_player.linked_player.health += 0.5 * (self_player.linked_player.max_health.value - self_player.linked_player.health)
 
 @rpc("any_peer", "call_local", "reliable")
 func update_card_picked(card_uuid: StringName, count: int) -> void:
@@ -255,18 +266,15 @@ func update_card_picked(card_uuid: StringName, count: int) -> void:
 	
 	var card := Card.get_card(card_uuid)
 	if !card:
-			Console.print_err(&"Cannot find card %s" % card_uuid)
-			return
+		Console.print_err(&"Cannot find card %s" % card_uuid)
+		return
 	
 	var card_list := players[id].cards
-	card_list[card_uuid] = card_list.get(card_uuid, 0) + 1
-	if card_list[card_uuid] <= 0.0:
-		card_list.erase(card_uuid)
-		Game.player.hud.add_chat_message(&"%s removed [color=%s]%s[/color] %s" %\
-			[players[id].name, Card.RARITY_COLORS[card.rarity], card.name, (&"x%s"%count) if count > 1 else ("")])
-	else:
-		Game.player.hud.add_chat_message(&"%s picked [color=%s]%s[/color] %s" %\
-			[players[id].name, Card.RARITY_COLORS[card.rarity], card.name, (&"x%s"%count) if count > 1 else ("")])
+	var diff := int(count - card_list.get(card_uuid, 0))
+	card_list[card_uuid] = count
+	if count <= 0: card_list.erase(card_uuid)
+	Game.player.hud.add_chat_message(&"%s took [color=%s]%s[/color] %s" %\
+		[players[id].get_name_fancy(), Card.RARITY_COLORS[card.rarity], card.name, (&"x%s"%diff) if diff > 1 else ("")])
 
 #endregion
 
@@ -275,13 +283,13 @@ func update_card_picked(card_uuid: StringName, count: int) -> void:
 #region world sync #######################################
 
 func _round_seed_func(a: int, k: int) -> int: return (hash(a) ^ hash(k))
-func get_round_seed() -> int:
+func get_synced_rng_seed(include_round_count: bool = false) -> int:
 	var keys := players.keys().duplicate() as Array[int]
 	keys.sort()
-	return int(keys.reduce(_round_seed_func, 0xB100D1EDB00B5))
+	return int(keys.reduce(_round_seed_func, 0xB100D1EDB00B5)) + (round_count**2 if include_round_count else 0)
 func get_synced_rng(include_round_count: bool = false) -> RandomNumberGenerator:
 	var rng := RandomNumberGenerator.new()
-	rng.seed = get_round_seed() + (round_count**2 if include_round_count else 0)
+	rng.seed = get_synced_rng_seed(include_round_count)
 	return rng
 
 const NS_NAME: PackedStringArray = ["NS_UNINIT", "NS_IDLE", "NS_LOBBY", "NS_LOAD_GAME", "NS_DRAWING", "NS_PROJ_SYNC", "NS_LOAD_LEVEL", "NS_BATTLE"]
@@ -327,7 +335,9 @@ class PlayerInfo:
 		ready = info.get(&"ready", ready)
 		state = info.get(&"state", state)
 		on_update.emit(self)
-
+	
+	func get_name_fancy() -> String:
+		return "[color=%s]%s[/color]" % [color.to_html(false), name]
 
 var out_proj_spawner: MultiplayerSpawner
 
@@ -369,16 +379,50 @@ func move_object(path: NodePath, pos: Vector3) -> void: # spacial warp
 
 
 @rpc("any_peer", "call_local", "reliable")
-func spawn_levelbody(pos: Vector3, type: LevelBody.Type) -> void:
+func spawn_levelbody(pos: Vector3, type: LevelBody.Type, is_static: bool = false) -> void:
 	var lvlb_scn := load("res://game/levelbody.tscn") as PackedScene
 	var lvlb := lvlb_scn.instantiate() as LevelBody
-	Game.world.levelgeo.get_child(0).add_child(lvlb)
+	Game.world.levelgeo.add_child(lvlb)
 	lvlb.global_position = pos
 	lvlb.bodytype = type
 	lvlb.shape = BoxShape3D.new()
-	lvlb.is_static = false
+	lvlb.is_static = is_static
 	lvlb.update_display()
 	lvlb.update_bodytype()
 
+
+enum {NV_SHOCKWAVE, NV_PARTICLE_GENERIC, NV_PARTICLE_BURST, NV_DEATH, NV_BREAK}
+func spawn_visual(type: int, pos: Vector3, scale: float, ...args: Array) -> void:
+	_spawn_visual_sync.rpc(type, pos, scale, args)
+@rpc("any_peer", "call_local", "reliable")
+func _spawn_visual_sync(type: int, pos: Vector3, scale: float, args: Array) -> void:
+	match type:
+		NV_SHOCKWAVE:
+			var scn := (preload("res://game/visuals/shockwave.tscn") as PackedScene).instantiate() as Node3D
+			scn.scale *= scale
+			Game.world.visuals.add_child(scn)
+			scn.global_position = pos
+		NV_PARTICLE_GENERIC:
+			var scn := (preload("res://game/visuals/particle_generic.tscn") as PackedScene).instantiate() as GPUParticles3D
+			scn.scale *= scale
+			Game.world.visuals.add_child(scn)
+			scn.global_position = pos
+		NV_PARTICLE_BURST:
+			var scn := (preload("res://game/visuals/particle_burst.tscn") as PackedScene).instantiate() as GPUParticles3D
+			scn.scale *= scale
+			Game.world.visuals.add_child(scn)
+			scn.global_position = pos
+		NV_DEATH:
+			var scn := (preload("res://game/visuals/death_effect.tscn") as PackedScene).instantiate() as GPUParticles3D
+			scn.scale *= scale
+			Game.world.visuals.add_child(scn)
+			scn.global_position = pos
+			scn.material_override = players[args[0]].linked_player.player_model.material
+		_: return
+
+
+@rpc("any_peer", "call_local", "reliable")
+func slow_player(amount: float, duration: float, n: float = 1.0) -> void:
+	Game.player.speed.mult_temp(amount, duration, n)
 
 #endregion

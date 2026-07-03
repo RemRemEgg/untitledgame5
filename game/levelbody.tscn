@@ -1,9 +1,20 @@
 [gd_scene format=3 uid="uid://b5r0t8pi8r5fv"]
 
 [ext_resource type="Script" uid="uid://co62g75qamun2" path="res://game/levelbody.gd" id="1_ail48"]
-[ext_resource type="Material" uid="uid://cig7xysbcfiqj" path="res://shaders/level/solid.res" id="2_bu8uu"]
+[ext_resource type="Shader" uid="uid://b3moxqeqah5b5" path="res://shaders/level/solid_triplanar_fast.gdshader" id="2_pyo22"]
+[ext_resource type="Texture2D" uid="uid://o6uolq8s7wlq" path="res://textures/3d/prototype_harmful.png" id="3_pyo22"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_pyo22"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4a3c"]
+render_priority = 0
+shader = ExtResource("2_pyo22")
+shader_parameter/tex = ExtResource("3_pyo22")
+shader_parameter/modulo = Color(0.10590724, 0.16689098, 0.16008803, 1)
+shader_parameter/roughness = 0.2250000106875
+shader_parameter/specular = 1.0
+shader_parameter/scale = Vector3(0.25, 0.25, 0.25)
+shader_parameter/offset = Vector3(0, 0, 0)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ail48"]
 properties/0/path = NodePath(".:position")
@@ -19,11 +30,12 @@ collision_layer = 17
 freeze = true
 script = ExtResource("1_ail48")
 mesh = SubResource("BoxMesh_pyo22")
-material = ExtResource("2_bu8uu")
+material = SubResource("ShaderMaterial_g4a3c")
 metadata/_custom_type_script = "uid://co62g75qamun2"
+metadata/_edit_group_ = true
 
 [node name="mesh" type="MeshInstance3D" parent="." unique_id=1331379362]
-material_override = ExtResource("2_bu8uu")
+material_override = SubResource("ShaderMaterial_g4a3c")
 mesh = SubResource("BoxMesh_pyo22")
 skeleton = NodePath("../../..")
 

@@ -48,7 +48,8 @@ func fix_levelbody(body: LevelBody) -> void:
 		body.mesh = get_mesh(scale, BoxMesh)
 		body.shape = get_collider(scale, BoxShape3D)
 		body.mass = scale.x * scale.y * scale.z * 0.2
-		return
+	
+	body.update_display()
 
 func get_mesh(size: Vector3, type: Variant) -> Mesh:
 	var key := to_key(size, type)

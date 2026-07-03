@@ -8,12 +8,26 @@ var h_index := -1
 var load_status: int = 0
 var load_call: Callable
 
+#region auto setup options
+## Enables auto setup options
+static var AUTO_SETUP: bool = true
+## Game will fullscreen
+static var AUTO_FULLSCREEN: bool = true
+## Local instances will connect to eachother
+static var AUTO_JOIN: bool = true
+## Starts the game after clients are connected
+static var AUTO_START_GAME: bool = true
+## Clients wont move or take damage to sudden death
+static var CLIENT_DUMMY: bool = true
+#endregion
 
-static var DEBUG: bool = 0
-static var AUTO_JOIN: bool = 0
-static var AUTO_START_GAME: bool = 0
-static var AUTO_FULLSCREEN: bool = 0
-static var AUTO_CARD_SELECT: bool = 0
+#region debugging options
+static var DEBUG: bool = 1
+static var MAX_CARD_OPTIONS: int = 15
+static var AUTO_INIT_CARD_SELECT: bool = false
+static var AUTO_CARD_SELECT: bool = false
+static var AUTO_LEVEL_LOAD: bool = false
+#endregion
 
 
 func _ready() -> void:
@@ -21,6 +35,16 @@ func _ready() -> void:
 	input = $margin/vbox/input as LineEdit
 	history = []
 	input.text_submitted.connect(submit_console)
+	
+	AUTO_FULLSCREEN = AUTO_FULLSCREEN && AUTO_SETUP
+	AUTO_JOIN = AUTO_JOIN && AUTO_SETUP
+	AUTO_START_GAME = AUTO_START_GAME && AUTO_SETUP
+	
+	MAX_CARD_OPTIONS = MAX_CARD_OPTIONS if DEBUG else 5
+	AUTO_INIT_CARD_SELECT = AUTO_INIT_CARD_SELECT && DEBUG
+	AUTO_CARD_SELECT = AUTO_CARD_SELECT && DEBUG
+	AUTO_LEVEL_LOAD = AUTO_LEVEL_LOAD && DEBUG
+	CLIENT_DUMMY = CLIENT_DUMMY && DEBUG
 
 
 func _process(_delta: float) -> void:

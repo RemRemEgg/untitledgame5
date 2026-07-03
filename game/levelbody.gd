@@ -28,6 +28,7 @@ enum Type {
 	set(val):
 		mesh = val
 		update_display()
+@export var is_harmful: bool = false
 
 @export_subgroup("Danger Zone")
 ## [b]DO NOT[/b] edit existing material, make a new one
@@ -45,6 +46,10 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		update_display()
 	else:
+		if material == preload("res://shaders/level/solid_triplanar_fast.res"):
+			material = material.duplicate() as Material
+			(material as ShaderMaterial).set_shader_parameter(&"modulo", Color.from_hsv(randf(), randf_range(0.55, 1.0), randf_range(0.8, 1.0)))
+		
 		if is_static:
 			var sync := $sync
 			remove_child(sync)
@@ -54,11 +59,11 @@ func update_display() -> void:
 	if has_node("mesh"):
 		var m := $mesh as MeshInstance3D
 		
-		if !mesh: mesh = BoxMesh.new()
+		if !mesh: return
 		m.mesh = mesh
 		
 		if !material: match bodytype:
-			Type.SOLID: material = preload("res://shaders/level/solid.res")
+			Type.SOLID: material = preload("res://shaders/level/solid_triplanar_fast.res")
 			Type.SCAFFOLD: material = preload("res://shaders/level/scaffold.res")
 			Type.BREAKABLE: material = preload("res://shaders/level/breakable.res")
 		m.material_override = material
@@ -84,6 +89,12 @@ func take_proj_hit(amount: float, dir: Vector3, pos: Vector3) -> void:
 
 @rpc("authority", "call_local", "reliable")
 func get_completely_destroyed_and_explodinated() -> void:
+	var breakv := (preload("res://game/visuals/break_effect.tscn") as PackedScene).instantiate() as GPUParticles3D
+	Game.world.visuals.add_child(breakv)
+	if mesh is BoxMesh:
+		(breakv.process_material as ParticleProcessMaterial).emission_box_extents = (mesh as BoxMesh).size
+		breakv.amount = ceili((mesh as BoxMesh).size.dot(Vector3.ONE)) + 10
+	breakv.global_transform = global_transform
 	get_parent().remove_child(self)
 	queue_free()
 @rpc("any_peer", "call_local", "unreliable")

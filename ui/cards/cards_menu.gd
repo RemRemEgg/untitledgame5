@@ -8,13 +8,27 @@ var animation_timer: float = 0.0
 var flip_animations: Array[float]
 var local_mouse: Vector3
 
+@onready var disp3d: Node3D = $"disp3d" as Node3D
+
+@onready var spell_slot: VBoxContainer = $spell_slot as VBoxContainer
+@onready var spell_1: Button = $spell_slot/spell_1 as Button
+@onready var spell_2: Button = $spell_slot/spell_2 as Button
+
+
+func _ready() -> void:
+	spell_1.pressed.connect(_pick_spell_slot.bind(1))
+	spell_2.pressed.connect(_pick_spell_slot.bind(2))
+
 
 func card_selection_time() -> void:
-	if Console.AUTO_CARD_SELECT:
+	if Console.AUTO_CARD_SELECT \
+			|| (Console.AUTO_INIT_CARD_SELECT && Network.round_count == 0) \
+			|| (!Network.is_server && Console.CLIENT_DUMMY):
 		card_selected()
 		return
 	
 	visible = true
+	spell_slot.visible = false
 	animation_state = 0
 	animation_timer = 0.0
 	
@@ -22,7 +36,7 @@ func card_selection_time() -> void:
 	Game.mouse_fallback = Input.MOUSE_MODE_VISIBLE
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	selection = CardDeck.pick_weighted_cards(Card.ALL_CARDS, Game.player, 115 if Console.DEBUG else 5, false)
+	selection = CardDeck.pick_weighted_cards(Card.ALL_CARDS, Game.player, Console.MAX_CARD_OPTIONS, false)
 	flip_animations.resize(selection.size())
 	flip_animations.fill(-1.0)
 	for card in selection:
@@ -48,11 +62,11 @@ func _process(delta: float) -> void:
 			animation_timer = 1.0
 		2: # card selected, pick animation
 			if tick_animation_timer(1.5, -1):
-				Game.player.add_card(selection[picked_card])
-				
-				card_selected()
-				selection = []
-				reset_card_displays()
+				if selection[picked_card].use_spell_selection:
+					spell_slot.visible = true
+				else:
+					Game.player.add_card(selection[picked_card])
+					card_selected()
 
 
 func _input(event: InputEvent) -> void: # TODO cleanup
@@ -80,13 +94,15 @@ func card_selected() -> void:
 	Game.mouse_fallback = Input.MOUSE_MODE_CAPTURED
 	process_mode = Node.PROCESS_MODE_DISABLED
 	Network.change_to_state(Network.NS_IDLE)
+	selection = []
+	reset_card_displays()
 
 
 func reset_card_displays() -> void:
-	for chld in get_children(): remove_child(chld)
+	for c in disp3d.get_children(): disp3d.remove_child(c)
 	for i in selection.size():
 		var display := selection[i].wrapper_3d
-		add_child(display)
+		disp3d.add_child(display)
 
 
 func tick_animation_timer(max_time: float, next_state: int) -> bool:
@@ -102,6 +118,8 @@ func update_card_animations(delta: float) -> void:
 		var display := selection[i].wrapper_3d
 		var place := get_card_position(i, selection.size())
 		match animation_state:
+			-1: # waiting
+				pass
 			0: # moving up
 				display.position = Vector3(0.0, -5.0, 0.0).lerp(place, animation_timer ** 0.125)
 				display.position.z = 0.0
@@ -155,3 +173,14 @@ func get_card_hover_pos(i: int) -> Vector3:
 	if absf(c_mouse.x) < 0.13 && absf(c_mouse.y) < 0.23:
 		return c_mouse
 	return Vector3.ZERO
+
+
+func _pick_spell_slot(id: int) -> void:
+	if !(picked_card+1): return
+	var card := selection[picked_card]
+	var spell: Spell
+	if id == 1: spell = Game.player.spell_1
+	if id == 2: spell = Game.player.spell_2
+	
+	Game.player.add_spell_card(card, spell)
+	card_selected()
