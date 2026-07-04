@@ -909,6 +909,13 @@ static func register_all_cards() -> void:
 			)
 	)
 	
+	register_card(&"burden_breaker", &"Burden Breaker", &"BRDN", &"",
+		DECK_PLAYER, RARITY_EPIC, STYLE_BASIC, [0.0, -0.5, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
+		func card(cd:CardData) -> void:
+			cd.mult(cd.player.speed, 4)
+			cd.mult(cd.player.accel, 0.35)
+	)
+	
 	register_card(&"leg_day", &"Leg Day", &"LGDY", &"Never skip!",
 		DECK_PLAYER, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 1.0, 0.0, 0.0, 0.2], null,
 		func card(cd:CardData) -> void:

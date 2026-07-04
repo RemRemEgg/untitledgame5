@@ -50,8 +50,9 @@ var is_use_alt: bool = false
 var is_prep_cast: bool = false
 var is_firing: bool = false
 var dash_type: int = 5
-var cyote: float = -1
-var wall_cyote: float = 0.0
+var jump_buffer: float = -1
+var wall_buffer: float = 0.0
+var wall_normal: Vector3
 var jumps: int = 0
 var bounds_ignore: float = 0.0
 var can_shoot: bool = false
@@ -182,27 +183,35 @@ func _process(delta: float) -> void:
 	velocity += Vector3(0.0, -32.0, 0.0) * delta
 	
 	# jumps
-	cyote -= delta
-	if Input.is_action_just_pressed(&"jump"): cyote = 0.2
-	wall_cyote -= delta
-	if is_on_wall(): wall_cyote = 0.1
-	# normal jump
-	if jumps > 0 && cyote >= 0.0: # jump + boost
-		var boost := Vector2(velocity.x, velocity.z).length()
-		boost = boost / (boost + 48.0)
-		velocity.y = jump.value * (1.0+boost)
-		jumps -= 1
-		cyote = -1.0
-		Network.spawn_visual(Network.NV_PARTICLE_BURST, global_position-Vector3(0.0, 1.0, 0.0), 1.0)
+	jump_buffer -= delta
+	wall_buffer -= delta
+	if Input.is_action_just_pressed(&"jump"):
+		jump_buffer = 0.2
+	if is_on_wall():
+		wall_buffer = 0.1
+		wall_normal = get_wall_normal()
+	if jump_buffer >= 0.0:
+		# wall jump
+		if wall_buffer >= 0.0:
+			velocity += wall_normal * jump.value * 0.8
+			velocity.y = jump.value
+			jumps = max_jumps.value_int
+			jump_buffer = -1.0
+			Network.spawn_visual(Network.NV_PARTICLE_BURST, global_position-Vector3(0.0, 1.0, 0.0), 1.0)
+		# normal jump
+		elif jumps > 0: # jump + boost
+			# boost based on your current velocity
+			var boost := Vector2(velocity.x, velocity.z).length()
+			boost = boost / (boost + 32.0)
+			if !is_floor: boost = 0.0
+			# extra speed when going up
+			var bonus := maxf(0.0, velocity.normalized().dot(Vector3(0, 1, 0)) * 0.8)
+			velocity.y = velocity.y*bonus + jump.value*(1.0+boost)
+			jumps -= 1
+			jump_buffer = -1.0
+			Network.spawn_visual(Network.NV_PARTICLE_BURST, global_position-Vector3(0.0, 1.0, 0.0), 1.0)
 	# high jump
 	if velocity.y > 0 && Input.is_action_pressed(&"jump"): velocity -= Vector3(0.0, -32.0, 0.0) * delta * 0.35
-	# wall jump
-	if wall_cyote >= 0.0 && cyote >= 0.0:
-		var wall := get_wall_normal()
-		velocity += wall * jump.value * 0.8
-		velocity.y = jump.value
-		cyote = -1.0
-		Network.spawn_visual(Network.NV_PARTICLE_BURST, global_position-Vector3(0.0, 1.0, 0.0), 1.0)
 	
 	
 	# handle movement
