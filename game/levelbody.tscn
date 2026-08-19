@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b5r0t8pi8r5fv"]
 
 [ext_resource type="Script" uid="uid://co62g75qamun2" path="res://game/levelbody.gd" id="1_ail48"]
-[ext_resource type="Shader" uid="uid://b3moxqeqah5b5" path="res://shaders/level/solid_triplanar_fast.gdshader" id="2_pyo22"]
+[ext_resource type="Shader" uid="uid://b3moxqeqah5b5" path="res://shaders/world/solid_triplanar_fast.gdshader" id="2_pyo22"]
 [ext_resource type="Texture2D" uid="uid://o6uolq8s7wlq" path="res://textures/3d/prototype_harmful.png" id="3_pyo22"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_pyo22"]
@@ -13,6 +13,8 @@ shader_parameter/tex = ExtResource("3_pyo22")
 shader_parameter/modulo = Color(0.10590724, 0.16689098, 0.16008803, 1)
 shader_parameter/roughness = 0.2250000106875
 shader_parameter/specular = 1.0
+shader_parameter/metal = 0.0
+shader_parameter/emission = Color(0, 0, 0, 1)
 shader_parameter/scale = Vector3(0.25, 0.25, 0.25)
 shader_parameter/offset = Vector3(0, 0, 0)
 
@@ -23,9 +25,11 @@ properties/0/replication_mode = 2
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/replication_mode = 2
+properties/2/path = NodePath(".:linear_velocity")
+properties/2/spawn = true
+properties/2/replication_mode = 2
 
 [node name="levelbody" type="RigidBody3D" unique_id=1096154872]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 0.5)
 collision_layer = 17
 freeze = true
 script = ExtResource("1_ail48")
@@ -42,4 +46,5 @@ skeleton = NodePath("../../..")
 [node name="collider" type="CollisionShape3D" parent="." unique_id=1407021296]
 
 [node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1087935861]
+delta_interval = 3.0
 replication_config = SubResource("SceneReplicationConfig_ail48")

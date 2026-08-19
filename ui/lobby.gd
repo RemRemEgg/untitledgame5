@@ -5,6 +5,10 @@ extends MarginContainer
 @onready var p_color: ColorPicker = $split/playereditor/color as ColorPicker
 @onready var p_ready: Button = $split/playereditor/ready as Button
 @onready var start: Button = $split/playereditor/start as Button
+@onready var fullscreen: Button = $split/playereditor/fullscreen as Button
+
+@onready var volume_slider: HSlider = $split/playereditor/volume/slider as HSlider
+@onready var test_sound: Button = $split/playereditor/volume/test_sound as Button
 
 @onready var playerlist: VFlowContainer = $split/playerlist as VFlowContainer
 
@@ -13,15 +17,21 @@ func _ready() -> void:
 	p_color.color_changed.connect(_on_player_color_edit)
 	p_ready.toggled.connect(_on_player_ready_edit)
 	start.pressed.connect(Network.start_game)
+	fullscreen.pressed.connect(DisplayServer.window_set_mode.bind(DisplayServer.WINDOW_MODE_FULLSCREEN))
+	
+	volume_slider.drag_ended.connect(_update_volume)
+	test_sound.pressed.connect(_test_sound)
 	
 	p_color.color = Network.self_player.color
-	#p_name.text = str(Network.uuid)
 	
 	Network.players_changed.connect(load_players)
 	load_players()
 	
 	if Console.AUTO_FULLSCREEN && !(!Network.is_server && Console.CLIENT_DUMMY): DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	if Console.AUTO_FULLSCREEN && (!Network.is_server && Console.CLIENT_DUMMY): DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED); Engine.max_fps = 15
+	if Console.AUTO_FULLSCREEN && (!Network.is_server && Console.CLIENT_DUMMY):
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
+		Engine.max_fps = 15
+		AudioServer.set_bus_mute(0, true)
 	if Network.is_server:
 		start.visible = true
 		if Console.AUTO_START_GAME: get_tree().create_timer(0.25).timeout.connect(Network.start_game)
@@ -42,7 +52,7 @@ func load_players() -> void:
 		pi.on_update.connect(pcard._on_player_update)
 		playerlist.add_child(pcard)
 		pcard.dispname.text = pi.name
-		pcard.dispcolor.color = pi.color
+		pcard.disppfp.modulate = pi.color
 
 
 func _on_player_name_edit(new_name: String) -> void:
@@ -63,3 +73,12 @@ func _on_player_color_edit(new_color: Color) -> void:
 func _on_player_ready_edit(is_ready: bool) -> void:
 	Network.update_player.rpc({&"ready":is_ready})
 	playereditor.process_mode = PROCESS_MODE_DISABLED if is_ready else PROCESS_MODE_INHERIT
+
+
+func _update_volume(__:bool) -> void:
+	AudioServer.set_bus_volume_linear(0, volume_slider.value / 100.0)
+	_test_sound()
+
+
+func _test_sound() -> void:
+	SFXHandler.play_user(SFXHandler.EXPLOSION, 0.0)

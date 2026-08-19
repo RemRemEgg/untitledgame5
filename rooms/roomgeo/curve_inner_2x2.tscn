@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://56kirdt5dft3"]
+
+[ext_resource type="Script" uid="uid://co62g75qamun2" path="res://game/levelbody.gd" id="1_0ia6m"]
+[ext_resource type="ArrayMesh" uid="uid://bemclmak3ytkr" path="res://rooms/roomgeo/curve_inner_1x1.res" id="2_q6xmr"]
+[ext_resource type="Material" uid="uid://bgesf51sw86dh" path="res://shaders/world/solid_triplanar_fast.res" id="3_wsq2g"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ieeyn"]
+data = PackedVector3Array(-1.6955, 0.4693, -2, -1.9231, 1.2196, 2, -1.9231, 1.2196, -2, -1.6955, 0.4693, -2, -1.6955, 0.4693, 2, -1.9231, 1.2196, 2, -2, 2, -2, -2, -2, 2, -2, -2, -2, -2, 2, -2, -2, 2, 2, -2, -2, 2, 0.4693, -1.6955, -2, -0.2223, -1.3259, 2, -0.2223, -1.3259, -2, 0.4693, -1.6955, -2, 0.4693, -1.6955, 2, -0.2223, -1.3259, 2, -1.3259, -0.2223, -2, -1.6955, 0.4693, 2, -1.6955, 0.4693, -2, -1.3259, -0.2223, -2, -1.3259, -0.2223, 2, -1.6955, 0.4693, 2, -2, -2, -2, 2, -2, 2, 2, -2, -2, -2, -2, -2, -2, -2, 2, 2, -2, 2, 1.2196, -1.9231, -2, 0.4693, -1.6955, 2, 0.4693, -1.6955, -2, 1.2196, -1.9231, -2, 1.2196, -1.9231, 2, 0.4693, -1.6955, 2, -0.82839996, -0.82839996, -2, -1.3259, -0.2223, 2, -1.3259, -0.2223, -2, -0.82839996, -0.82839996, -2, -0.82839996, -0.82839996, 2, -1.3259, -0.2223, 2, -1.9231, 1.2196, -2, -2, 2, 2, -2, 2, -2, -1.9231, 1.2196, -2, -1.9231, 1.2196, 2, -2, 2, 2, 2, -2, -2, 1.2196, -1.9231, 2, 1.2196, -1.9231, -2, 2, -2, -2, 2, -2, 2, 1.2196, -1.9231, 2, -0.2223, -1.3259, -2, -0.82839996, -0.82839996, 2, -0.82839996, -0.82839996, -2, -0.2223, -1.3259, -2, -0.2223, -1.3259, 2, -0.82839996, -0.82839996, 2, -1.9231, 1.2196, 2, -2, -2, 2, -2, 2, 2, -1.6955, 0.4693, 2, -2, -2, 2, -1.9231, 1.2196, 2, -1.3259, -0.2223, 2, -2, -2, 2, -1.6955, 0.4693, 2, -0.82839996, -0.82839996, 2, -2, -2, 2, -1.3259, -0.2223, 2, -2, -2, 2, -0.82839996, -0.82839996, 2, -0.2223, -1.3259, 2, -2, -2, 2, -0.2223, -1.3259, 2, 0.4693, -1.6955, 2, -2, -2, 2, 0.4693, -1.6955, 2, 1.2196, -1.9231, 2, -2, -2, 2, 1.2196, -1.9231, 2, 2, -2, 2, 1.2196, -1.9231, -2, -2, -2, -2, 2, -2, -2, 0.4693, -1.6955, -2, -2, -2, -2, 1.2196, -1.9231, -2, -0.2223, -1.3259, -2, -2, -2, -2, 0.4693, -1.6955, -2, -0.82839996, -0.82839996, -2, -2, -2, -2, -0.2223, -1.3259, -2, -1.3259, -0.2223, -2, -2, -2, -2, -0.82839996, -0.82839996, -2, -2, -2, -2, -1.3259, -0.2223, -2, -1.6955, 0.4693, -2, -2, -2, -2, -1.6955, 0.4693, -2, -1.9231, 1.2196, -2, -2, -2, -2, -1.9231, 1.2196, -2, -2, 2, -2)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ail48"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="curve_inner_2x2" type="RigidBody3D" unique_id=1096154872]
+collision_layer = 17
+freeze = true
+script = ExtResource("1_0ia6m")
+mesh = ExtResource("2_q6xmr")
+material = ExtResource("3_wsq2g")
+shape = SubResource("ConcavePolygonShape3D_ieeyn")
+metadata/_custom_type_script = "uid://co62g75qamun2"
+metadata/_edit_group_ = true
+
+[node name="mesh" type="MeshInstance3D" parent="." unique_id=1331379362]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+material_override = ExtResource("3_wsq2g")
+mesh = ExtResource("2_q6xmr")
+skeleton = NodePath("../../..")
+
+[node name="collider" type="CollisionShape3D" parent="." unique_id=1407021296]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_ieeyn")
+
+[node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1087935861]
+delta_interval = 0.2
+replication_config = SubResource("SceneReplicationConfig_ail48")

@@ -1,7 +1,6 @@
 class_name Info
 extends BoxContainer
 
-const CARD_ICON := preload("uid://ba8bixelqjeyx") as PackedScene
 const PLAYER_ICON = preload("uid://caqvxbw61lbnt") as PackedScene
 
 @onready var player_list: FlowContainer = $player_list as FlowContainer
@@ -9,9 +8,14 @@ const PLAYER_ICON = preload("uid://caqvxbw61lbnt") as PackedScene
 @onready var player_name: Label = $info_list/player_name as Label
 @onready var team_color: ColorRect = $info_list/team_color as ColorRect
 @onready var quick_stats: Label = $info_list/quick_stats as Label
-@onready var spider_graph: SpiderGraph = $info_list/spider_graph as SpiderGraph
 
-@onready var details: VBoxContainer = $details as VBoxContainer
+@onready var spiders: Control = $info_list/spiders as Control
+@onready var player_spider: SpiderGraph = $info_list/spiders/player_spider as SpiderGraph
+@onready var gun_spider: SpiderGraph = $info_list/spiders/gun_spider as SpiderGraph
+@onready var spell_1_spider: SpiderGraph = $info_list/spiders/spell_1_spider as SpiderGraph
+@onready var spell_2_spider: SpiderGraph = $info_list/spiders/spell_2_spider as SpiderGraph
+
+@onready var details: TabContainer = $details as TabContainer
 @onready var card_list: FlowContainer = $details/card_list as FlowContainer
 @onready var stats: RichTextLabel = $details/stats as RichTextLabel
 
@@ -29,7 +33,7 @@ func _ready() -> void:
 		player_list.add_child(pcard)
 		pcard.pressed.connect(swap_to_player)
 		pcard.dispname.text = pi.name
-		pcard.dispcolor.color = pi.color
+		pcard.disppfp.modulate = pi.color
 		pcard.id = p
 
 
@@ -56,15 +60,16 @@ func _process(_delta: float) -> void:
 
 func swap_to_player(id: int) -> void:
 	var pi := (Network.players[id] as Network.PlayerInfo)
+	var player := pi.linked_player
 	for c in player_list.get_children() as Array[PlayerIcon]:
 		c.dispname.modulate = Color.GOLD if c.id == id else Color.WHITE
 	
+	# overview & quick stats
 	player_name.text = pi.name
 	team_color.color = pi.color
-	quick_stats.text = &"%s Wins | %s:%s" % [pi.wins, pi.uuid, Network.NS_NAME[pi.state]]
+	quick_stats.text = &"%s Wins | %s Kills | %s Deaths | %s:%s" % [pi.wins, player.kills, player.deaths, pi.uuid, Network.NS_NAME[pi.state]]
 	
-	var spider: Array[float] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-	
+	# card icons
 	Util.remove_and_free_all_children(card_list)
 	for card_uuid in (pi.cards.keys() as Array[StringName]):
 		var card := Card.get_card(card_uuid)
@@ -73,59 +78,58 @@ func swap_to_player(id: int) -> void:
 			return
 		var count := pi.cards[card_uuid]
 		
-		for i:int in 6: spider[i] += card.spider[i]*count
-		
-		var ico := CARD_ICON.instantiate() as CardIcon
-		ico.card = card
-		var bg := ico.get_node(^"background") as ColorRect
-		var abbv := bg.get_node(^"abbv") as Label
-		var mult := bg.get_node(^"mult") as Label
-		var d_once := bg.get_node(^"draw_once") as Panel
-		bg.color = Color(Card.RARITY_COLORS[card.rarity])
-		abbv.text = card.abbv
-		mult.text = StringName("x%s" % count) if count>1 else &""
-		d_once.visible = card.is_draw_once
+		var ico := CardIcon.from_card(card, count)
 		card_list.add_child(ico)
 	
-	var smin := +1000000.0
-	var smax := -1000000.0
-	for v in spider:
-		if v < smin: smin = v
-		if v > smax: smax = v
-	smin -= 0.5
-	smax += 0.5
-	spider_graph.data_min = smin
-	spider_graph.data_max = smax
-	spider_graph.values = spider
-	spider_graph.recalculate_graph()
+	player_spider.values = player.spider.slice(0, 3)
+	player_spider.recalculate_graph()
+	gun_spider.values = player.spider.slice(3, 6)
+	gun_spider.recalculate_graph()
+	spell_1_spider.values = player.spider.slice(6, 9)
+	spell_1_spider.recalculate_graph()
+	spell_2_spider.values = player.spider.slice(9, 12)
+	spell_2_spider.recalculate_graph()
 	
+	# view all stats
 	if id == Network.uuid:
 		var txt_arr: Array[String] = []
 		
 		txt_arr.append(&"[b][u]Player Stats[/u][/b]")
 		var p := Game.player
-		for stat:Stat in [p.max_health, p.speed, p.accel, p.jump, p.max_jumps, p.max_stamina, p.melee_cd, p.magic_cd, p.magic_potency]:
+		for stat:Stat in p.all_stats:
 			txt_arr.append(format_stat(stat))
 		
 		txt_arr.append(&"\n[b][u]Spell Stats[/u][/b]")
 		var sps := [p.spell_1, p.spell_2] as Array[Spell]
 		for i in sps.size():
 			var s := sps[i]
-			for stat:Stat in [s.cooldown, s.max_charges, s.potency]:
+			for stat:Stat in s.all_stats:
 				txt_arr.append((&"[%s] " % (i+1)) + format_stat(stat))
 		
 		txt_arr.append(&"\n[b][u]Gun Stats[/u][/b]")
 		var g := p.procgun
-		for stat:Stat in [g.fire_rate, g.bullets_per_shot, g.clip_size, g.reload_time, g.inaccuracy, g.b_speed]:
+		for stat:Stat in g.all_stats:
 			txt_arr.append(format_stat(stat))
 		
 		txt_arr.append(&"\n[b][u]Bullet Stats[/u][/b]")
 		var b := g.pproj
-		for stat:Stat in [b.damage, b.bounces, b.scale, b.knockback]:
+		for stat:Stat in b.all_stats:
 			txt_arr.append(format_stat(stat))
 		
 		stats.text = &"\n".join(txt_arr)
 
 
 func format_stat(stat: Stat) -> String:
-	return "%s: %5.1f  [color=#aaa][(%5.1f +%5.1f) *%5.2f][/color]" % [stat.name, stat.value, stat._base_value, stat.adder, stat.multiplier]
+	var lin := Util.frac_to_lin(stat.value / stat.get_base_value())
+	var ico := &"o"
+	if lin <= -4: ico = &"⇊"
+	elif lin <= -2: ico = &"↡"
+	elif lin <= -1: ico = &"↓"
+	elif lin >= 4: ico = &"⇈"
+	elif lin >= 2: ico = &"↟"
+	elif lin >= 1: ico = &"↑"
+	
+	var hp := Util.hp(lin * (1 if stat.is_good else -1), 2) * 0.5 + 0.5
+	var col := Color(1.0-hp, hp, 0.5)
+	
+	return "[color=%s]%s[/color] %s: %5.1f  [color=#aaa][(%5.1f +%5.1f) *%5.2f][/color]" % [col.to_html(false), ico, stat.name, stat.value, stat.get_base_value(), stat.adder, stat.multiplier]

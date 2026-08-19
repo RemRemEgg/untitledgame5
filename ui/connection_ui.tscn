@@ -2,31 +2,105 @@
 
 [ext_resource type="Script" uid="uid://dbdkrh80gxmp6" path="res://ui/connection_ui.gd" id="1_6w4vd"]
 [ext_resource type="Theme" uid="uid://bg5liorxv7qwu" path="res://ui/ui_theme.tres" id="1_f1kuo"]
+[ext_resource type="Texture2D" uid="uid://b4w2soxjaag46" path="res://textures/3d/prototype.png" id="3_bsaiy"]
+[ext_resource type="Texture2D" uid="uid://dacyjm2h4aqn8" path="res://textures/icon.png" id="3_mmh1x"]
 
-[node name="connection_ui" type="MarginContainer" unique_id=837035195]
+[sub_resource type="LabelSettings" id="LabelSettings_m3d6p"]
+font_size = 32
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[node name="connection_ui" type="Control" unique_id=650346301]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = 185.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_f1kuo")
 script = ExtResource("1_6w4vd")
 
+[node name="background" type="TextureRect" parent="." unique_id=1319735440]
+modulate = Color(0.26657534, 0.2665751, 0.26657525, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_bsaiy")
+stretch_mode = 1
+
 [node name="vbox" type="VBoxContainer" parent="." unique_id=1832602512]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 809.0
+grow_horizontal = 2
 theme = ExtResource("1_f1kuo")
 alignment = 1
 
-[node name="host" type="Button" parent="vbox" unique_id=980214668]
+[node name="icon" type="TextureRect" parent="vbox" unique_id=1106741295]
+texture_filter = 1
+custom_minimum_size = Vector2(384, 384)
 layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("3_mmh1x")
+
+[node name="spacer" type="ColorRect" parent="vbox" unique_id=1808703858]
+custom_minimum_size = Vector2(1, 96)
+layout_mode = 2
+color = Color(1, 1, 1, 0)
+
+[node name="host" type="Button" parent="vbox" unique_id=980214668]
+custom_minimum_size = Vector2(256, 64)
+layout_mode = 2
+size_flags_horizontal = 4
 theme = ExtResource("1_f1kuo")
-text = "host game"
+theme_override_font_sizes/font_size = 32
+
+[node name="text" type="Label" parent="vbox/host" unique_id=1424013649]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+text = "Host Game"
+label_settings = SubResource("LabelSettings_m3d6p")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="join" type="Button" parent="vbox" unique_id=1209476875]
+custom_minimum_size = Vector2(256, 64)
 layout_mode = 2
-text = "join game"
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
+
+[node name="text" type="Label" parent="vbox/join" unique_id=395317092]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+text = "Join Game"
+label_settings = SubResource("LabelSettings_m3d6p")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="join_ip" type="LineEdit" parent="vbox" unique_id=1714737553]
+custom_minimum_size = Vector2(128, 40)
 layout_mode = 2
+size_flags_horizontal = 4
 text = "10.0.0.107"
 placeholder_text = "Host IP"
+alignment = 1
+
+[node name="spacer2" type="ColorRect" parent="vbox" unique_id=616105335]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+color = Color(1, 1, 1, 0)

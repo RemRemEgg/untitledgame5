@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://ch7mt4xfudu8x"]
+
+[ext_resource type="Script" uid="uid://co62g75qamun2" path="res://game/levelbody.gd" id="1_4txm7"]
+[ext_resource type="Material" uid="uid://bgesf51sw86dh" path="res://shaders/world/solid_triplanar_fast.res" id="2_5nm8q"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cf3om"]
+top_radius = 2.0
+bottom_radius = 2.0
+height = 4.0
+radial_segments = 32
+rings = 1
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_1j6gv"]
+height = 4.0
+radius = 2.0
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ail48"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="pillar_1x1" type="RigidBody3D" unique_id=1096154872]
+collision_layer = 17
+freeze = true
+script = ExtResource("1_4txm7")
+mesh = SubResource("CylinderMesh_cf3om")
+material = ExtResource("2_5nm8q")
+shape = SubResource("CylinderShape3D_1j6gv")
+metadata/_custom_type_script = "uid://co62g75qamun2"
+metadata/_edit_group_ = true
+
+[node name="mesh" type="MeshInstance3D" parent="." unique_id=1331379362]
+material_override = ExtResource("2_5nm8q")
+mesh = SubResource("CylinderMesh_cf3om")
+skeleton = NodePath("../../..")
+
+[node name="collider" type="CollisionShape3D" parent="." unique_id=1407021296]
+shape = SubResource("CylinderShape3D_1j6gv")
+
+[node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1087935861]
+delta_interval = 0.2
+replication_config = SubResource("SceneReplicationConfig_ail48")

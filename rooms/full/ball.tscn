@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://2ugala4222fb"]
+
+[ext_resource type="Script" uid="uid://cm4gqancuf0sr" path="res://rooms/room.gd" id="1_cnehl"]
+[ext_resource type="PackedScene" uid="uid://bbxtopjn62dnf" path="res://rooms/bounds_visualizer.tscn" id="2_cnehl"]
+[ext_resource type="PackedScene" uid="uid://cb5fuxbpu7mb6" path="res://rooms/roomgeo/light_orb.tscn" id="3_bpwc1"]
+[ext_resource type="PackedScene" uid="uid://b5r0t8pi8r5fv" path="res://game/levelbody.tscn" id="3_iofc4"]
+[ext_resource type="Material" uid="uid://cpnpb6gvn4xc5" path="res://shaders/tile.res" id="5_f20cw"]
+[ext_resource type="Material" uid="uid://bgesf51sw86dh" path="res://shaders/world/solid_triplanar_fast.res" id="6_2ru6x"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_cnehl"]
+radius = 24.0
+height = 48.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_cnehl"]
+radius = 24.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_8012k"]
+size = Vector3(16, 4, 16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7es8x"]
+size = Vector3(16, 4, 16)
+
+[node name="room" type="Node3D" unique_id=1177707274]
+script = ExtResource("1_cnehl")
+rotation_type = 4
+
+[node name="bounds_visualizer" parent="." unique_id=204469094 instance=ExtResource("2_cnehl")]
+
+[node name="light_orb" parent="." unique_id=1194668116 instance=ExtResource("3_bpwc1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+
+[node name="levelbody4" parent="." unique_id=371467810 instance=ExtResource("3_iofc4")]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
+collision_mask = 17
+mass = 102.39999
+gravity_scale = 0.0
+freeze = false
+is_static = false
+mesh = SubResource("SphereMesh_cnehl")
+material = ExtResource("5_f20cw")
+shape = SubResource("SphereShape3D_cnehl")
+
+[node name="levelbody59" parent="." unique_id=1096154872 instance=ExtResource("3_iofc4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 28, 0)
+collision_mask = 17
+mass = 204.8
+mesh = SubResource("BoxMesh_8012k")
+material = ExtResource("6_2ru6x")
+shape = SubResource("BoxShape3D_7es8x")
+
+[node name="levelbody60" parent="." unique_id=593829918 instance=ExtResource("3_iofc4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -28, 0)
+collision_mask = 17
+mass = 204.8
+mesh = SubResource("BoxMesh_8012k")
+material = ExtResource("6_2ru6x")
+shape = SubResource("BoxShape3D_7es8x")

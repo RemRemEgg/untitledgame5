@@ -10,21 +10,21 @@ var load_call: Callable
 
 #region auto setup options
 ## Enables auto setup options
-static var AUTO_SETUP: bool = true
+static var AUTO_SETUP: bool = false
 ## Game will fullscreen
-static var AUTO_FULLSCREEN: bool = true
+static var AUTO_FULLSCREEN: bool = false
 ## Local instances will connect to eachother
 static var AUTO_JOIN: bool = true
 ## Starts the game after clients are connected
 static var AUTO_START_GAME: bool = true
 ## Clients wont move or take damage to sudden death
-static var CLIENT_DUMMY: bool = true
+static var CLIENT_DUMMY: bool = false
 #endregion
 
 #region debugging options
-static var DEBUG: bool = 1
+static var DEBUG: bool = false
 static var MAX_CARD_OPTIONS: int = 15
-static var AUTO_INIT_CARD_SELECT: bool = false
+static var AUTO_INIT_CARD_SELECT: bool = true
 static var AUTO_CARD_SELECT: bool = false
 static var AUTO_LEVEL_LOAD: bool = false
 #endregion
@@ -41,7 +41,6 @@ func _ready() -> void:
 	AUTO_START_GAME = AUTO_START_GAME && AUTO_SETUP
 	CLIENT_DUMMY = CLIENT_DUMMY && AUTO_SETUP
 	
-	MAX_CARD_OPTIONS = MAX_CARD_OPTIONS if DEBUG else 5
 	AUTO_INIT_CARD_SELECT = AUTO_INIT_CARD_SELECT && DEBUG
 	AUTO_CARD_SELECT = AUTO_CARD_SELECT && DEBUG
 	AUTO_LEVEL_LOAD = AUTO_LEVEL_LOAD && DEBUG
@@ -70,11 +69,16 @@ func load_cards() -> void:
 	load_status += 1
 	Card.register_all_decks()
 	Card.register_all_cards()
+	Console.print(&"Total cards: %s" % Card.ALL_CARDS.size())
 
 func load_resources() -> void:
 	load_status += 1 +3+3+3
 	# TODO make more preloads into load
 	Util.PLAYER_ICON_SCN = load("res://ui/player_icon.tscn") as PackedScene
+	VFXHandler.load_all_effects()
+	SFXHandler.load_all_sounds()
+	AltProjHandler.load_all_projs()
+	FieldHandler.load_all_fields()
 	
 	self.print(&"CLoad complete, initalizing")
 	await get_tree().create_timer(0.2).timeout
@@ -141,7 +145,7 @@ func run_command(args: Array[String]) -> void:
 		&"help":
 			if help(&"help [command]"):return
 			match args.size():
-				1: self.print(&"Commands: help fps net dash card")
+				1: self.print(&"Commands: help fps net dash card fullscreen")
 				2:
 					is_help = true
 					args.pop_front()
@@ -183,6 +187,10 @@ func run_command(args: Array[String]) -> void:
 						self.print(&"Give card %s x %s" % [args[2], count])
 					else:
 						print_err(&"Card not found: %s" % args[2])
+		&"fullscreen":
+			if help(&"fullscreen"): return
+			if !exact_args(args, 0): return
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		_ when !hit_error: print_err(&"Unknown Command '%s'" % args[0])
 		_: pass
 

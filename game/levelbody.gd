@@ -3,6 +3,9 @@
 class_name LevelBody
 extends RigidBody3D
 
+@export_tool_button("Snap to Grid", "SnapGrid") var stg_btn: Callable = snap_to_grid
+@export_tool_button("Generate Simplified Collider", "CollisionObject3D") var simcol_btn: Callable = generate_simple_collider
+@export_tool_button("Generate Trimesh Collider", "CollisionPolygon3D") var tricol_btn: Callable = generate_trimesh_collider
 @export var is_static: bool = true:
 	set(value):
 		is_static = value
@@ -20,7 +23,7 @@ enum Type {
 		update_bodytype()
 		update_display()
 ## Health of the body, only used with bodytype.BREAKABLE. Default player health is 100.0
-@export var health: float = 50.0 #TODO scaling health
+@export var health: float = 40.0 #TODO scaling health
 ## Fixer cannot run on anything besides [BoxMesh]. You must manually add collisions for other meshes.
 ##[br]Changing this mesh's data will modify the meshes of all levelbodies with the same mesh.
 ##[br]Change this body's scale, then level fix to make it unique.
@@ -42,11 +45,32 @@ enum Type {
 		shape = val
 		if has_node("collider"): ($collider as CollisionShape3D).shape = shape
 
+func snap_to_grid() -> void:
+	var udrd := BuildTool.inst.get_undo_redo()
+	udrd.create_action(&"Snap LevelBody to grid")
+	udrd.add_undo_property(self, &"position", position)
+	var offset := Vector3.ZERO
+	if mesh is BoxMesh:
+		offset = mesh.size * 0.5
+		offset -= offset.round()
+	position = (position - offset).round() + offset
+	udrd.add_do_property(self, &"position", position)
+	udrd.commit_action()
+
+
+func generate_simple_collider() -> void:
+	shape = mesh.create_convex_shape(true, false)
+
+
+func generate_trimesh_collider() -> void:
+	shape = mesh.create_trimesh_shape()
+
+
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		update_display()
 	else:
-		if material == preload("res://shaders/level/solid_triplanar_fast.res"):
+		if material == preload("res://shaders/world/solid_triplanar_fast.res"):
 			material = material.duplicate() as Material
 			(material as ShaderMaterial).set_shader_parameter(&"modulo", Color.from_hsv(randf(), randf_range(0.55, 1.0), randf_range(0.8, 1.0)))
 		
@@ -54,6 +78,10 @@ func _ready() -> void:
 			var sync := $sync
 			remove_child(sync)
 			sync.queue_free()
+		
+		var mo := $mesh as MeshInstance3D
+		mo.position = Vector3(randf(), randf(), randf())*0.003
+
 
 func update_display() -> void:
 	if has_node("mesh"):
@@ -63,10 +91,11 @@ func update_display() -> void:
 		m.mesh = mesh
 		
 		if !material: match bodytype:
-			Type.SOLID: material = preload("res://shaders/level/solid_triplanar_fast.res")
-			Type.SCAFFOLD: material = preload("res://shaders/level/scaffold.res")
-			Type.BREAKABLE: material = preload("res://shaders/level/breakable.res")
+			Type.SOLID: material = preload("res://shaders/world/solid_triplanar_fast.res")
+			Type.SCAFFOLD: material = preload("res://shaders/world/scaffold.res")
+			Type.BREAKABLE: material = preload("res://shaders/world/breakable.res")
 		m.material_override = material
+
 
 func update_bodytype() -> void:
 	match bodytype:
@@ -76,6 +105,7 @@ func update_bodytype() -> void:
 		Type.SCAFFOLD:
 			collision_layer = 0b0001_0000
 			collision_mask = 0b0001_0000
+
 
 @rpc("any_peer", "call_local", "reliable")
 func take_proj_hit(amount: float, dir: Vector3, pos: Vector3) -> void:
@@ -87,17 +117,23 @@ func take_proj_hit(amount: float, dir: Vector3, pos: Vector3) -> void:
 	if !is_static:
 		apply_impulse(dir, pos)
 
+
 @rpc("authority", "call_local", "reliable")
 func get_completely_destroyed_and_explodinated() -> void:
-	var breakv := (preload("res://game/visuals/break_effect.tscn") as PackedScene).instantiate() as GPUParticles3D
-	Game.world.visuals.add_child(breakv)
+	var vfx_size := Vector3.ONE
+	var vfx_amount := 10
 	if mesh is BoxMesh:
-		(breakv.process_material as ParticleProcessMaterial).emission_box_extents = (mesh as BoxMesh).size
-		breakv.amount = ceili((mesh as BoxMesh).size.dot(Vector3.ONE)) + 10
-	breakv.global_transform = global_transform
+		vfx_size = (mesh as BoxMesh).size
+		vfx_amount += ceili((mesh as BoxMesh).size.dot(Vector3.ONE))
+	VFXHandler.spawn_local(VFXHandler.BLOCK_BREAK, global_position, [global_basis, vfx_size, vfx_amount])
 	get_parent().remove_child(self)
 	queue_free()
+
+
 @rpc("any_peer", "call_local", "unreliable")
 @warning_ignore("native_method_override")
 func apply_central_impulse(impulse: Vector3) -> void:
 	super(impulse)
+
+
+func _process(_delta: float) -> void: pass

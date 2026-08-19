@@ -113,7 +113,7 @@ text = "Card Name Yay!"
 label_settings = SubResource("LabelSettings_m1mul")
 horizontal_alignment = 1
 
-[node name="card_image" type="TextureRect" parent="content/vbox" unique_id=1785752983]
+[node name="image" type="TextureRect" parent="content/vbox" unique_id=1785752983]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 4
@@ -174,11 +174,13 @@ script = ExtResource("2_m1mul")
 radius = 21.0
 outline_width = 1.0
 inline_count = 1
+data_fill_color = Color(1, 1, 1, 1)
+data_outline_width = 0.5
 axis_offset = 1
+axis_labels = PackedStringArray("", "", "", "", "", "")
+values = PackedFloat64Array(0, 0, 0, 0, 0, 0)
 data_min = -1.0
 data_scale = 1.0
-data_outline_width = 0.5
-data_fill_color = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://b842d5orwjbbc"
 
 [node name="TODO_spider_background" type="Control" parent="extras/spider_graph" unique_id=99473500]
@@ -196,17 +198,18 @@ grow_vertical = 2
 rotation = 0.5235988
 script = ExtResource("2_m1mul")
 radius = 21.0
-outline_width = 0.0
-axis_width = 24.0
 axis_color = Color(0.066070534, 0.06607054, 0.066070504, 1)
+outline_width = 0.0
 inline_count = 1
 inline_width = 0.0
 inline_color = Color(0, 0, 0, 0.2509804)
-axis_offset = null
-data_scale = 0.001
-data_outline_width = 0.0
 data_outline_color = Color(1, 1, 1, 0)
 data_fill_color = Color(1, 1, 1, 0)
+data_outline_width = 0.0
+axis_width = 24.0
+axis_labels = PackedStringArray("", "", "", "", "", "")
+values = PackedFloat64Array(0, 0, 0, 0, 0, 0)
+data_scale = 0.001
 metadata/_custom_type_script = "uid://b842d5orwjbbc"
 
 [node name="icon_clip" type="Panel" parent="extras" unique_id=1518039497]
@@ -221,7 +224,7 @@ offset_right = 48.0
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_m1mul")
 
-[node name="mini_icon" parent="extras/icon_clip" unique_id=78439861 instance=ExtResource("6_5kb46")]
+[node name="icon" parent="extras/icon_clip" unique_id=78439861 instance=ExtResource("6_5kb46")]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0

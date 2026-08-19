@@ -6,7 +6,7 @@ static func movement_update_flat(ent: Entity, dir: Vector2, delta: float) -> voi
 	var target := (dir * maxf(ent.speed.value, vel.dot(dir))) - vel # this is where the magic happens
 	target = target.limit_length(delta * ent.accel.value) # prevent jittering
 	ent.velocity += Vector3(target.x, 0.0, target.y)
-static func movement_update_full(ent: Entity, dir: Vector3, delta: float) -> void:
+static func movement_update(ent: Entity, dir: Vector3, delta: float) -> void:
 	var target := (dir * maxf(ent.speed.value, ent.velocity.dot(dir))) - ent.velocity # this is where the magic happens (again)
 	target = target.limit_length(delta * ent.accel.value) # prevent jittering
 	ent.velocity += target

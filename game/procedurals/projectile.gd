@@ -5,22 +5,19 @@ extends MeshInstance3D
 
 #var next: Projectile # ll # fuck you ll you aint even real
 
-const PROJECTILE := preload("uid://djlg0ybtmd4im")
+static var PACKED := preload("uid://djlg0ybtmd4im")
 @onready var trail: Trail = $trail as Trail
 
 var proc: ProcProj
 var ownr: Entity
 
-#var mesh: MeshInstance3D
-
 var velocity: Vector3
-#var left_owner: bool = false
 
-#var depth: float = 0.0
 var damage: float = 4.0
 var time: float = 0.0
 var bounces: int = 0
 var knockback: float = 0.0
+var strength: float = 1.0
 
 func _init() -> void:
 	pass
@@ -31,8 +28,7 @@ func _process(delta: float) -> void:
 	else: kill()
 
 static func deseralize(data: Dictionary) -> Projectile:
-	#var proj := new()
-	var proj := PROJECTILE.instantiate() as Projectile
+	var proj := PACKED.instantiate() as Projectile
 	
 	var trans := data.get("trans", Transform3D()) as Transform3D
 	proj.position = trans.origin
@@ -46,6 +42,6 @@ func _notification(what: int) -> void:
 
 
 func kill() -> void:
-	Network.spawn_visual(Network.NV_PARTICLE_BURST, global_position, 0.5)
+	VFXHandler.spawn(VFXHandler.PARTICLE_BURST, global_position, [0.5])
 	var p := get_parent(); if p: p.remove_child(self)
 	queue_free()

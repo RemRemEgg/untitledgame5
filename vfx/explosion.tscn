@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://c3wu8d5c7yi8n"]
+
+[ext_resource type="ArrayMesh" uid="uid://bu80bco0wsaep" path="res://models/explosion.res" id="1_6yiqx"]
+
+[sub_resource type="Gradient" id="Gradient_fnxsf"]
+colors = PackedColorArray(0.85546875, 0, 0.024406219, 1, 1, 0.9300083, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0mcia"]
+noise_type = 2
+seed = 1
+frequency = 0.16
+fractal_type = 0
+cellular_distance_function = 3
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7jflb"]
+width = 64
+height = 64
+noise = SubResource("FastNoiseLite_0mcia")
+color_ramp = SubResource("Gradient_fnxsf")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0bq2g"]
+shading_mode = 0
+albedo_color = Color(0.72156864, 0.6846505, 0.69372225, 1)
+albedo_texture = SubResource("NoiseTexture2D_7jflb")
+
+[node name="shockwave" type="MeshInstance3D" unique_id=1931980953]
+material_override = SubResource("StandardMaterial3D_0bq2g")
+mesh = ExtResource("1_6yiqx")

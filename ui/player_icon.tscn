@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://caqvxbw61lbnt"]
 
 [ext_resource type="Script" uid="uid://cn65h8yyymvj5" path="res://ui/player_icon.gd" id="1_iwu4p"]
+[ext_resource type="Texture2D" uid="uid://cdvqh1cbkn3xc" path="res://textures/player_profile.png" id="2_b1mvx"]
 
 [node name="playercard" type="ColorRect" unique_id=694245959]
 custom_minimum_size = Vector2(150, 150)
@@ -8,7 +9,7 @@ offset_right = 50.0
 offset_bottom = 50.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
-color = Color(0.19434929, 0.19434926, 0.19434926, 1)
+color = Color(0.30338544, 0.30338544, 0.30338544, 1)
 script = ExtResource("1_iwu4p")
 
 [node name="name" type="Label" parent="." unique_id=974789312]
@@ -25,15 +26,18 @@ text = "<player name>"
 horizontal_alignment = 1
 text_overrun_behavior = 1
 
-[node name="color" type="ColorRect" parent="." unique_id=223080546]
+[node name="pfp" type="TextureRect" parent="." unique_id=863473721]
+texture_filter = 1
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 75.0
-offset_top = -55.0
-offset_right = 139.0
-offset_bottom = 9.0
+offset_left = -64.0
+offset_top = -76.0
+offset_right = 64.0
+offset_bottom = 52.0
+grow_horizontal = 2
 grow_vertical = 2
-rotation = 0.7853982
-mouse_filter = 1
+texture = ExtResource("2_b1mvx")

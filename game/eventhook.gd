@@ -2,11 +2,8 @@ class_name EventHook
 extends RefCounted
 
 var _effects: Array[EventEffect]
-var _idx: int
-
 
 func add_effect(count: int, effect: Callable) -> void:
-	Console.print("adding effect n:%s  e:%s" % [count, effect])
 	var idx := _effects.find_custom(func(hc:EventEffect)->bool: return hc.effect == effect)
 	if idx == -1:
 		if count <= 0: return
@@ -21,42 +18,47 @@ func clear_effects() -> void:
 	_effects.clear()
 
 
-func _iter_init(__:Array) -> bool:
-	_idx = 0
-	return _idx < _effects.size()
+func get_effect_count() -> float:
+	var t := 0.0
+	for eff in _effects:
+		t += eff.mult
+	return t
 
 
-func _iter_next(__:Array) -> bool:
-	_idx += 1
-	return _idx < _effects.size()
-
-
-func _iter_get(__:Variant) -> EventEffect:
-	return _effects[_idx]
+func execute(ed: EventData) -> void:
+	var ed_mult := ed.mult
+	for eff: EventEffect in _effects:
+		ed.mult = ed_mult * eff.mult
+		ed.multi = roundi(ed.mult)
+		eff.effect.call(ed)
 
 
 class EventEffect extends RefCounted:
 	var effect: Callable
-	var count: int
+	var mult: float = 1.0
 	
-	
-	func _init(effect_: Callable, count_: int) -> void:
+	func _init(effect_: Callable, mult_: float) -> void:
 		effect = effect_
-		count = count_
-	
-	
-	func execute(ed:EventData, ...args: Array) -> void:
-		ed.n = count
-		args.push_front(ed)
-		effect.callv(args)
+		mult = mult_
 
 
 class EventData:
-	var n: int
+	var mult: float = 1.0
+	var multi: int
+	var percent: float = 1.0
+	
 	var player: Player
 	var gun: ProcGun
 	var proj: ProcProj
+	
 	var position: Vector3
+	var normal: Vector3
+	
+	var damage: DamageEvent
+	var proj_inst: Projectile
+	var hit_pb3d: PhysicsBody3D
+	var spell: Spell
+	var is_chain: bool
 	
 	
 	static func from_player(p: Player) -> EventData:
@@ -64,4 +66,6 @@ class EventData:
 		ed.player = p
 		ed.gun = ed.player.procgun
 		ed.proj = ed.gun.pproj
+		ed.position = p.global_position
+		ed.normal = -p.camera.global_basis.z
 		return ed

@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://8aaw3uka3yl0"]
+
+[ext_resource type="Material" uid="uid://bww0ldox3e000" path="res://shaders/overdraw.res" id="1_pc4cn"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_difwy"]
+radius = 1.0
+height = 2.0
+radial_segments = 33
+rings = 16
+
+[node name="shockwave" type="MeshInstance3D" unique_id=1931980953]
+material_override = ExtResource("1_pc4cn")
+mesh = SubResource("SphereMesh_difwy")

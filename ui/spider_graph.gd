@@ -3,29 +3,36 @@
 class_name SpiderGraph
 extends Control
 
-@export_group("Graph")
 
+@export_group("Graph")
 @export_range(1, 2048) var radius: float = 128.0
+@export_range(0, PI*2.0, 0.01, "prefer_slider") var rotation_offset: float = 0.0
 @export var anti_alias: bool = true
-@export_range(3, 100) var axis_count: int = 6
-@export_range(-1, 100) var outline_width: float = 5.0
-@export_range(-1, 100) var axis_width: float = 1.0
-@export var axis_color: Color = Color(1.0, 1.0, 1.0, 0.5)
-@export var axis_labels: PackedStringArray
+@export var snap_labels: bool = false
 @export var axis_label_size: int = 24
+@export var axis_color: Color = Color(1.0, 1.0, 1.0, 0.5)
+@export_range(-1, 100) var outline_width: float = 5.0
 @export_range(0, 100) var inline_count: int = 3
 @export_range(-1, 100) var inline_width: float = 1.0
 @export var inline_color: Color = Color(1.0, 1.0, 1.0, 0.25)
+@export var data_outline_color: Color = Color(1.0, 1.0, 1.0, 1.0)
+@export var data_fill_color: Color = Color(1.0, 1.0, 1.0, 0.5)
+@export_range(-1, 100) var data_outline_width: float = 2.0
+
+
+@export_group("Axies")
+@export_range(3, 100) var axis_count: int = 6
+@export_range(-1, 100) var axis_width: float = 1.0
+@export_range(0, 127) var axis_offset: int = 0
+@export var axis_labels: PackedStringArray
+
 
 @export_group("Data")
-@export_range(0, 127) var axis_offset: int = 0
-@export var values: Array[float]
+@export var values: PackedFloat64Array
 @export var data_min: float = 0.0
 @export var data_max: float = 1.0
 @export_range(0.001, 1) var data_scale: float = 0.9
-@export_range(-1, 100) var data_outline_width: float = 2.0
-@export var data_outline_color: Color = Color(1.0, 1.0, 1.0, 1.0)
-@export var data_fill_color: Color = Color(1.0, 1.0, 1.0, 0.5)
+
 
 var outline: PackedVector2Array
 var inlines: Array[PackedVector2Array]
@@ -33,7 +40,7 @@ var data_points: PackedVector2Array
 var data_fill_points: PackedVector2Array
 var colors: PackedColorArray
 
-func get_vec(i:float) -> Vector2: return Vector2.UP.rotated((i*PI) / axis_count)
+func get_vec(i:float) -> Vector2: return Vector2.UP.rotated((i*PI) / axis_count + rotation_offset)
 
 func _ready() -> void: recalculate_graph()
 
@@ -80,13 +87,38 @@ func _draw() -> void:
 	
 	var font := ThemeDB.get_default_theme().default_font
 	
-	for i in axis_count:
-		var pos := get_vec(i*2) * (radius + axis_label_size*0.75)
-		
-		var text := axis_labels[(i+axis_offset) % axis_labels.size()]
-		var t_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, axis_label_size)
-		var h_offset := -0.5 if absf(pos.x)<0.1 else (-1.0 if pos.x < 0.0 else 0.0)
-		pos += Vector2(t_size.x*h_offset, t_size.y*0.25)
-		
-		draw_string_outline(font, pos, text, HORIZONTAL_ALIGNMENT_CENTER, -1, axis_label_size, 8, Color.BLACK)
-		draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_CENTER, -1, axis_label_size, colors[i*2])
+	if !snap_labels:
+		for i in axis_count:
+			var pos := get_vec(i*2) * (radius + axis_label_size*0.75)
+			
+			var text := axis_labels[(i+axis_offset) % axis_labels.size()]
+			var t_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, axis_label_size)
+			var h_offset := -0.5 if absf(pos.x)<0.1 else (-1.0 if pos.x < 0.0 else 0.0)
+			pos += Vector2(t_size.x*h_offset, t_size.y*0.25)
+			
+			draw_string_outline(font, pos, text, HORIZONTAL_ALIGNMENT_CENTER, -1, axis_label_size, 8, Color.BLACK)
+			draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_CENTER, -1, axis_label_size, colors[i*2])
+	else:
+		for i in axis_count:
+			var text := axis_labels[(i+axis_offset) % axis_labels.size()]
+			var t_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, axis_label_size)
+			
+			var pos := get_vec(i*2) * (radius + axis_label_size*0.75)
+			var ang := (PI/axis_count) * (i*2+1) + rotation_offset
+			pos += Vector2.RIGHT.rotated(ang) * 4.0
+			
+			
+			if ang > PI/2.0 && ang < PI*1.5:
+				pass
+				var ts := (t_size*Vector2(1, -0.5)).rotated(ang)
+				ang -= PI
+				pos += ts
+				
+			
+			draw_set_transform(pos, ang)
+			
+			var h_offset := -0.5 if absf(pos.x)<0.1 else (-1.0 if pos.x < 0.0 else 0.0)
+			pos += Vector2(t_size.x*h_offset, t_size.y*0.25)
+			
+			draw_string_outline(font, Vector2.ZERO, text, HORIZONTAL_ALIGNMENT_CENTER, -1, axis_label_size, 8, Color.BLACK)
+			draw_string(font, Vector2.ZERO, text, HORIZONTAL_ALIGNMENT_CENTER, -1, axis_label_size, colors[i*2])

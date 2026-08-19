@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://oryf8i6wsarh"]
+
+[ext_resource type="Script" uid="uid://co62g75qamun2" path="res://game/levelbody.gd" id="1_j1e1k"]
+[ext_resource type="Material" uid="uid://bgesf51sw86dh" path="res://shaders/world/solid_triplanar_fast.res" id="2_dtn00"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_j1e1k"]
+left_to_right = 0.0
+size = Vector3(8, 8, 8)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_j1e1k"]
+points = PackedVector3Array(-4, 4, 4, 4, -4, 4, -4, 4, -4, -4, -4, 4, 4, -4, -4, -4, -4, -4)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ail48"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="slope_2x2" type="RigidBody3D" unique_id=1096154872]
+collision_layer = 17
+freeze = true
+script = ExtResource("1_j1e1k")
+mesh = SubResource("PrismMesh_j1e1k")
+material = ExtResource("2_dtn00")
+shape = SubResource("ConvexPolygonShape3D_j1e1k")
+metadata/_custom_type_script = "uid://co62g75qamun2"
+metadata/_edit_group_ = true
+
+[node name="mesh" type="MeshInstance3D" parent="." unique_id=1331379362]
+material_override = ExtResource("2_dtn00")
+mesh = SubResource("PrismMesh_j1e1k")
+skeleton = NodePath("../../..")
+
+[node name="collider" type="CollisionShape3D" parent="." unique_id=1407021296]
+shape = SubResource("ConvexPolygonShape3D_j1e1k")
+
+[node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1087935861]
+delta_interval = 0.2
+replication_config = SubResource("SceneReplicationConfig_ail48")

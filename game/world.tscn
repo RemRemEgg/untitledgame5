@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://bninn4jr1in7u"]
 
 [ext_resource type="Script" uid="uid://bo6xcf3euvm31" path="res://game/world.gd" id="1_aseec"]
-[ext_resource type="PackedScene" uid="uid://b5r0t8pi8r5fv" path="res://game/levelbody.tscn" id="3_4xpgs"]
-[ext_resource type="Shader" uid="uid://b3moxqeqah5b5" path="res://shaders/level/solid_triplanar_fast.gdshader" id="3_fhh06"]
+[ext_resource type="PackedScene" uid="uid://d4bevdo604r1d" path="res://vfx/particle_burst.tscn" id="3_4xpgs"]
+[ext_resource type="PackedScene" uid="uid://whsw3yxwqqwi" path="res://vfx/particle_generic.tscn" id="3_805w3"]
 [ext_resource type="Sky" uid="uid://6lwbxfeym4w4" path="res://shaders/space.res" id="3_tvmmn"]
-[ext_resource type="Texture2D" uid="uid://o6uolq8s7wlq" path="res://textures/3d/prototype_harmful.png" id="4_m4twg"]
+[ext_resource type="PackedScene" uid="uid://tqeqbsi0kh8u" path="res://vfx/player_death.tscn" id="4_4xpgs"]
+[ext_resource type="PackedScene" uid="uid://bstuwuyxucoub" path="res://vfx/block_break.tscn" id="6_fhh06"]
 
 [sub_resource type="Environment" id="Environment_4xpgs"]
 background_energy_multiplier = 0.0
@@ -12,24 +13,79 @@ sky = ExtResource("3_tvmmn")
 ambient_light_source = 1
 ambient_light_energy = 0.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0q2ew"]
-render_priority = 0
-shader = ExtResource("3_fhh06")
-shader_parameter/tex = ExtResource("4_m4twg")
-shader_parameter/modulo = Color(0.10590724, 0.16689098, 0.16008803, 1)
-shader_parameter/roughness = 0.2250000106875
-shader_parameter/specular = 1.0
-shader_parameter/scale = Vector3(0.25, 0.25, 0.25)
-shader_parameter/offset = Vector3(0, 0, 0)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fhh06"]
+resource_local_to_scene = true
+shading_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+metallic_specular = 0.1
+roughness = 0.0
+texture_filter = 0
+disable_receive_shadows = true
+distance_fade_min_distance = 32.0
+distance_fade_max_distance = 1.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_805w3"]
-material = SubResource("ShaderMaterial_0q2ew")
-flip_faces = true
-size = Vector3(320, 64, 320)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m4twg"]
+resource_local_to_scene = true
+shading_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+metallic_specular = 0.1
+roughness = 0.0
+texture_filter = 0
+disable_receive_shadows = true
+distance_fade_min_distance = 32.0
+distance_fade_max_distance = 1.0
 
-[sub_resource type="PlaceholderMesh" id="PlaceholderMesh_4xpgs"]
+[sub_resource type="Curve" id="Curve_ocu5k"]
+_limits = [-360.0, 360.0, 0.0, 1.0]
+_data = [Vector2(0, -360), 0.0, 0.0, 0, 0, Vector2(0.9829546, 360), 0.0, 0.0, 0, 0]
+point_count = 2
 
-[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_4xpgs"]
+[sub_resource type="CurveTexture" id="CurveTexture_ocu5k"]
+curve = SubResource("Curve_ocu5k")
+
+[sub_resource type="Curve" id="Curve_hirkt"]
+_limits = [0.0, 10.0, 0.0, 1.0]
+_data = [Vector2(0, 5.0423727), 0.0, 0.0, 0, 0, Vector2(0.49659094, 1.4830503), -3.7288115, -3.7288115, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_0n65x"]
+curve_x = SubResource("Curve_hirkt")
+curve_y = SubResource("Curve_hirkt")
+curve_z = SubResource("Curve_hirkt")
+
+[sub_resource type="Curve" id="Curve_7mp7u"]
+bake_resolution = 64
+_data = [Vector2(0, 0.99576277), 0.0, 0.30030724, 0, 0, Vector2(0.70113635, 0.114406824), -0.59660995, -0.59660995, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_begxa"]
+width = 64
+curve = SubResource("Curve_7mp7u")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0q2ew"]
+resource_local_to_scene = true
+emission_shape_scale = Vector3(0.5, 0.5, 0.5)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_curve = SubResource("CurveTexture_ocu5k")
+use_rotation_3d = true
+rotation_3d_min = Vector3(-180, -180, -180)
+rotation_3d_max = Vector3(180, 180, 180)
+spread = 180.0
+initial_velocity_min = 8.0
+initial_velocity_max = 12.0
+use_rotation_velocity_3d = true
+rotation_velocity_3d_min = Vector3(-180, -180, -180)
+rotation_velocity_3d_max = Vector3(180, 180, 180)
+rotation_velocity_3d_curve = SubResource("CurveXYZTexture_0n65x")
+gravity = Vector3(0, -4, 0)
+damping_min = 12.000001
+damping_max = 12.000001
+scale_min = 0.24
+scale_max = 0.59999996
+scale_curve = SubResource("CurveTexture_begxa")
 
 [node name="world" type="Node3D" unique_id=86432918]
 script = ExtResource("1_aseec")
@@ -48,56 +104,33 @@ transform = Transform3D(0.35355344, 0.73919886, 0.57322335, 0.61237234, 0.280330
 light_indirect_energy = 10.0
 editor_only = true
 
-[node name="bounds" type="Node3D" parent="." unique_id=196022629]
+[node name="visfix" type="Node3D" parent="." unique_id=2017152421]
+process_mode = 4
+visible = false
 
-[node name="mesh" type="MeshInstance3D" parent="bounds" unique_id=633165386]
-mesh = SubResource("BoxMesh_805w3")
+[node name="particle_generic" parent="visfix" unique_id=1426890029 instance=ExtResource("3_805w3")]
+visible = false
+material_override = SubResource("StandardMaterial3D_fhh06")
 
-[node name="x" parent="bounds" unique_id=1568560937 instance=ExtResource("3_4xpgs")]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 160, 0, 0)
-collision_mask = 17
-mesh = SubResource("PlaceholderMesh_4xpgs")
-is_harmful = true
-shape = SubResource("WorldBoundaryShape3D_4xpgs")
+[node name="particle_burst" parent="visfix" unique_id=1128988998 instance=ExtResource("3_4xpgs")]
+visible = false
+material_override = SubResource("StandardMaterial3D_m4twg")
 
-[node name="xi" parent="bounds" unique_id=1096154872 instance=ExtResource("3_4xpgs")]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -160, 0, 0)
-collision_mask = 17
-mesh = SubResource("PlaceholderMesh_4xpgs")
-is_harmful = true
-shape = SubResource("WorldBoundaryShape3D_4xpgs")
+[node name="death_effect" parent="visfix" unique_id=1905426610 instance=ExtResource("4_4xpgs")]
+visible = false
 
-[node name="y" parent="bounds" unique_id=631682558 instance=ExtResource("3_4xpgs")]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0, 32, 0)
-collision_mask = 17
-mesh = SubResource("PlaceholderMesh_4xpgs")
-is_harmful = true
-shape = SubResource("WorldBoundaryShape3D_4xpgs")
+[node name="break_effect" parent="visfix" unique_id=1593803642 instance=ExtResource("6_fhh06")]
+visible = false
+process_material = SubResource("ParticleProcessMaterial_0q2ew")
 
-[node name="yi" parent="bounds" unique_id=1306177331 instance=ExtResource("3_4xpgs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -32, 0)
-mesh = SubResource("PlaceholderMesh_4xpgs")
-is_harmful = true
-shape = SubResource("WorldBoundaryShape3D_4xpgs")
-
-[node name="z" parent="bounds" unique_id=596572299 instance=ExtResource("3_4xpgs")]
-transform = Transform3D(1.9106855e-15, -4.371139e-08, 1, -1, -4.371139e-08, 0, 4.371139e-08, -1, -4.371139e-08, 0, 0, 160)
-collision_mask = 17
-mesh = SubResource("PlaceholderMesh_4xpgs")
-is_harmful = true
-shape = SubResource("WorldBoundaryShape3D_4xpgs")
-
-[node name="zi" parent="bounds" unique_id=314128656 instance=ExtResource("3_4xpgs")]
-transform = Transform3D(1.9106855e-15, -4.371139e-08, -1, -1, -4.371139e-08, 0, -4.371139e-08, 1, -4.371139e-08, 0, 0, -160)
-collision_mask = 17
-mesh = SubResource("PlaceholderMesh_4xpgs")
-is_harmful = true
-shape = SubResource("WorldBoundaryShape3D_4xpgs")
+[node name="sd_walls" type="Node3D" parent="." unique_id=1577029622]
 
 [node name="players" type="Node3D" parent="." unique_id=540503973]
 
 [node name="projectiles" type="Node3D" parent="." unique_id=1944024570]
 
 [node name="visuals" type="Node3D" parent="." unique_id=1565964739]
+
+[node name="sounds" type="Node3D" parent="." unique_id=1052009255]
 
 [node name="levelgeo" type="Node3D" parent="." unique_id=2081258403]

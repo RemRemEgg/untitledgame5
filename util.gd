@@ -92,3 +92,42 @@ static func normalize_array(arr: Array[float]) -> Array[float]:
 
 static func has_frac(f: float) -> bool:
 	return !is_zero_approx(f - roundf(f))
+
+
+static func hp(x: float, a: float) -> float:
+	return x / (absf(x) + a)
+
+
+static func frac_to_lin(x: float) -> float: return 1.0-(1.0/x) if x <= 1.0 else x - 1.0
+static func lin_to_frac(x: float) -> float: return -1.0/(x-1.0) if x <= 0.0 else x + 1.0
+
+
+static func calculate_spider(spider: PackedFloat64Array, stat_groups: Array[Array]) -> void:
+	var smax := 0.1
+	var smin := -0.1
+	
+	for i in stat_groups.size():
+		spider[i] = 0
+		for stat:Stat in (stat_groups[i] as Array[Stat]):
+			#Console.print(&"spider is at %s, adding %s" % [spider[i], stat.name])
+			var frac := 0.0
+			if is_zero_approx(stat.get_base_value()):
+				#Console.print(&" is zero approx!!")
+				frac = (stat.value+1) / (stat.get_base_value()+1)
+			else:
+				frac = stat.value / stat.get_base_value()
+			spider[i] += hp(frac_to_lin(frac), 2.0) * (1 if stat.is_good else -1)
+			#Console.print(&" spider is now %s" % spider[i])
+		spider[i] /= stat_groups[i].size()
+		smax = maxf(smax, spider[i])
+		smin = minf(smin, spider[i])
+	
+	#Console.print(&"## Spider pre-fix %s" % Util.format_array(spider))
+	
+	smax += 0.25
+	smin -= 0.25
+	var r := (smax - smin) # radius
+	for i in stat_groups.size():
+		spider[i] = (spider[i] - smin) / r
+		
+	#Console.print(&"@@ Spider post-fix %s" % Util.format_array(spider))

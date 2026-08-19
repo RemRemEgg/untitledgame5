@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://b2uuw1g5lq3iq"]
+
+[ext_resource type="Script" uid="uid://co62g75qamun2" path="res://game/levelbody.gd" id="1_nako1"]
+[ext_resource type="Material" uid="uid://bgesf51sw86dh" path="res://shaders/world/solid_triplanar_fast.res" id="2_hdi0s"]
+[ext_resource type="ArrayMesh" uid="uid://dcddbyxsbpojg" path="res://rooms/roomgeo/hole_1x1.res" id="2_mqa17"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_hdi0s"]
+data = PackedVector3Array(2, -3, 3, -2, -2, 3, 2, -2, 3, 2, -3, 3, -2, -3, 3, -2, -2, 3, -2, -2, 3, 2, 2, 3, 2, -2, 3, -2, -2, 3, -2, 2, 3, 2, 2, 3, 2, -3, -3, -2, -2, -3, -2, -3, -3, 2, -3, -3, 2, -2, -3, -2, -2, -3, 2, -2, -3, -2, 2, -3, -2, -2, -3, 2, -2, -3, 2, 2, -3, -2, 2, -3, 2, 2, -3, -2, 3, -3, -2, 2, -3, 2, 2, -3, 2, 3, -3, -2, 3, -3, 2, -2, 2, 2, 2, 3, 2, 2, 2, 2, -2, 2, 2, -2, 3, 2, 2, 3, 2, -2, 2, 2, -3, -3, 2, -2, 3, 2, -2, 3, 2, -3, -3, 2, -3, 3, 2, -3, -3, 2, -2, 2, 2, -2, -2, 2, -3, -3, 2, -2, -2, 2, -2, -3, 2, -2, -2, 2, 2, -3, 2, -2, -3, 2, -2, -2, 2, 2, -2, 2, 2, -3, 2, 2, -2, 2, 3, 3, 2, 2, -3, 2, 2, -3, 2, 3, 3, 2, 3, -3, 2, 3, 3, 2, 2, -2, 2, 2, 2, 2, 3, 3, 2, 2, 2, 2, 2, 3, -2, -2, -3, -2, -3, 3, -2, -3, -3, -2, -2, -2, -2, -3, 3, -2, -2, -3, -2, -3, 3, -2, -2, -2, -2, -2, 2, -2, -2, -3, -2, 2, -2, -2, -2, -2, -2, -3, 3, -2, -2, 2, -2, -2, 3, -2, -2, 2, -2, 2, 3, -2, -2, 3, -2, -2, 2, -2, 2, 2, -2, 2, 3, -2, -2, -3, -2, 2, -3, -2, 2, -2, -2, 2, -2, -2, 2, -3, -2, 3, 3, -2, 3, 3, -2, 2, -3, -2, 3, -3, -2, 2, -2, -2, 3, 3, -2, 2, 2, -2, 2, 2, -2, 3, 3, -2, 2, 3, -2, -2, 2, 2, 2, 2, -2, 2, 2, -2, -2, 2, 2, -2, 2, 2, 2, 2, -2, -2, 2, -2, -2, -2, 2, -2, 2, 2, -2, 2, -2, -2, -2, 2, -2, -2, -2, 2, 3, 2, 2, 2, 2, 2, 3, -2, 2, 3, -2, 2, 2, 2, 2, 2, 2, 2, -2, -2, 2, 2, 2, 2, 2, 2, 2, -2, -2, 2, -2, -2, 2, 2, 2, 2, -2, 2, -2, -2, -2, 2, -2, -2, 2, -2, 2, -2, -2, -2, -2, -2, -2, 3, -3, 2, 3, 3, -2, 3, 3, -2, 3, -3, 2, 3, -3, 2, 3, 3, -2, 2, 3, 2, 3, 3, 2, 2, 3, -2, 2, 3, -2, 3, 3, 2, 3, 3, -2, -3, 3, 2, -3, -3, -2, -3, -3, -2, -3, 3, 2, -3, 3, 2, -3, -3)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ail48"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="solid_2x2" type="RigidBody3D" unique_id=1096154872]
+collision_layer = 17
+freeze = true
+script = ExtResource("1_nako1")
+mesh = ExtResource("2_mqa17")
+material = ExtResource("2_hdi0s")
+shape = SubResource("ConcavePolygonShape3D_hdi0s")
+metadata/_custom_type_script = "uid://co62g75qamun2"
+metadata/_edit_group_ = true
+
+[node name="mesh" type="MeshInstance3D" parent="." unique_id=1331379362]
+material_override = ExtResource("2_hdi0s")
+mesh = ExtResource("2_mqa17")
+skeleton = NodePath("../../..")
+
+[node name="collider" type="CollisionShape3D" parent="." unique_id=1407021296]
+shape = SubResource("ConcavePolygonShape3D_hdi0s")
+
+[node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1087935861]
+delta_interval = 0.2
+replication_config = SubResource("SceneReplicationConfig_ail48")

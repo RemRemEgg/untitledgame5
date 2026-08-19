@@ -13,8 +13,8 @@ var mat_normal := load("res://shaders/tile.res") as ShaderMaterial
 func _run() -> void:
 	print(&"Fixing level...")
 	root = EditorInterface.get_edited_scene_root()
-	if !(root is Level || root is Room):
-		printerr(&"This scene is not a level/room!")
+	if !(root is Room):
+		printerr(&"This scene is not a room!")
 		return
 	
 	scan_node(root)
@@ -25,7 +25,7 @@ func _run() -> void:
 
 func scan_node(node: Node) -> void:
 	var is_subscene := (node != root) && (node.owner != root)
-	if is_subscene || node.name == &"bounds":
+	if is_subscene || node.name.contains(&"light_orb"):
 		print(&"Node '%s' is subscene, skipping" % node.name)
 		return
 	

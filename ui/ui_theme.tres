@@ -1,7 +1,20 @@
 [gd_resource type="Theme" format=3 uid="uid://bg5liorxv7qwu"]
 
+[ext_resource type="Texture2D" uid="uid://b4w2soxjaag46" path="res://textures/3d/prototype.png" id="1_udl1o"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4mq11"]
+texture = ExtResource("1_udl1o")
+axis_stretch_horizontal = 2
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dl4ok"]
+texture = ExtResource("1_udl1o")
+axis_stretch_horizontal = 2
+
 [resource]
 Button/constants/h_separation = 4
+Button/font_sizes/font_size = 16
+Button/styles/hover = SubResource("StyleBoxTexture_4mq11")
+Button/styles/normal = SubResource("StyleBoxTexture_dl4ok")
 MarginContainer/constants/margin_bottom = 12
 MarginContainer/constants/margin_left = 12
 MarginContainer/constants/margin_right = 12

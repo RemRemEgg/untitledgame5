@@ -84,6 +84,30 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_ienge")
 theme_override_styles/hover = SubResource("StyleBoxFlat_egjv3")
 text = "START GAME"
 
+[node name="fullscreen" type="Button" parent="split/playereditor" unique_id=1982898571]
+process_mode = 3
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme = ExtResource("1_nmq56")
+theme_override_colors/font_color = Color(0.03686098, 0.036860984, 0.036860954, 1)
+theme_override_colors/font_pressed_color = Color(0.948659, 0.9486591, 0.948659, 1)
+theme_override_colors/font_hover_color = Color(0.036860913, 0.036860976, 0.03686115, 1)
+theme_override_font_sizes/font_size = 16
+text = "Fullscreen"
+
+[node name="volume" type="HBoxContainer" parent="split/playereditor" unique_id=715532460]
+layout_mode = 2
+
+[node name="slider" type="HSlider" parent="split/playereditor/volume" unique_id=1745328923]
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+
+[node name="test_sound" type="Button" parent="split/playereditor/volume" unique_id=554010884]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = " Test Volume "
+
 [node name="playerlist" type="VFlowContainer" parent="split" unique_id=179132721]
 layout_mode = 2
 size_flags_horizontal = 3

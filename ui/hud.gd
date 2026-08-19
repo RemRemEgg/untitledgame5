@@ -9,8 +9,7 @@ extends CanvasLayer
 @onready var hit_marker: TextureRect = $hit_marker as TextureRect
 @onready var hit_marker_invul: TextureRect = $hit_marker_invul as TextureRect
 
-@onready var charge_1: RichTextLabel = $spells/charge1 as RichTextLabel
-@onready var charge_2: RichTextLabel = $spells/charge2 as RichTextLabel
+@onready var spelldraw: SpellDraw = (func()->SpellDraw:var sd:=$spell_draw;sd.set_script(SpellDraw);sd.hud=self;return sd).call() as SpellDraw
 
 @onready var chatbox: RichTextLabel = $chat/chatbox as RichTextLabel
 var chatduration: Array[float] = []
@@ -18,6 +17,7 @@ var chatduration: Array[float] = []
 @onready var gun_debug: RichTextLabel = $gun/gun_debug as RichTextLabel
 
 @onready var health: ProgressBar = $stats/health as ProgressBar
+@onready var armor: ProgressBar = $stats/armor as ProgressBar
 @onready var stam_true: ProgressBar = $stats/stam_true as ProgressBar
 @onready var stam_round: ProgressBar = $stats/stam_round as ProgressBar
 
@@ -48,6 +48,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	spelldraw.queue_redraw()
 	hurt_timer -= delta
 	hit_marker_timer -= delta
 	hit_marker_invul_timer -= delta
@@ -55,6 +56,7 @@ func _process(delta: float) -> void:
 	
 	# hurt indicator
 	hurt_visual.visible = (hurt_timer >= 0.0)
+	hurt_visual.modulate = Color.RED.lerp(Color.LIGHT_STEEL_BLUE, player.armor*0.85 / player.armor_density.value)
 	
 	# crosshairs
 	crosshairs.rotation = (player.gun.fire_timer * (PI/2.0)) \
@@ -69,24 +71,21 @@ func _process(delta: float) -> void:
 	if player.gun.fire_timer != 1.0:
 		crosshair.modulate = Color(0.5, 0.65, 1.0, 1.0)
 	
-	charge_1.text = &"[color=#b85]%s[color=#5af]%s" %\
-			[&"≡" if Util.has_frac(player.spell_1.charges) else &"", &"■".repeat(floori(player.spell_1.charges))]
-	charge_2.text = &"[color=#5af]%s[color=#b85]%s" %\
-			[&"■".repeat(floori(player.spell_2.charges)), &"≡" if Util.has_frac(player.spell_2.charges) else &""]
-	
 	# stats
 	health.value = player.health
 	health.max_value = player.max_health.value
+	armor.value = player.armor
+	armor.max_value = player.armor_density.value
 	stam_true.value = player.stamina*100.0 / player.max_stamina.value
 	stam_round.value = floorf(player.stamina)*100.0 / player.max_stamina.value
 	
 	# debug
-	var perf := Performance.get_monitor(Performance.TIME_PROCESS) *1000
-	debug.text = "%03.2f : %03.0f/%03.0f FPS\n%03.2f UPS\n%s Wins" %\
+	var perf := Performance.get_monitor(Performance.TIME_PROCESS) * 1000
+	debug.text = "(%03.2f) %03.0f/%03.0f FPS\n%03.2f UPS\n%s Wins" %\
 		[perf, Engine.get_frames_per_second(), 1000/perf, player.velocity.length(), Network.players[player.uuid].wins]
 	
 	# gun debug
-	gun_debug.text = "%s / %s \n%02.1f %02.1f" % [player.gun.clip, player.procgun.clip_size.value_int, player.gun.fire_timer, player.gun.reload]
+	gun_debug.text = "%s / %s" % [player.gun.clip, player.procgun.clip_size.value_int]
 	
 	# win lose text
 	win_lose_display.visible = (win_lose_timer >= 0.0 && win_lose_timer <= 3.0)
@@ -111,8 +110,33 @@ func _process(delta: float) -> void:
 		Input.mouse_mode = Game.mouse_fallback
 
 
-func add_chat_message(msg: String) -> void:
+func add_chat_message(msg: String, duration: float = 10.0) -> void:
 	Console.print("[chat] " + msg)
 	if chatbox.text: chatbox.text += &"\n"+msg
 	else: chatbox.text += msg
-	chatduration.append(10.0)
+	chatduration.append(duration)
+
+
+class SpellDraw extends Control:
+	var hud: HUD
+	
+	func _draw() -> void:
+		var cntr := size / 2.0
+		
+		draw_spell(cntr, hud.player.spell_1.charges, Vector2.LEFT, Color.SKY_BLUE, Color.DARK_CYAN)
+		draw_spell(cntr, hud.player.spell_2.charges, Vector2.RIGHT, Color.SKY_BLUE, Color.DARK_MAGENTA)
+	
+	func draw_spell(cntr: Vector2, charges: float, dir: Vector2, inside: Color, outside: Color) -> void:
+		var s1c := floori(charges)
+		var s1p := fmod(charges, 1)
+		var s1t := s1c + ceili(s1p)
+		var p := dir.rotated((1.0-s1t)*0.25 / 2.0)
+		for i in s1t:
+			if s1p && i == 0:
+				var s1cp := s1p * 0.75 + 0.15
+				draw_circle(cntr + p*56.0, 6.0*s1cp, outside)
+				draw_circle(cntr + p*56.0, 3.0*s1cp, inside)
+			else:
+				draw_circle(cntr + p*56.0, 7.0, outside)
+				draw_circle(cntr + p*56.0, 5.0, inside)
+			p = p.rotated(0.25)

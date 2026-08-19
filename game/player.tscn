@@ -7,11 +7,11 @@
 [ext_resource type="PackedScene" uid="uid://0rgy345h86et" path="res://models/dingus.glb" id="5_d631c"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
-radius = 0.35
-height = 1.9
+radius = 0.6
+height = 2.9
 
 [sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_d631c"]
-length = 0.5
+length = 0.75
 slide_on_slope = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_d631c"]
@@ -24,8 +24,11 @@ shader_parameter/color = Color(0, 0, 0, 1)
 resource_local_to_scene = true
 next_pass = SubResource("ShaderMaterial_d631c")
 albedo_color = Color(0, 1, 1, 1)
-metallic = 1.0
-roughness = 0.85
+metallic_specular = 0.0
+roughness = 0.0
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.2
 stencil_flags = 2
 
 [sub_resource type="Environment" id="Environment_d631c"]
@@ -70,6 +73,21 @@ fill_from = Vector2(0.5, 0)
 fill_to = Vector2(0, 0)
 repeat = 2
 
+[sub_resource type="Gradient" id="Gradient_wkljg"]
+resource_local_to_scene = true
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 1.045)
+colors = PackedColorArray(0.16735205, 0.60006917, 0.6893362, 0.8784314, 0.21176471, 0.21176471, 0.21176471, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_iyaem"]
+resource_local_to_scene = true
+gradient = SubResource("Gradient_wkljg")
+width = 140
+height = 28
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0, 0)
+repeat = 2
+
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4flbx"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
@@ -86,8 +104,12 @@ properties/3/replication_mode = 1
 properties/4/path = NodePath(".:velocity")
 properties/4/spawn = true
 properties/4/replication_mode = 1
+properties/5/path = NodePath(".:scale")
+properties/5/spawn = true
+properties/5/replication_mode = 2
 
 [node name="player" type="CharacterBody3D" unique_id=541339310]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4505503, 0)
 collision_layer = 34
 collision_mask = 3
 wall_min_slide_angle = 0.43633232
@@ -97,15 +119,15 @@ floor_max_angle = 1.0471976
 shape = SubResource("CapsuleShape3D_sh265")
 
 [node name="seperation_ray" type="CollisionShape3D" parent="." unique_id=561018243]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.4568354, -0.5)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.66420317, -0.6216756)
 shape = SubResource("SeparationRayShape3D_d631c")
 
 [node name="player_model" parent="." unique_id=1803498987 instance=ExtResource("5_d631c")]
-transform = Transform3D(-0.235, 0, -3.5484014e-08, 0, 0.235, 0, 3.5484014e-08, 0, -0.235, 0, -0.9314044, -0.035021186)
+transform = Transform3D(-0.36, 0, -5.435849e-08, 0, 0.36, 0, 5.435849e-08, 0, -0.36, 0, -1.4160192, -0.035021186)
 material = SubResource("StandardMaterial3D_4fto2")
 
 [node name="camera" type="Camera3D" parent="." unique_id=1844707478]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75650024, -0.054464996)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0144523, -0.054464996)
 cull_mask = 1
 environment = SubResource("Environment_d631c")
 attributes = SubResource("CameraAttributesPractical_w5y0b")
@@ -136,7 +158,7 @@ fov = 50.0
 
 [node name="cards_menu" parent="camera/ui3d_container/ui3d_vp" unique_id=361756010 instance=ExtResource("3_du4nq")]
 
-[node name="OmniLight3D" type="OmniLight3D" parent="camera/ui3d_container/ui3d_vp" unique_id=130150982]
+[node name="card_light" type="OmniLight3D" parent="camera/ui3d_container/ui3d_vp" unique_id=130150982]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 2)
 layers = 2
 omni_attenuation = 0.0
@@ -146,7 +168,7 @@ omni_shadow_mode = 0
 layer = 16
 
 [node name="nametag" type="Label3D" parent="." unique_id=673160830]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1387384, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7031839, 0)
 pixel_size = 0.003
 billboard = 1
 no_depth_test = true
@@ -158,10 +180,21 @@ vertical_alignment = 2
 [node name="healthbar" type="Sprite3D" parent="nametag" unique_id=202121411]
 cast_shadow = 0
 offset = Vector2(0, -8)
+pixel_size = 0.013
 billboard = 1
 no_depth_test = true
 texture_filter = 0
 texture = SubResource("GradientTexture2D_d631c")
+
+[node name="armorbar" type="Sprite3D" parent="nametag" unique_id=2010822960]
+cast_shadow = 0
+offset = Vector2(0, -8)
+pixel_size = 0.013
+billboard = 1
+no_depth_test = true
+texture_filter = 0
+render_priority = -1
+texture = SubResource("GradientTexture2D_iyaem")
 
 [node name="light_large" type="OmniLight3D" parent="." unique_id=1045662762]
 light_energy = 0.2

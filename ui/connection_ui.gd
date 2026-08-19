@@ -1,9 +1,10 @@
-extends MarginContainer
+extends Control
 
 func _ready() -> void:
 	($vbox/host as Button).pressed.connect(_host_game)
 	($vbox/join as Button).pressed.connect(_join_game)
 	if Console.AUTO_JOIN: dbg_auto_join()
+
 
 func dbg_auto_join() -> void:
 	var error := Network.start_server()
@@ -19,11 +20,11 @@ func dbg_auto_join() -> void:
 	Network.change_to_state(Network.NS_LOBBY)
 
 
-
 func _host_game() -> void:
 	Console.print(&"hosting game")
 	var e := Network.start_server()
 	if !e: Network.change_to_state(Network.NS_LOBBY)
+
 
 func _join_game() -> void:
 	var ip := ($vbox/join_ip as LineEdit).text

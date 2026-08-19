@@ -3,15 +3,57 @@
 [ext_resource type="Script" uid="uid://bwqfk5bcerlb7" path="res://ui/info.gd" id="1_tphq3"]
 [ext_resource type="Script" uid="uid://b842d5orwjbbc" path="res://ui/spider_graph.gd" id="2_xhkx0"]
 [ext_resource type="PackedScene" uid="uid://ba8bixelqjeyx" path="res://ui/cards/card_icon.tscn" id="3_f4xp4"]
+[ext_resource type="Texture2D" uid="uid://w326xfbtt1ok" path="res://textures/editor/spidergraph.svg" id="4_hsjtu"]
+[ext_resource type="Texture2D" uid="uid://cu3fe2k455lav" path="res://textures/decks/deck_init.png" id="4_p6p3q"]
+[ext_resource type="Texture2D" uid="uid://8krwtbql3iuu" path="res://ui/cursor.png" id="4_ppbss"]
+
+[sub_resource type="SystemFont" id="SystemFont_srpbi"]
+font_names = PackedStringArray("OCR A")
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_q43x7"]
+font = SubResource("SystemFont_srpbi")
+font_size = 64
+
+[sub_resource type="LabelSettings" id="LabelSettings_ppbss"]
+font = SubResource("SystemFont_srpbi")
+font_size = 28
+
+[sub_resource type="SystemFont" id="SystemFont_ppbss"]
+font_names = PackedStringArray("Impact")
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_0cekn"]
+font = SubResource("SystemFont_ppbss")
+font_size = 48
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q43x7"]
+bg_color = Color(1, 1, 1, 1)
+draw_center = false
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p6p3q"]
+texture = ExtResource("4_p6p3q")
+axis_stretch_horizontal = 2
+modulate_color = Color(0.19401044, 0.19401044, 0.19401044, 1)
+
+[sub_resource type="Theme" id="Theme_hsjtu"]
+TabContainer/styles/panel = SubResource("StyleBoxFlat_q43x7")
+TabContainer/styles/tabbar_background = SubResource("StyleBoxTexture_p6p3q")
 
 [node name="info" type="BoxContainer" unique_id=653032974]
-anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 script = ExtResource("1_tphq3")
+metadata/_edit_lock_ = true
 
 [node name="player_list" type="FlowContainer" parent="." unique_id=91436475]
 custom_minimum_size = Vector2(50, 0)
@@ -25,12 +67,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.4
 vertical = true
+metadata/_edit_lock_ = true
 
 [node name="player_name" type="Label" parent="info_list" unique_id=1738489801]
 layout_mode = 2
 mouse_filter = 1
-theme_override_font_sizes/font_size = 48
 text = "< Player Name >"
+label_settings = SubResource("LabelSettings_q43x7")
 horizontal_alignment = 1
 
 [node name="team_color" type="ColorRect" parent="info_list" unique_id=1252923936]
@@ -38,45 +81,181 @@ custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 
 [node name="quick_stats" type="Label" parent="info_list" unique_id=856730904]
+custom_minimum_size = Vector2(0, 339)
 layout_mode = 2
 mouse_filter = 1
-theme_override_font_sizes/font_size = 24
-text = "0 Wins  0 KD  0 Ping 0 Bitches"
+text = "0 Wins  0 KD  0 Ping  0 Bitches"
+label_settings = SubResource("LabelSettings_ppbss")
 horizontal_alignment = 1
 
-[node name="spider_graph" type="Control" parent="info_list" unique_id=1006006992]
+[node name="spiders" type="Control" parent="info_list" unique_id=718929271]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -190)
+
+[node name="player_spider" type="Control" parent="info_list/spiders" unique_id=1284638727]
+custom_minimum_size = Vector2(64, 64)
+anchors_preset = 0
+offset_top = -152.0
+offset_right = 64.0
+offset_bottom = -88.0
+size_flags_horizontal = 4
+size_flags_vertical = 6
+offset_transform_position = Vector2(0, 32)
 script = ExtResource("2_xhkx0")
-radius = 256.0
-axis_labels = PackedStringArray("Sp. Defense", "Toughness", "Agility", "Ammo", "Lethality", "Sp. Attack")
+radius = 200.0
+snap_labels = true
+inline_count = 2
+axis_count = 3
 axis_offset = 1
-values = Array[float]([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-data_min = -1.0
-data_scale = 0.85
+axis_labels = PackedStringArray("Melee", "Agility", "Defense")
+values = PackedFloat64Array(0.3, 0.9, 0.5)
+data_scale = 1.0
 metadata/_custom_type_script = "uid://b842d5orwjbbc"
 
-[node name="details" type="VBoxContainer" parent="." unique_id=390834955]
+[node name="player_title" type="Label" parent="info_list/spiders" unique_id=858469115]
+layout_mode = 0
+offset_left = -163.0
+offset_top = -179.0
+offset_right = 260.0
+offset_bottom = -119.0
+rotation = -1.0471976
+size_flags_vertical = 0
+text = "Player"
+label_settings = SubResource("LabelSettings_0cekn")
+vertical_alignment = 2
+
+[node name="gun_spider" type="Control" parent="info_list/spiders" unique_id=1096942138]
+custom_minimum_size = Vector2(64, 64)
+anchors_preset = 0
+offset_top = 266.0
+offset_right = 64.0
+offset_bottom = 330.0
+size_flags_horizontal = 4
+size_flags_vertical = 6
+offset_transform_position = Vector2(0, -64)
+script = ExtResource("2_xhkx0")
+radius = 200.0
+snap_labels = true
+inline_count = 2
+axis_count = 3
+axis_labels = PackedStringArray("Quality", "Augments", "Quantity")
+values = PackedFloat64Array(0.15, 0.7, 0.85)
+data_scale = 1.0
+metadata/_custom_type_script = "uid://b842d5orwjbbc"
+
+[node name="gun_title" type="Label" parent="info_list/spiders" unique_id=332615668]
+layout_mode = 0
+offset_left = -51.0
+offset_top = 360.0
+offset_right = 372.0
+offset_bottom = 420.0
+size_flags_vertical = 0
+text = "Gun"
+label_settings = SubResource("LabelSettings_0cekn")
+vertical_alignment = 2
+
+[node name="spell_1_spider" type="Control" parent="info_list/spiders" unique_id=910296576]
+custom_minimum_size = Vector2(64, 64)
+anchors_preset = 0
+offset_left = -210.0
+offset_top = 107.0
+offset_right = -146.0
+offset_bottom = 171.0
+size_flags_horizontal = 4
+size_flags_vertical = 6
+script = ExtResource("2_xhkx0")
+radius = 200.0
+rotation_offset = 1.05
+snap_labels = true
+inline_count = 2
+axis_count = 3
+axis_labels = PackedStringArray("Strength", "Spells", "Casting")
+values = PackedFloat64Array(0.9, 0.2, 0.35)
+data_scale = 1.0
+metadata/_custom_type_script = "uid://b842d5orwjbbc"
+
+[node name="spell_1_title" type="Label" parent="info_list/spiders" unique_id=1935469876]
+layout_mode = 0
+offset_left = -325.0
+offset_top = 95.0
+offset_right = 98.0
+offset_bottom = 155.0
+rotation = 1.0471976
+size_flags_vertical = 0
+text = "Spell 1"
+label_settings = SubResource("LabelSettings_0cekn")
+vertical_alignment = 2
+
+[node name="spell_2_spider" type="Control" parent="info_list/spiders" unique_id=1781410058]
+custom_minimum_size = Vector2(64, 64)
+anchors_preset = 0
+offset_left = 210.0
+offset_top = 107.0
+offset_right = 274.0
+offset_bottom = 171.0
+size_flags_horizontal = 4
+size_flags_vertical = 6
+script = ExtResource("2_xhkx0")
+radius = 200.0
+rotation_offset = 1.05
+snap_labels = true
+inline_count = 2
+axis_count = 3
+axis_labels = PackedStringArray("Strength", "Spells", "Casting")
+values = PackedFloat64Array(0.25, 0.75, 0.5)
+data_scale = 1.0
+metadata/_custom_type_script = "uid://b842d5orwjbbc"
+
+[node name="spell_2_title" type="Label" parent="info_list/spiders" unique_id=87961150]
+layout_mode = 0
+offset_left = 252.0
+offset_top = 223.0
+offset_right = 675.0
+offset_bottom = 283.0
+rotation = -1.0471976
+size_flags_vertical = 0
+text = "Spell 2"
+label_settings = SubResource("LabelSettings_0cekn")
+vertical_alignment = 2
+
+[node name="details" type="TabContainer" parent="." unique_id=1711452544]
+texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.3
+theme = SubResource("Theme_hsjtu")
+tab_alignment = 1
+current_tab = 0
+tab_0/title = "Cards"
+tab_0/icon = ExtResource("4_ppbss")
+tab_1/title = "Stats"
+tab_1/icon = ExtResource("4_hsjtu")
+metadata/_edit_lock_ = true
 
 [node name="card_list" type="FlowContainer" parent="details" unique_id=15476575]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
+metadata/_tab_index = 0
+metadata/_tab_name = "Cards"
+metadata/_edit_lock_ = true
 
 [node name="card_icon" parent="details/card_list" unique_id=78439861 instance=ExtResource("3_f4xp4")]
 layout_mode = 2
 
 [node name="stats" type="RichTextLabel" parent="details" unique_id=156664003]
+visible = false
 custom_minimum_size = Vector2(0, 256)
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "ASDASD"
+text = "< Stats go here >"
+metadata/_tab_index = 1
+metadata/_tab_name = "Stats"
 
 [node name="card_disp_handler" type="CanvasLayer" parent="." unique_id=696696655]
 layer = 100

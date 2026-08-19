@@ -1,6 +1,8 @@
 class_name CardsMenu
 extends Control
 
+var draws: Array[CardDrawData]
+var current_draw: CardDrawData
 var selection: Array[Card]
 var picked_card: int
 var animation_state: int = -1
@@ -10,9 +12,12 @@ var local_mouse: Vector3
 
 @onready var disp3d: Node3D = $"disp3d" as Node3D
 
-@onready var spell_slot: VBoxContainer = $spell_slot as VBoxContainer
+@onready var spell_slot: Control = $spell_slot as Control
 @onready var spell_1: Button = $spell_slot/spell_1 as Button
 @onready var spell_2: Button = $spell_slot/spell_2 as Button
+@onready var c_disp: CardIcon = $spell_slot/c_disp as CardIcon
+@onready var s1_disp: FlowContainer = $spell_slot/s1_disp as FlowContainer
+@onready var s2_disp: FlowContainer = $spell_slot/s2_disp as FlowContainer
 
 
 func _ready() -> void:
@@ -24,26 +29,68 @@ func card_selection_time() -> void:
 	if Console.AUTO_CARD_SELECT \
 			|| (Console.AUTO_INIT_CARD_SELECT && Network.round_count == 0) \
 			|| (!Network.is_server && Console.CLIENT_DUMMY):
-		card_selected()
+		_draws_finished()
 		return
 	
 	visible = true
 	spell_slot.visible = false
-	animation_state = 0
-	animation_timer = 0.0
-	
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	Game.mouse_fallback = Input.MOUSE_MODE_VISIBLE
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	selection = CardDeck.pick_weighted_cards(Card.ALL_CARDS, Game.player, Console.MAX_CARD_OPTIONS, false)
-	flip_animations.resize(selection.size())
-	flip_animations.fill(-1.0)
-	for card in selection:
-		card.display.set_face_up(false)
+	_next_card_draw()
+
+
+func _next_card_draw() -> void:
+	spell_slot.visible = false
+	animation_state = 0
+	animation_timer = 0.0
 	
+	if draws.is_empty():
+		_draws_finished()
+	else:
+		current_draw = draws[0]
+		draws.pop_front()
+		var player := Game.player
+		var weights_pre := player.deck_weights.duplicate()
+		
+		if current_draw.is_exclusive:
+			for deck in player.deck_weights:
+				player.deck_weights[deck] = 0.0
+			for deck in current_draw.deck_weights:
+				player.deck_weights[deck] = current_draw.deck_weights[deck]
+		else:
+			for deck in current_draw.deck_weights:
+				player.deck_weights[deck] *= current_draw.deck_weights[deck]
+		
+		var max_cards: int = Console.MAX_CARD_OPTIONS if (Console.DEBUG) else current_draw.max_cards
+		selection = CardDeck.pick_weighted_cards_reduced_dupes(Card.ALL_CARDS, player, max_cards, false)
+		player.deck_weights = weights_pre
+		
+		flip_animations.resize(selection.size())
+		flip_animations.fill(-1.0)
+		for card in selection:
+			card.display.set_face_up(false)
+		
+		reset_card_displays()
+		update_card_animations(0.0)
+
+
+func card_selected() -> void:
+	picked_card = -1
+	selection = []
 	reset_card_displays()
-	update_card_animations(0.0)
+	_next_card_draw()
+
+
+func _draws_finished() -> void:
+	visible = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Game.mouse_fallback = Input.MOUSE_MODE_CAPTURED
+	process_mode = Node.PROCESS_MODE_DISABLED
+	selection = []
+	reset_card_displays()
+	Network.change_to_state(Network.NS_IDLE)
 
 
 func _process(delta: float) -> void:
@@ -63,7 +110,7 @@ func _process(delta: float) -> void:
 		2: # card selected, pick animation
 			if tick_animation_timer(1.5, -1):
 				if selection[picked_card].use_spell_selection:
-					spell_slot.visible = true
+					_setup_spell_slot()
 				else:
 					Game.player.add_card(selection[picked_card])
 					card_selected()
@@ -79,23 +126,17 @@ func _input(event: InputEvent) -> void: # TODO cleanup
 					animation_timer = 0.0
 					picked_card = i
 					Console.print(&"picked card %s" % selection[picked_card])
-	if Input.is_key_pressed(KEY_L): # skip without updating net state
-		visible = false
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		Game.mouse_fallback = Input.MOUSE_MODE_CAPTURED
-		process_mode = Node.PROCESS_MODE_DISABLED
-		selection = []
-		reset_card_displays()
-
-
-func card_selected() -> void:
-	visible = false
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	Game.mouse_fallback = Input.MOUSE_MODE_CAPTURED
-	process_mode = Node.PROCESS_MODE_DISABLED
-	Network.change_to_state(Network.NS_IDLE)
-	selection = []
-	reset_card_displays()
+	if Input.is_action_pressed(&"dbg_button"):
+		if Input.is_key_pressed(KEY_L): # hide without updating net state
+			visible = false
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			Game.mouse_fallback = Input.MOUSE_MODE_CAPTURED
+			process_mode = Node.PROCESS_MODE_DISABLED
+			selection = []
+			reset_card_displays()
+		if Input.is_key_pressed(KEY_R): # reroll
+			draws.push_front(current_draw)
+			_next_card_draw()
 
 
 func reset_card_displays() -> void:
@@ -175,6 +216,22 @@ func get_card_hover_pos(i: int) -> Vector3:
 	return Vector3.ZERO
 
 
+func _setup_spell_slot() -> void:
+	spell_slot.visible = true
+	Util.remove_and_free_all_children(s1_disp)
+	Util.remove_and_free_all_children(s2_disp)
+	
+	var card := selection[picked_card]
+	c_disp.set_data_from_card(card)
+	
+	for s1card in Game.player.spell_1.cards:
+		if !s1card.use_spell_selection: continue
+		s1_disp.add_child(CardIcon.from_card(s1card, Game.player.spell_1.cards[s1card]))
+	for s2card in Game.player.spell_2.cards:
+		if !s2card.use_spell_selection: continue
+		s2_disp.add_child(CardIcon.from_card(s2card, Game.player.spell_2.cards[s2card]))
+
+
 func _pick_spell_slot(id: int) -> void:
 	if !(picked_card+1): return
 	var card := selection[picked_card]
@@ -184,3 +241,34 @@ func _pick_spell_slot(id: int) -> void:
 	
 	Game.player.add_spell_card(card, spell)
 	card_selected()
+
+
+func new_draw() -> CardDrawData:
+	var cdd := CardDrawData.new()
+	draws.append(cdd)
+	return cdd
+
+
+class CardDrawData:
+	var max_cards: int = 5
+	var deck_weights: Dictionary[CardDeck, float]
+	var is_exclusive: bool = false
+	
+	
+	func _init() -> void:
+		deck_weights = {Card.DECK_INIT:0.0}
+	
+	
+	func set_max_cards(max_: int) -> CardDrawData:
+		max_cards = max_
+		return self
+	
+	
+	func set_weights(weights: Dictionary[CardDeck, float]) -> CardDrawData:
+		deck_weights.merge(weights, true)
+		return self
+	
+	
+	func set_exclusive(ex: bool = true) -> CardDrawData:
+		is_exclusive = ex
+		return self

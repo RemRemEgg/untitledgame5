@@ -8,7 +8,7 @@ var adder: float = 0.0
 var multiplier: float = 1.0
 var temps: Array[TempMod]
 
-var min_val: float = 0.0
+var min_val: float = 0.01
 var max_val: float = 3.4028235e38
 var value: float = _base_value
 var value_int: int = int(_base_value)
@@ -21,6 +21,10 @@ func _init(name_: StringName, base: float, vmin: float = min_val, vmax: float = 
 	min_val = vmin
 	max_val = vmax
 	reset_value()
+
+
+func get_base_value() -> float:
+	return _base_value
 
 
 func get_total_modifiers() -> Vector2:
@@ -68,8 +72,9 @@ func update(delta: float) -> void:
 
 func add_temp(amount: float, duration: float = 0.0, n: float = 1.0) -> void:
 	var mod := Stat.TempMod.new()
-	mod.duration = duration
-	mod.adder += amount * n
+	var sqst := n ** 0.5
+	mod.duration = duration * sqst
+	mod.adder += amount * sqst
 	temps.append(mod)
 
 

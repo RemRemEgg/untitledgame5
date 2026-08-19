@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://bl448vwrgqvmy"]
+
+[ext_resource type="Script" uid="uid://b5vsbolm5miff" path="res://game/sd_box.gd" id="1_bak6f"]
+[ext_resource type="Shader" uid="uid://b3moxqeqah5b5" path="res://shaders/level/solid_triplanar_fast.gdshader" id="2_tnm8b"]
+[ext_resource type="Texture2D" uid="uid://o6uolq8s7wlq" path="res://textures/3d/prototype_harmful.png" id="3_0uj6p"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_pyo22"]
+size = Vector3(16.1, 16.1, 16.1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bak6f"]
+render_priority = 0
+shader = ExtResource("2_tnm8b")
+shader_parameter/tex = ExtResource("3_0uj6p")
+shader_parameter/modulo = Color(0.37109375, 0.032202348, 0, 1)
+shader_parameter/roughness = 0.038000001805
+shader_parameter/specular = 0.999999977648
+shader_parameter/metal = 1.0
+shader_parameter/emission = Color(0.46484375, 0.11377296, 0, 1)
+shader_parameter/scale = Vector3(0.25, 0.25, 0.25)
+shader_parameter/offset = Vector3(0, 0, 0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l2xtu"]
+size = Vector3(64.4, 64.4, 64.4)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ail48"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="levelbody" type="RigidBody3D" unique_id=1096154872]
+collision_layer = 17
+freeze = true
+script = ExtResource("1_bak6f")
+health = 67.0
+mesh = SubResource("BoxMesh_pyo22")
+is_harmful = true
+material = SubResource("ShaderMaterial_bak6f")
+shape = SubResource("BoxShape3D_l2xtu")
+metadata/_custom_type_script = "uid://co62g75qamun2"
+metadata/_edit_group_ = true
+
+[node name="mesh" type="MeshInstance3D" parent="." unique_id=1331379362]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_bak6f")
+mesh = SubResource("BoxMesh_pyo22")
+skeleton = NodePath("../../..")
+
+[node name="collider" type="CollisionShape3D" parent="." unique_id=1407021296]
+shape = SubResource("BoxShape3D_l2xtu")
+
+[node name="sync" type="MultiplayerSynchronizer" parent="." unique_id=1087935861]
+replication_config = SubResource("SceneReplicationConfig_ail48")

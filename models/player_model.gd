@@ -71,31 +71,31 @@ func _process(delta: float) -> void:
 	time += delta
 	
 	# walking
-	#if player.animation_data[Player.ANIM_DIRECTION]:
-		#pelvis.global_rotation.y = 0.0#lerp_angle((PI/2.0)-player.animation_data[Player.ANIM_DIRECTION]*0.0, pelvis.global_rotation.y, 0.002**delta)
 	var ang := sin(time*14.0)
 	var amo := player.animation_data[Player.ANIM_VELOCITY]
-	amo = amo / (amo + 35.0)
-	hipr.rotation = Vector3(ang * amo, 0.0, 0.0)
+	amo = amo / (amo + 60.0)
+	hipr.rotation = Vector3(ang * amo * 1.25, 0.0, 0.0)
 	hipl.rotation.x = -hipr.rotation.x
 	shoulderl.rotation.x = hipr.rotation.x * 0.5 + head.rotation.x*0.75 - 0.55
 	shoulderr.rotation.x = -hipr.rotation.x * 0.5 + head.rotation.x - 0.9
 	
 	# air / ground
 	if !player.animation_data[Player.ANIM_STATE]:
+		# in air
 		hipr.rotation.x = hipr.rotation.x*0.2-0.7
 		hipl.rotation.x = hipl.rotation.x*0.2-0.7
 		kneer.rotation.x = 1.5
 		kneel.rotation.x = 1.5
 	else:
+		# on ground
 		kneer.rotation.x = 0.0
 		kneel.rotation.x = 0.0
 	
 	# gun aiming
 	if player.is_use_alt:
-		shoulderr.rotation.x =-hipr.rotation.x * 0.1 + head.rotation.x - 0.9
+		shoulderr.rotation.x =-hipr.rotation.x * 0.1 + head.rotation.x - 0.75
 		bicepr.rotation = Vector3(-0.25, 1.3, -0.55)
-		wristr.rotation = Vector3(0.0, -0.5, 0.0)
+		wristr.rotation = Vector3(-0.18, -0.5, -0.18)
 		gun.rotation = Vector3(0.89, 0.1, 0.81)
 		gun.rotation.y -= 0.7*player.animation_data[Player.ANIM_RELOAD]
 	else:
@@ -103,7 +103,7 @@ func _process(delta: float) -> void:
 		wristr.rotation = Vector3.ZERO
 		gun.rotation = Vector3.ZERO
 	# reload / fire delay
-	gun.rotation.x += 0.75 - (player.animation_data[Player.ANIM_RELOAD])**5.0
+	gun.rotation.x += 0.75 - (player.animation_data[Player.ANIM_RELOAD])
 	
 	# looking
 	head.rotation = -player.camera.rotation
@@ -112,7 +112,7 @@ func _process(delta: float) -> void:
 	if player.animation_data[Player.ANIM_MELEE] <= 1.0:
 		# player.animation_data[Player.ANIM_MELEE] [0.0, 1.0]
 		var d := player.animation_data[Player.ANIM_MELEE] - 0.5 # [-0.5, 0.5]
-		d = 1.0 - (absf(d*2.0)**0.5) # [0.0, 1.0, 0.0] exp
+		d = 1.0 - (absf(d*2.0)**2.0) # [0.0, 1.0, 0.0] exp
 		hipr.rotation = Vector3(
 			(-0.7-d*2.0) + head.rotation.x*0.5,
 			d*1.2-0.5,
@@ -123,7 +123,7 @@ func _process(delta: float) -> void:
 	# magicing
 	var anim_mult := 2.0
 	magic.scale = Vector3.ONE
-	if player.is_prep_cast: shoulderl.rotation.x = head.rotation.x - 1.4 + (shoulderl.rotation.x * 0.2)
+	#if player.is_prep_cast: shoulderl.rotation.x = head.rotation.x - 1.4 + (shoulderl.rotation.x * 0.2)
 	if player.animation_data[Player.ANIM_MAGIC] >= 0.0: # during cast
 		magic.scale = Vector3.ONE * 2.5
 		shoulderl.rotation.x = head.rotation.x - 1.4 + (shoulderl.rotation.x * 0.2)
@@ -138,3 +138,4 @@ func _process(delta: float) -> void:
 	var ht := player.animation_data[Player.ANIM_HURT]
 	player.health_gradient.offsets = [0.0, pc - 0.0001, max(ht, pc) + 0.0001]
 	player.health_gradient.colors = [Color.FIREBRICK, Color.GOLD, Color.DIM_GRAY] as PackedColorArray
+	player.armor_gradient.offsets = [0.0, player.animation_data[Player.ANIM_ARMOR]]

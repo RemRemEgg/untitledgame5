@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://tqeqbsi0kh8u"]
+
+[ext_resource type="ArrayMesh" uid="uid://dv2ioowuwr0qo" path="res://models/death_particle.res" id="1_frt6t"]
+
+[sub_resource type="Curve" id="Curve_ocu5k"]
+_limits = [-360.0, 360.0, 0.0, 1.0]
+_data = [Vector2(0, -360), 0.0, 0.0, 0, 0, Vector2(0.9829546, 360), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ocu5k"]
+curve = SubResource("Curve_ocu5k")
+
+[sub_resource type="Curve" id="Curve_hirkt"]
+_limits = [0.0, 10.0, 0.0, 1.0]
+_data = [Vector2(0, 5.0423727), 0.0, 0.0, 0, 0, Vector2(0.49659094, 1.4830503), -3.7288115, -3.7288115, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_0n65x"]
+curve_x = SubResource("Curve_hirkt")
+curve_y = SubResource("Curve_hirkt")
+curve_z = SubResource("Curve_hirkt")
+
+[sub_resource type="Curve" id="Curve_7mp7u"]
+bake_resolution = 64
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.8792683, 0.4364407), -2.7430856, -2.7430856, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_begxa"]
+width = 64
+curve = SubResource("Curve_7mp7u")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vfr2p"]
+emission_shape = 3
+emission_box_extents = Vector3(0.3, 1, 0.3)
+angle_curve = SubResource("CurveTexture_ocu5k")
+use_rotation_3d = true
+rotation_3d_min = Vector3(-180, -180, -180)
+rotation_3d_max = Vector3(180, 180, 180)
+spread = 180.0
+initial_velocity_min = 8.0
+initial_velocity_max = 12.0
+use_rotation_velocity_3d = true
+rotation_velocity_3d_min = Vector3(-180, -180, -180)
+rotation_velocity_3d_max = Vector3(180, 180, 180)
+rotation_velocity_3d_curve = SubResource("CurveXYZTexture_0n65x")
+gravity = Vector3(0, -4, 0)
+damping_min = 6.0000005
+damping_max = 16.0
+scale_min = 0.049999997
+scale_max = 0.5
+scale_curve = SubResource("CurveTexture_begxa")
+
+[node name="death_effect" type="GPUParticles3D" unique_id=1426890029]
+emitting = false
+amount = 64
+lifetime = 1.5
+one_shot = true
+explosiveness = 0.95
+process_material = SubResource("ParticleProcessMaterial_vfr2p")
+draw_pass_1 = ExtResource("1_frt6t")

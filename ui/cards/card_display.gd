@@ -17,12 +17,16 @@ var card_desc: RichTextLabel
 var extras: Control
 var outline: Panel
 var spider_graph: SpiderGraph
-var card_icon: MarginContainer
+var card_icon: CardIcon
 
 
 static func from_card(card: Card, deck: CardDeck) -> CardDisplay:
 	var cdisp := CARD_DISPLAY.instantiate() as CardDisplay
 	cdisp._node_initilization()
+	
+	var image_path := &"res://textures/cards/%s.png" % card.uuid.to_lower()
+	if ResourceLoader.exists(image_path):
+		cdisp.card_image.texture = load(image_path) as CompressedTexture2D
 	
 	cdisp.texture = deck.card_art
 	cdisp.card_name.text = card.name
@@ -35,13 +39,11 @@ static func from_card(card: Card, deck: CardDeck) -> CardDisplay:
 		Card.RARITY_RARE: cdisp.material = OUTLINE_RARE
 		Card.RARITY_EPIC: cdisp.material = OUTLINE_EPIC
 	
-	cdisp.spider_graph.values = card.spider
+	cdisp.spider_graph.values = card.spider as PackedFloat64Array
 	cdisp.spider_graph.data_outline_color = Card.spider_to_color(card.spider)
 	cdisp.spider_graph.recalculate_graph()
-	(cdisp.card_icon.get_node(^"background") as ColorRect).color = Color(Card.RARITY_COLORS[card.rarity])
-	(cdisp.card_icon.get_node(^"background/abbv") as Label).text = card.abbv
-	(cdisp.card_icon.get_node(^"background/mult") as Label).text = &""
-	(cdisp.card_icon.get_node(^"background/draw_once") as Panel).visible = card.is_draw_once
+	
+	cdisp.card_icon.set_data_from_card(card)
 	
 	return cdisp
 
@@ -51,13 +53,13 @@ func _node_initilization() -> void:
 	
 	content = $content as MarginContainer
 	card_name = $content/vbox/name as Label
-	card_image = $content/vbox/card_image as TextureRect
+	card_image = $content/vbox/image as TextureRect
 	card_desc = $content/vbox/desc as RichTextLabel
 	
 	extras = $extras as Control
 	outline = $extras/outline as Panel
 	spider_graph = $extras/spider_graph as SpiderGraph
-	card_icon = $extras/icon_clip/mini_icon as MarginContainer
+	card_icon = $extras/icon_clip/icon as CardIcon
 
 
 

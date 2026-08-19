@@ -1,17 +1,44 @@
 # Changes
 ### Mechanics
-- Walljumps are less buggy, now restore jumps
-- Rework jumps
+- Updates to player physics interactions to make them more consistent
+- Casting no longer increases knockback from hamful walls
+- Increased knockback from hamful walls
+- Updates to sudden death and level gen
+- Increased player size and jump height
+- Melee hitbox scales with velocity
+- Kick bounce directions is affected by camera direction
+- Updates to rooms and generation
+- Rebind magic casting to Q and E, melee is F or V
+- Default box health changed from 50 to 40
+- Added armor, giving %dr while active and regens over time
+- Increased default bullet knockback 0 -> 20
+- Added `fullscreen` command
+- Melee does damage to levelbodies
+- Added explosions
+- Bullets bounce off players, and hit effects are split between bounces
+- Spells can be chain cast
+- Indirect kills count as player kills
+- Many small fixes and qol changes that didnt make the list (yet)
 
 ### Cards
-- Added Burden Breaker
+- Balance changes, spelling fixes
+- 4 new starting guns: Cannon, Flamethrower, Plasma Beam, Peashooter
+- Many cards added and removed
+- Card uuids are now the same as the abbv. Removed card abbv
 
 ### Graphics & Enviroment
-- Sudden death has an animation for stopping
+- Light orbs move slightly faster
+- Added fullscreen button to lobbies
+- Increased particle sizes
+- Many new rooms, including half size rooms
+- Spell selection menu now displays which cards each spell has, as well as current card
+- Added sound. More sounds to come
 
 
 # Bug Fixes
-- Hitting bounds while casting applies knockback
+- Fix bounds visualizers getting removed twice
+- Fixed some levelbodies not syncing correctly
+- Particle instancing no longer causes frame stuttering
 
 
 # Known Bugs
@@ -21,29 +48,33 @@
 - Input processing issues with debug keybinds in menus
 - Card hovers appear while picking cards
 - Bullets dont fire from gun (visual)
-- Card hitboxing is sometimes completely incorrect
+- Card hitboxing is sometimes completely incorrect (cant reproduce)
 - Bullet trails dont sync the last position they went to (temp fix added)
 - Spectators still have collision
+- Players can be hit through walls
+- Explosions dont hurt levelbodies
 
 
 # TODO List
-- Effect visuals
-- Condensed descriptions (ie +jump +speed +accel => +agility)
-- Rework level gen
-- Projectile visuals
+- Slide
+- Mines detonate after timer (field death effect) and have startup
+- Update spell charge visuals
 - Netcode updates
-- Card sync
-- DamageEvent seralized
+- Player animation & model rework
+
+- Console command updates
 - More magic cards / abilities
-- Non-bullet projectiles for cards
-- "Finalize" and update card register function + docs
-- Transfer preloads into loads
-- Thread startup?
-- Latejoin / leaving during game
-- Player animation states
-- Updated player model
-- AFK FPS reducer
 - Hurt visuals
-- Temporary stat modifiers
-- Make sacrifice work
 - Add meta cards
+- "Finalize" and update card register function + docs
+- Make sacrifice work
+- Temporary stat modifiers
+- Latejoin / leaving during game
+
+- AFK FPS reducer
+- Thread startup?
+- Transfer preloads into loads
+- Effect visuals
+- Projectile visuals
+- Condensed descriptions (ie +jump +speed +accel => +agility)
+- Give spider charts a real background

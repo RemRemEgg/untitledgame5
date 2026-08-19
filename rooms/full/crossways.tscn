@@ -1,0 +1,352 @@
+[gd_scene format=3 uid="uid://dmja3mvx53otb"]
+
+[ext_resource type="Script" uid="uid://cm4gqancuf0sr" path="res://rooms/room.gd" id="1_2fejp"]
+[ext_resource type="PackedScene" uid="uid://bbxtopjn62dnf" path="res://rooms/bounds_visualizer.tscn" id="2_rlmfm"]
+[ext_resource type="PackedScene" uid="uid://cb5fuxbpu7mb6" path="res://rooms/roomgeo/light_orb.tscn" id="3_3g7ct"]
+[ext_resource type="PackedScene" uid="uid://b5r0t8pi8r5fv" path="res://game/levelbody.tscn" id="3_bvi5m"]
+[ext_resource type="Shader" uid="uid://b3moxqeqah5b5" path="res://shaders/world/solid_triplanar_fast.gdshader" id="4_bvi5m"]
+[ext_resource type="Texture2D" uid="uid://b4w2soxjaag46" path="res://textures/3d/prototype.png" id="5_rlmfm"]
+[ext_resource type="Material" uid="uid://fyg0gdbxern8" path="res://shaders/world/breakable.res" id="6_rlmfm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_dahlj"]
+size = Vector3(15.999998, 1.9999999, 39.999996)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rlmfm"]
+render_priority = 0
+shader = ExtResource("4_bvi5m")
+shader_parameter/tex = ExtResource("5_rlmfm")
+shader_parameter/modulo = Color(0.91, 0.5733, 0.86510676, 1)
+shader_parameter/roughness = 0.0
+shader_parameter/specular = 0.999999977648
+shader_parameter/metal = 0.0
+shader_parameter/emission = Color(0, 0, 0, 1)
+shader_parameter/scale = Vector3(0.25, 0.25, 0.25)
+shader_parameter/offset = Vector3(0, 0, 0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4leag"]
+size = Vector3(15.999998, 1.9999999, 39.999996)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gfcgr"]
+size = Vector3(16, 2, 36)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_skcvv"]
+size = Vector3(16, 2, 36)
+
+[sub_resource type="BoxMesh" id="BoxMesh_l1dy7"]
+size = Vector3(3.9999998, 1, 25.999998)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7qxim"]
+size = Vector3(3.9999998, 1, 25.999998)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hya0u"]
+size = Vector3(4, 1, 26)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_d6wts"]
+size = Vector3(4, 1, 26)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cmhty"]
+size = Vector3(3.9999995, 1, 25.999996)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lretc"]
+size = Vector3(3.9999995, 1, 25.999996)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ekm4x"]
+size = Vector3(24, 64, 2)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dy2c8"]
+render_priority = 0
+shader = ExtResource("4_bvi5m")
+shader_parameter/tex = ExtResource("5_rlmfm")
+shader_parameter/modulo = Color(0.8443133, 0.89, 0.4984, 1)
+shader_parameter/roughness = 0.0
+shader_parameter/specular = 0.999999977648
+shader_parameter/metal = 0.0
+shader_parameter/emission = Color(0, 0, 0, 1)
+shader_parameter/scale = Vector3(0.25, 0.25, 0.25)
+shader_parameter/offset = Vector3(0, 0, 0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_322dm"]
+size = Vector3(24, 64, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vwhp5"]
+size = Vector3(15.999998, 16, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_djavw"]
+size = Vector3(15.999998, 16, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_f8lle"]
+size = Vector3(15.999998, 15.999999, 0.99999994)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uyge2"]
+size = Vector3(15.999998, 15.999999, 0.99999994)
+
+[sub_resource type="BoxMesh" id="BoxMesh_icdmr"]
+size = Vector3(16, 16.000002, 1.0000001)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_430t3"]
+size = Vector3(16, 16.000002, 1.0000001)
+
+[sub_resource type="BoxMesh" id="BoxMesh_fag4x"]
+size = Vector3(4, 64, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mmcro"]
+size = Vector3(4, 64, 4)
+
+[node name="room" type="Node3D" unique_id=1177707274]
+script = ExtResource("1_2fejp")
+
+[node name="bounds_visualizer" parent="." unique_id=204469094 instance=ExtResource("2_rlmfm")]
+
+[node name="light_orb" parent="." unique_id=1194668116 instance=ExtResource("3_3g7ct")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23, 0)
+
+[node name="light_orb2" parent="." unique_id=533977420 instance=ExtResource("3_3g7ct")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -18, 0)
+
+[node name="levelbody16" parent="." unique_id=1096154872 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -31, 0)
+collision_mask = 17
+mass = 255.99992
+mesh = SubResource("BoxMesh_dahlj")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_4leag")
+
+[node name="levelbody17" parent="." unique_id=1340763362 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, -16, 0)
+collision_mask = 17
+mass = 230.4
+mesh = SubResource("BoxMesh_gfcgr")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_skcvv")
+
+[node name="levelbody22" parent="." unique_id=310414745 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, 21, -23.5, -21)
+collision_mask = 17
+mass = 20.799997
+bodytype = 2
+health = 100.0
+mesh = SubResource("BoxMesh_l1dy7")
+material = ExtResource("6_rlmfm")
+shape = SubResource("BoxShape3D_7qxim")
+
+[node name="levelbody23" parent="." unique_id=1555118517 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, -19.942226, -23.5, 19.985863)
+collision_mask = 17
+mass = 20.799997
+bodytype = 2
+health = 100.0
+mesh = SubResource("BoxMesh_l1dy7")
+material = ExtResource("6_rlmfm")
+shape = SubResource("BoxShape3D_7qxim")
+
+[node name="levelbody24" parent="." unique_id=25474430 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, -20, -23.5, -20)
+collision_mask = 17
+mass = 20.8
+bodytype = 2
+health = 100.0
+mesh = SubResource("BoxMesh_hya0u")
+material = ExtResource("6_rlmfm")
+shape = SubResource("BoxShape3D_d6wts")
+
+[node name="levelbody25" parent="." unique_id=1183433785 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, 21, -23.5, 21)
+collision_mask = 17
+mass = 20.8
+bodytype = 2
+health = 100.0
+mesh = SubResource("BoxMesh_hya0u")
+material = ExtResource("6_rlmfm")
+shape = SubResource("BoxShape3D_d6wts")
+
+[node name="levelbody36" parent="." unique_id=1132231972 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, 21, 3.5, -21)
+collision_mask = 17
+mass = 20.799997
+bodytype = 2
+health = 100.0
+mesh = SubResource("BoxMesh_l1dy7")
+material = ExtResource("6_rlmfm")
+shape = SubResource("BoxShape3D_7qxim")
+
+[node name="levelbody37" parent="." unique_id=342572537 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, -19.942226, 3.5, 19.985863)
+collision_mask = 17
+mass = 20.799995
+bodytype = 2
+health = 100.0
+mesh = SubResource("BoxMesh_cmhty")
+material = ExtResource("6_rlmfm")
+shape = SubResource("BoxShape3D_lretc")
+
+[node name="levelbody38" parent="." unique_id=886702593 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, -20, 3.5, -20)
+collision_mask = 17
+mass = 20.8
+bodytype = 2
+health = 100.0
+mesh = SubResource("BoxMesh_hya0u")
+material = ExtResource("6_rlmfm")
+shape = SubResource("BoxShape3D_d6wts")
+
+[node name="levelbody39" parent="." unique_id=1094478634 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, 21, 3.5, 21)
+collision_mask = 17
+mass = 20.8
+bodytype = 2
+health = 100.0
+mesh = SubResource("BoxMesh_hya0u")
+material = ExtResource("6_rlmfm")
+shape = SubResource("BoxShape3D_d6wts")
+
+[node name="levelbody20" parent="." unique_id=1834218032 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 9)
+collision_mask = 17
+mass = 614.4
+mesh = SubResource("BoxMesh_ekm4x")
+material = SubResource("ShaderMaterial_dy2c8")
+shape = SubResource("BoxShape3D_322dm")
+
+[node name="levelbody27" parent="." unique_id=1998739357 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 9, 0, -20)
+collision_mask = 17
+mass = 614.4
+mesh = SubResource("BoxMesh_ekm4x")
+material = SubResource("ShaderMaterial_dy2c8")
+shape = SubResource("BoxShape3D_322dm")
+
+[node name="levelbody13" parent="." unique_id=517467950 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-1, 2.2670613e-07, 4.371137e-08, -7.549788e-08, -0.49999988, 0.8660255, 2.1818897e-07, 0.8660255, 0.49999988, 0.01, -27.453144, -25.345999)
+collision_mask = 17
+mass = 51.199993
+mesh = SubResource("BoxMesh_vwhp5")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_djavw")
+
+[node name="levelbody12" parent="." unique_id=599282868 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(1, 0, 0, 0, -0.49999985, 0.8660255, 0, -0.8660255, -0.49999985, 0.01, -27.437313, 25.326635)
+collision_mask = 17
+mass = 51.19999
+mesh = SubResource("BoxMesh_f8lle")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_uyge2")
+
+[node name="levelbody33" parent="." unique_id=267856700 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4, 0)
+collision_mask = 17
+mass = 255.99992
+mesh = SubResource("BoxMesh_dahlj")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_4leag")
+
+[node name="levelbody34" parent="." unique_id=1682045551 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-1, 2.2670613e-07, 4.371137e-08, -7.549788e-08, -0.49999988, 0.8660255, 2.1818897e-07, 0.8660255, 0.49999988, 0.01, -0.45314407, -25.345999)
+collision_mask = 17
+mass = 51.199993
+mesh = SubResource("BoxMesh_vwhp5")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_djavw")
+
+[node name="levelbody35" parent="." unique_id=2063917257 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(1, 0, 0, 0, -0.49999985, 0.8660255, 0, -0.8660255, -0.49999985, 0.01, -0.43731308, 25.326635)
+collision_mask = 17
+mass = 51.19999
+mesh = SubResource("BoxMesh_f8lle")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_uyge2")
+
+[node name="levelbody14" parent="." unique_id=1271450606 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(2.936869e-07, 0.8660255, 0.49999988, -7.549788e-08, -0.49999988, 0.8660255, 1, -2.9208928e-07, -8.146032e-08, 24.836376, -19.44545, 0.01)
+collision_mask = 17
+mass = 51.199993
+mesh = SubResource("BoxMesh_vwhp5")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_djavw")
+
+[node name="levelbody15" parent="." unique_id=1807361030 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-3.254734e-07, -0.8660255, -0.49999988, -7.549788e-08, -0.49999988, 0.8660255, -1, 3.196172e-07, 9.735357e-08, -24.809101, -19.44545, 0.01)
+collision_mask = 17
+mass = 51.200012
+mesh = SubResource("BoxMesh_icdmr")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_430t3")
+
+[node name="levelbody30" parent="." unique_id=576649383 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 11, 0)
+collision_mask = 17
+mass = 230.4
+mesh = SubResource("BoxMesh_gfcgr")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_skcvv")
+
+[node name="levelbody31" parent="." unique_id=196219372 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(2.936869e-07, 0.8660255, 0.49999988, -7.549788e-08, -0.49999988, 0.8660255, 1, -2.9208928e-07, -8.146032e-08, 24.836376, 7.55455, 0.01)
+collision_mask = 17
+mass = 51.199993
+mesh = SubResource("BoxMesh_vwhp5")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_djavw")
+
+[node name="levelbody32" parent="." unique_id=1816128660 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-3.254734e-07, -0.8660255, -0.49999988, -7.549788e-08, -0.49999988, 0.8660255, -1, 3.196172e-07, 9.735357e-08, -24.809101, 7.55455, 0.01)
+collision_mask = 17
+mass = 51.200012
+mesh = SubResource("BoxMesh_icdmr")
+material = SubResource("ShaderMaterial_rlmfm")
+shape = SubResource("BoxShape3D_430t3")
+
+[node name="levelbody21" parent="." unique_id=1094800556 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -9)
+collision_mask = 17
+mass = 614.4
+mesh = SubResource("BoxMesh_ekm4x")
+material = SubResource("ShaderMaterial_dy2c8")
+shape = SubResource("BoxShape3D_322dm")
+
+[node name="levelbody28" parent="." unique_id=152175097 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -9, 0, -20)
+collision_mask = 17
+mass = 614.4
+mesh = SubResource("BoxMesh_ekm4x")
+material = SubResource("ShaderMaterial_dy2c8")
+shape = SubResource("BoxShape3D_322dm")
+
+[node name="levelbody26" parent="." unique_id=2114350340 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 9)
+collision_mask = 17
+mass = 614.4
+mesh = SubResource("BoxMesh_ekm4x")
+material = SubResource("ShaderMaterial_dy2c8")
+shape = SubResource("BoxShape3D_322dm")
+
+[node name="levelbody29" parent="." unique_id=1760030189 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -9)
+collision_mask = 17
+mass = 614.4
+mesh = SubResource("BoxMesh_ekm4x")
+material = SubResource("ShaderMaterial_dy2c8")
+shape = SubResource("BoxShape3D_322dm")
+
+[node name="levelbody40" parent="." unique_id=965109559 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 9, 0, 20)
+collision_mask = 17
+mass = 614.4
+mesh = SubResource("BoxMesh_ekm4x")
+material = SubResource("ShaderMaterial_dy2c8")
+shape = SubResource("BoxShape3D_322dm")
+
+[node name="levelbody41" parent="." unique_id=230011297 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -9, 0, 20)
+collision_mask = 17
+mass = 614.4
+mesh = SubResource("BoxMesh_ekm4x")
+material = SubResource("ShaderMaterial_dy2c8")
+shape = SubResource("BoxShape3D_322dm")
+
+[node name="levelbody45" parent="." unique_id=61403414 instance=ExtResource("3_bvi5m")]
+transform = Transform3D(0.7071067, 0, -0.7071068, 0, 1, 0, 0.7071068, 0, 0.7071067, 0, 0, 0)
+collision_mask = 17
+mass = 204.8
+mesh = SubResource("BoxMesh_fag4x")
+material = SubResource("ShaderMaterial_dy2c8")
+shape = SubResource("BoxShape3D_mmcro")

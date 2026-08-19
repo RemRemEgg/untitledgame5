@@ -119,10 +119,14 @@ func change_to_state(new_state: int) -> void: # peer side
 			get_tree().current_scene.process_mode = Node.PROCESS_MODE_INHERIT
 			Game.player.deck_weights[Card.DECK_INIT] = 0.0
 			if round_count == 0: # first card draw
-				for deck in Game.player.deck_weights:
-					Game.player.deck_weights[deck] = 0.0
-				Game.player.deck_weights[Card.DECK_INIT] = 1.0
-			Game.player.cards_menu.card_selection_time()
+				var cm := Game.player.cards_menu
+				cm.new_draw().set_weights({Card.DECK_INIT:1.0}).set_exclusive(true)
+				cm.new_draw().set_weights({Card.DECK_SPELL:1.0}).set_exclusive(true)
+				Game.player.cards_menu.card_selection_time()
+			else:
+				var cm := Game.player.cards_menu
+				cm.new_draw()
+				Game.player.cards_menu.card_selection_time()
 			game_won.emit.call_deferred(-1)
 		NS_PROJ_SYNC:
 			Console.print(&"change to  NS_PROJ_SYNC")
@@ -170,6 +174,15 @@ func all_peers_synced() -> void: # server side
 
 #region helper functions #################################
 
+func player_from_uuid(id: int) -> Player:
+	if id <= 0: return null
+	if !players.has(id):
+		Console.print_err(&"Could not get player from id '%s'" % id)
+		return null
+	return players[id].linked_player
+
+
+
 func start_game() -> void: # called from host pressing start button
 	change_to_state.rpc(NS_LOAD_GAME)
 
@@ -189,7 +202,7 @@ func load_level(sseed: int) -> void:# peer side, from server
 	var angle := (sseed/2048.0)
 	angle += (players.keys().find(uuid) * PI*2.0) / players.size()
 	Console.print(&"spawn info %s %s %s %s" % [uuid, sseed, angle, players.keys().find(uuid)])
-	var spawn2d := Vector2.from_angle(angle) * 64.0
+	var spawn2d := Vector2.from_angle(angle) * 48.0
 	#Game.world.change_level("res://game/levels/level_base.tscn", Vector3(spawn2d.x, 0.0, spawn2d.y))
 	Game.world.change_level(sseed, Vector3(spawn2d.x, 0.0, spawn2d.y))
 
@@ -206,7 +219,6 @@ func player_died(time: float) -> void: # server side, from peers
 	Console.print(&"player [%s] died at %+010.1f" % [id, time])
 	if !players.has(id): return
 	players[id].death_time = time
-	system_message.rpc(&"%s has died" % players[id].get_name_fancy())
 	
 	var players_left := players.values().filter(func(p:PlayerInfo)->bool:return p.death_time < 0.0).size()
 	if players_left == 1:
@@ -254,11 +266,11 @@ func chat_message(msg: String) -> void:
 	Game.player.hud.add_chat_message(&"%s: %s" % [players[id].get_name_fancy(), msg])
 
 @rpc("any_peer", "call_local", "reliable")
-func death_message(killer: int) -> void:
-	var id := multiplayer.get_remote_sender_id()
-	Game.player.hud.add_chat_message(&"%s was killed by %s" % [players[id].get_name_fancy(), players[killer].get_name_fancy()])
-	if killer == uuid: # TODO cleanup
-		self_player.linked_player.health += 0.5 * (self_player.linked_player.max_health.value - self_player.linked_player.health)
+func death_message(data: Array[Variant]) -> void:
+	var de := DamageEvent.deseralize(data)
+	var target := players[de.target_uuid].get_name_fancy()
+	var death_msg := de.get_death_message(target, (players[de.source_uuid].get_name_fancy() if de.source_uuid else ""))
+	Game.player.hud.add_chat_message(&"💀" + death_msg)
 
 @rpc("any_peer", "call_local", "reliable")
 func update_card_picked(card_uuid: StringName, count: int) -> void:
@@ -291,6 +303,7 @@ func get_synced_rng(include_round_count: bool = false) -> RandomNumberGenerator:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = get_synced_rng_seed(include_round_count)
 	return rng
+
 
 const NS_NAME: PackedStringArray = ["NS_UNINIT", "NS_IDLE", "NS_LOBBY", "NS_LOAD_GAME", "NS_DRAWING", "NS_PROJ_SYNC", "NS_LOAD_LEVEL", "NS_BATTLE"]
 enum {NS_UNINIT, NS_IDLE, NS_LOBBY, NS_LOAD_GAME, NS_DRAWING, NS_PROJ_SYNC, NS_LOAD_LEVEL, NS_BATTLE}
@@ -339,31 +352,78 @@ class PlayerInfo:
 	func get_name_fancy() -> String:
 		return "[color=%s]%s[/color]" % [color.to_html(false), name]
 
-var out_proj_spawner: MultiplayerSpawner
 
+var out_proj_spawner: MultiplayerSpawner
 func send_projectile(trans: Transform3D) -> Projectile:
 	# TODO sometimes returns null
-	var node := out_proj_spawner.spawn({"trans":trans, "uuid":uuid})
+	var payload := [0, {"trans":trans, "uuid":uuid}]
+	var node := out_proj_spawner.spawn(payload)
+	if !node:
+		push_error(&"ops data; tree: %s, has_multiplayer: %s, is_auth: %s" % [out_proj_spawner.is_inside_tree(), multiplayer.has_multiplayer_peer(), out_proj_spawner.is_multiplayer_authority()])
+		Game.player.hud.add_chat_message(&"[color=red]Failed to create projectile[/color]")
+		return _recieve_projectile(payload)
 	return node as Projectile
+
+
+func send_alt_projectile(trans: Transform3D) -> Projectile:
+	# TODO sometimes returns null
+	var payload := [1, {"trans":trans, "uuid":uuid}]
+	var node := out_proj_spawner.spawn(payload)
+	if !node:
+		push_error(&"alt ops data; tree: %s, has_multiplayer: %s, is_auth: %s" % [out_proj_spawner.is_inside_tree(), multiplayer.has_multiplayer_peer(), out_proj_spawner.is_multiplayer_authority()])
+		Game.player.hud.add_chat_message(&"[color=red]Failed to create alt projectile[/color]")
+		return _recieve_projectile(payload)
+	return node as Projectile
+
 
 func add_proj_spawner(mps: MultiplayerSpawner, is_out: bool = false) -> void:
 	mps.spawn_function = _recieve_projectile
 	if is_out: out_proj_spawner = mps
 
+
 var dbg_proj: Dictionary
-# transform (rotation, position, ) 
-func _recieve_projectile(data: Dictionary) -> Projectile:
-	ProcGun.dbg_proj = data
-	dbg_proj = data
-	var id := data.get("uuid", 0) as int
-	if id > 0:
-		var proj := Projectile.deseralize(data)
-		proj.set_multiplayer_authority(id)
-		
-		players[id].linked_player.pproj.bind(proj)
-		
-		return proj
+# transform (rotation, position)
+func _recieve_projectile(arr: Array) -> Projectile:
+	var mode := arr[0] as int
+	if mode == 0:
+		var data := arr[1] as Dictionary
+		ProcGun.dbg_proj = data
+		dbg_proj = data
+		var id := data.get("uuid", 0) as int
+		if id > 0:
+			var proj := Projectile.deseralize(data)
+			proj.set_multiplayer_authority(id)
+			
+			players[id].linked_player.pproj.bind(proj)
+			
+			return proj
+	
+	elif mode == 1:
+		var data := arr[1] as Dictionary
+		ProcGun.dbg_proj = data
+		dbg_proj = data
+		var id := data.get("uuid", 0) as int
+		if id > 0:
+			var proj := AltProjHandler.spawn_local(data.get(&"trans", Transform3D.IDENTITY))
+			proj.set_multiplayer_authority(id)
+			return proj
+	
 	return null
+
+
+@rpc("any_peer", "call_local", "reliable")
+func sfx_sync(sound_id: int, pos: Vector3, volume: float, pitch_scale: float, disable_falloff: bool) -> void:
+	SFXHandler.play_world_local(sound_id, pos, volume, pitch_scale, disable_falloff)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func vfx_sync(effect_id: int, pos: Vector3, data: Array) -> void:
+	VFXHandler.spawn_local(effect_id, pos, data)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func field_sync(field_id: int, trans: Transform3D, scale: float, duration: float, strength: float) -> void:
+	FieldHandler.spawn_local(field_id, trans, scale, duration, strength)
 
 #endregion
 
@@ -389,37 +449,7 @@ func spawn_levelbody(pos: Vector3, type: LevelBody.Type, is_static: bool = false
 	lvlb.is_static = is_static
 	lvlb.update_display()
 	lvlb.update_bodytype()
-
-
-enum {NV_SHOCKWAVE, NV_PARTICLE_GENERIC, NV_PARTICLE_BURST, NV_DEATH, NV_BREAK}
-func spawn_visual(type: int, pos: Vector3, scale: float, ...args: Array) -> void:
-	_spawn_visual_sync.rpc(type, pos, scale, args)
-@rpc("any_peer", "call_local", "reliable")
-func _spawn_visual_sync(type: int, pos: Vector3, scale: float, args: Array) -> void:
-	match type:
-		NV_SHOCKWAVE:
-			var scn := (preload("res://game/visuals/shockwave.tscn") as PackedScene).instantiate() as Node3D
-			scn.scale *= scale
-			Game.world.visuals.add_child(scn)
-			scn.global_position = pos
-		NV_PARTICLE_GENERIC:
-			var scn := (preload("res://game/visuals/particle_generic.tscn") as PackedScene).instantiate() as GPUParticles3D
-			scn.scale *= scale
-			Game.world.visuals.add_child(scn)
-			scn.global_position = pos
-		NV_PARTICLE_BURST:
-			var scn := (preload("res://game/visuals/particle_burst.tscn") as PackedScene).instantiate() as GPUParticles3D
-			scn.scale *= scale
-			Game.world.visuals.add_child(scn)
-			scn.global_position = pos
-		NV_DEATH:
-			var scn := (preload("res://game/visuals/death_effect.tscn") as PackedScene).instantiate() as GPUParticles3D
-			scn.scale *= scale
-			Game.world.visuals.add_child(scn)
-			scn.global_position = pos
-			scn.material_override = players[args[0]].linked_player.player_model.material
-		_: return
-
+	
 
 @rpc("any_peer", "call_local", "reliable")
 func slow_player(amount: float, duration: float, n: float = 1.0) -> void:
