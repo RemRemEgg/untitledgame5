@@ -9,7 +9,9 @@ extends CanvasLayer
 @onready var hit_marker: TextureRect = $hit_marker as TextureRect
 @onready var hit_marker_invul: TextureRect = $hit_marker_invul as TextureRect
 
-@onready var spelldraw: SpellDraw = (func()->SpellDraw:var sd:=$spell_draw;sd.set_script(SpellDraw);sd.hud=self;return sd).call() as SpellDraw
+@onready var spelldraw: SpellDraw = (func()->Node:var sd:=$spell_draw;sd.set_script(SpellDraw);sd.hud=self;return sd).call() as SpellDraw
+
+@onready var ptracker: PlayerTracker = (func()->Node:var pt:=$player_tracker;pt.set_script(PlayerTracker);return pt).call() as PlayerTracker
 
 @onready var chatbox: RichTextLabel = $chat/chatbox as RichTextLabel
 var chatduration: Array[float] = []
@@ -49,6 +51,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	spelldraw.queue_redraw()
+	ptracker.queue_redraw()
 	hurt_timer -= delta
 	hit_marker_timer -= delta
 	hit_marker_invul_timer -= delta
@@ -140,3 +143,47 @@ class SpellDraw extends Control:
 				draw_circle(cntr + p*56.0, 7.0, outside)
 				draw_circle(cntr + p*56.0, 5.0, inside)
 			p = p.rotated(0.25)
+
+
+
+class PlayerTracker extends Control:
+	var players: Array[Network.PlayerInfo]
+	
+	func _draw() -> void:
+		if !players:
+			for player: Network.PlayerInfo in Network.players.values() as Array[Network.PlayerInfo]:
+				players.append(player)
+		
+		var cntr := size / 2.0
+		var radius := minf(size.x, size.y) * 0.45
+		var facing := -Game.player.camera.global_basis.z
+		var ortho := Game.player.camera.global_basis.x
+		var biortho := Game.player.camera.global_basis.y
+		
+		for player in players:
+			if !player.linked_player || player.linked_player == Game.player: continue
+			
+			var dir := player.linked_player.global_position - Game.player.global_position
+			var dist := dir.length()
+			dir /= dist
+			
+			var dot := facing.dot(dir)
+			if dot >= 0.6: continue
+			dir -= dot*facing
+			
+			var angle := dir.angle_to(ortho) * signf(-dir.dot(biortho))
+			
+			@warning_ignore("shadowed_variable_base_class")
+			var scale := 2.0 - Util.hp(dist, 16.0)
+			
+			var alpha := (1.0 - dot/0.6)
+			
+			draw_set_transform(cntr + Vector2.RIGHT.rotated(angle) * radius, angle, Vector2.ONE * scale)
+			var color := player.color
+			color.a = alpha
+			draw_player(color)
+	
+	
+	func draw_player(color: Color) -> void:
+		draw_circle(Vector2(), 11.0, color, false, 4)
+		draw_arc(Vector2(10, 0), 12.0, 2.0, -2.0, 3, color, 2)

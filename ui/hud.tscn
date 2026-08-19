@@ -218,6 +218,16 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="player_tracker" type="Control" parent="." unique_id=1580906062]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="chat" type="Control" parent="." unique_id=1616353826]
 layout_mode = 3
 anchors_preset = 15
@@ -429,3 +439,4 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_1v5rv")
 
 [node name="info" parent="info_holder" unique_id=1711472649 instance=ExtResource("3_546lt")]
 layout_mode = 1
+anchors_preset = 15

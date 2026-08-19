@@ -219,7 +219,7 @@ func player_died(time: float) -> void: # server side, from peers
 	Console.print(&"player [%s] died at %+010.1f" % [id, time])
 	if !players.has(id): return
 	players[id].death_time = time
-	
+
 	var players_left := players.values().filter(func(p:PlayerInfo)->bool:return p.death_time < 0.0).size()
 	if players_left == 1:
 		get_tree().create_timer(1.0).timeout.connect(determine_winner)
@@ -275,12 +275,12 @@ func death_message(data: Array[Variant]) -> void:
 @rpc("any_peer", "call_local", "reliable")
 func update_card_picked(card_uuid: StringName, count: int) -> void:
 	var id := multiplayer.get_remote_sender_id()
-	
+
 	var card := Card.get_card(card_uuid)
 	if !card:
 		Console.print_err(&"Cannot find card %s" % card_uuid)
 		return
-	
+
 	var card_list := players[id].cards
 	var diff := int(count - card_list.get(card_uuid, 0))
 	card_list[card_uuid] = count
@@ -309,10 +309,10 @@ const NS_NAME: PackedStringArray = ["NS_UNINIT", "NS_IDLE", "NS_LOBBY", "NS_LOAD
 enum {NS_UNINIT, NS_IDLE, NS_LOBBY, NS_LOAD_GAME, NS_DRAWING, NS_PROJ_SYNC, NS_LOAD_LEVEL, NS_BATTLE}
 class PlayerInfo:
 	signal on_update(pi: PlayerInfo)
-	
+
 	var linked_player: Player
 	var uuid: int = 0
-	
+
 	var name: String = "New Player"
 	var color: Color = Color.from_hsv(randf_range(0, 1.0), 0.95, 0.95)
 	var state := NS_UNINIT
@@ -320,9 +320,9 @@ class PlayerInfo:
 	var death_time := -1.0
 	var proj_synced := false
 	var wins: int = 0
-	
+
 	var cards: Dictionary[StringName, int]
-	
+
 	func seralize() -> Dictionary:
 		var d: Dictionary[StringName, Variant] = {}
 		d.uuid = uuid
@@ -331,7 +331,7 @@ class PlayerInfo:
 		d.ready = ready
 		d.state = state
 		return d
-	
+
 	static func deseralize(info: Dictionary) -> PlayerInfo:
 		var pi := PlayerInfo.new()
 		pi.uuid = info.uuid
@@ -340,7 +340,7 @@ class PlayerInfo:
 		pi.ready = info.ready
 		pi.state = info.state
 		return pi
-	
+
 	func update(info: Dictionary) -> void:
 		uuid = info.get(&"uuid", uuid)
 		name = info.get(&"name", name)
@@ -348,7 +348,7 @@ class PlayerInfo:
 		ready = info.get(&"ready", ready)
 		state = info.get(&"state", state)
 		on_update.emit(self)
-	
+
 	func get_name_fancy() -> String:
 		return "[color=%s]%s[/color]" % [color.to_html(false), name]
 
@@ -393,11 +393,11 @@ func _recieve_projectile(arr: Array) -> Projectile:
 		if id > 0:
 			var proj := Projectile.deseralize(data)
 			proj.set_multiplayer_authority(id)
-			
+
 			players[id].linked_player.pproj.bind(proj)
-			
+
 			return proj
-	
+
 	elif mode == 1:
 		var data := arr[1] as Dictionary
 		ProcGun.dbg_proj = data
@@ -407,7 +407,7 @@ func _recieve_projectile(arr: Array) -> Projectile:
 			var proj := AltProjHandler.spawn_local(data.get(&"trans", Transform3D.IDENTITY))
 			proj.set_multiplayer_authority(id)
 			return proj
-	
+
 	return null
 
 
@@ -449,7 +449,7 @@ func spawn_levelbody(pos: Vector3, type: LevelBody.Type, is_static: bool = false
 	lvlb.is_static = is_static
 	lvlb.update_display()
 	lvlb.update_bodytype()
-	
+
 
 @rpc("any_peer", "call_local", "reliable")
 func slow_player(amount: float, duration: float, n: float = 1.0) -> void:

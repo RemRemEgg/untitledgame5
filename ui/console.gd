@@ -10,7 +10,7 @@ var load_call: Callable
 
 #region auto setup options
 ## Enables auto setup options
-static var AUTO_SETUP: bool = true
+static var AUTO_SETUP: bool = false
 ## Game will fullscreen
 static var AUTO_FULLSCREEN: bool = false
 ## Local instances will connect to eachother

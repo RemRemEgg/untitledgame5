@@ -33,6 +33,7 @@
 - Many new rooms, including half size rooms
 - Spell selection menu now displays which cards each spell has, as well as current card
 - Added sound. More sounds to come
+- Added player trackers
 
 
 # Bug Fixes
