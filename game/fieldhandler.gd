@@ -57,7 +57,7 @@ static func load_all_fields() -> void:
 				fdata.effect_world = true
 				fdata.shape = SphereShape3D.new()
 				fdata.spawn_effect = func spawn(field:Field) -> void:
-					var vfx := VFXHandler.spawn_local(VFXHandler.AREA_SPHERE, field.global_position, [Color.DIM_GRAY, field.radius, field.time])
+					var vfx := VFXHandler.spawn_local(VFXHandler.AREA_SPHERE, field.global_position, [Color.DARK_GRAY, field.radius, field.time])
 					field.visuals.append(vfx)
 				fdata.effect = func effect(field:Field, body:PhysicsBody3D, delta:float) -> void:
 					var dir := body.global_position - field.global_position

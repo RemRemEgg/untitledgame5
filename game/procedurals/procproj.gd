@@ -189,4 +189,5 @@ func bounce(proj: Projectile, pb3d: PhysicsBody3D, normal: Vector3) -> void:
 	ed.hit_pb3d = pb3d
 	ed.normal = normal
 	ed.mult = proj.strength / maxf(bounces.value+1.0, 1.0)
+	ed.percent = proj.strength
 	collide_hook.execute(ed)

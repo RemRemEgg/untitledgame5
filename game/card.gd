@@ -368,9 +368,9 @@ static func register_all_cards() -> void:
 		func card(cd:CardData) -> void:
 			cd.player.full_auto = true
 			cd.add_description(&"Balanced RoF, high speed and reload time", true)
-			cd.mult(cd.proj.damage, 0.3, false)
+			cd.mult(cd.proj.damage, 0.38, false)
 			cd.add(cd.gun.inaccuracy, 1, false)
-			cd.add(cd.gun.clip_size, 50, false)
+			cd.add(cd.gun.clip_size, 40, false)
 			cd.add(cd.gun.fire_rate, -8, false)
 			cd.add(cd.gun.b_speed, 200, false)
 			cd.add(cd.gun.reload_time, 1.5, false)
@@ -526,7 +526,7 @@ static func register_all_cards() -> void:
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.5, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
 			cd.add(cd.gun.b_speed, 144)
-			cd.mult(cd.gun.b_speed, 14.4)
+			cd.mult(cd.gun.b_speed, 1.14)
 			cd.add(cd.gun.fire_rate, 1.44)
 			cd.add(cd.gun.reload_time, 0.144)
 	)
@@ -659,7 +659,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.proj.bounces, 1.0)
 			cd.add_effect(&"Bullets bounce towards nearby visible players", true, cd.proj.collide_hook,
 				func effect(ed:EventHook.EventData)-> void:
-					var players := Game.world.get_aoe_players(ed.position, ed.mult*48.0)
+					var players := Game.world.get_aoe_players(ed.position, ed.mult*32.0/ed.percent)
 					for player in players:
 						var s := ed.position
 						var e := player.global_position
@@ -1145,7 +1145,7 @@ static func register_all_cards() -> void:
 	register_card(&"INDS", &"Industrious", &"",
 		DECK_PLAYER, RARITY_COMMON, STYLE_BASIC, [0.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
-			cd.add(cd.player.max_health, 1.1)
+			cd.mult(cd.player.max_health, 1.1)
 			cd.add(cd.player.max_health, 10)
 			cd.mult(cd.player.speed, 1.10)
 	)
@@ -1224,8 +1224,9 @@ static func register_all_cards() -> void:
 				func effect(ed:EventHook.EventData)-> void:
 					var boost := ed.player.velocity.length()
 					boost = 1.0 + (boost * 64.0) / (boost + 128.0)
-					var rt := (ed.mult ** 0.333) * boost
-					Game.world.create_explosion(ed.position, rt, rt * 4.0, rt * 3.0, [ed.player.get_rid()], ed.player)
+					var rt := (ed.mult ** 0.333)
+					Game.world.create_explosion(ed.position, rt * 3.0, rt * 3.0 * boost, rt * 3.0 * boost, [ed.player.get_rid()], ed.player)
+					Game.world.create_explosion(ed.position, rt * boost, rt * 0.2 * boost, rt * 3.0 * boost, [], ed.player)
 			)
 	)
 	
