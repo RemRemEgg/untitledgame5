@@ -32,6 +32,16 @@ func card_selection_time() -> void:
 		_draws_finished()
 		return
 	
+	Game.player.deck_weights[Card.DECK_INIT] = 0.0
+	if Network.round_count == 0: # first card draw
+		new_draw().set_weights({Card.DECK_INIT:1.0}).set_exclusive(true).set_max_cards(2)
+		new_draw().set_weights({Card.DECK_SPELL:1.0}).set_exclusive(true)
+	else:
+		# artifact draws
+		if Network.self_player.losses in [4, 8, 16, 32, 64, 128]:
+			new_draw().set_max_cards(3).add_forced_card(Card.ARTIFACT_DRAW_CARD)
+		else: new_draw()
+	
 	visible = true
 	spell_slot.visible = false
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -63,8 +73,11 @@ func _next_card_draw() -> void:
 			for deck in current_draw.deck_weights:
 				player.deck_weights[deck] *= current_draw.deck_weights[deck]
 		
-		var max_cards: int = Console.MAX_CARD_OPTIONS if (Console.DEBUG) else current_draw.max_cards
+		var max_cards: int = Console.MAX_CARD_OPTIONS if (Console.DEBUG) else (current_draw.max_cards + player.card_draw_mod)
+		max_cards -= current_draw.forced_cards.size()
 		selection = CardDeck.pick_weighted_cards_reduced_dupes(Card.ALL_CARDS, player, max_cards, false)
+		for i in current_draw.forced_cards.size():
+			selection.insert(floori(selection.size()/2.0), current_draw.forced_cards[i])
 		player.deck_weights = weights_pre
 		
 		flip_animations.resize(selection.size())
@@ -109,10 +122,14 @@ func _process(delta: float) -> void:
 			animation_timer = 1.0
 		2: # card selected, pick animation
 			if tick_animation_timer(1.5, -1):
-				if selection[picked_card].use_spell_selection:
+				var picked := selection[picked_card]
+				if picked.use_spell_selection:
 					_setup_spell_slot()
 				else:
-					Game.player.add_card(selection[picked_card])
+					if picked.card_take_effect:
+						picked.card_take_effect.call(Game.player)
+					if !picked.is_fake:
+						Game.player.add_card(picked)
 					card_selected()
 
 
@@ -134,6 +151,8 @@ func _input(event: InputEvent) -> void: # TODO cleanup
 			process_mode = Node.PROCESS_MODE_DISABLED
 			selection = []
 			reset_card_displays()
+		if Input.is_key_pressed(KEY_S): # skip
+			_draws_finished()
 		if Input.is_key_pressed(KEY_R): # reroll
 			draws.push_front(current_draw)
 			_next_card_draw()
@@ -253,10 +272,11 @@ class CardDrawData:
 	var max_cards: int = 5
 	var deck_weights: Dictionary[CardDeck, float]
 	var is_exclusive: bool = false
+	var forced_cards: Array[Card]
 	
 	
 	func _init() -> void:
-		deck_weights = {Card.DECK_INIT:0.0}
+		deck_weights = {Card.DECK_INIT:0.0, Card.DECK_ARTIFACT:0.0}
 	
 	
 	func set_max_cards(max_: int) -> CardDrawData:
@@ -271,4 +291,9 @@ class CardDrawData:
 	
 	func set_exclusive(ex: bool = true) -> CardDrawData:
 		is_exclusive = ex
+		return self
+	
+	
+	func add_forced_card(card: Card) -> CardDrawData:
+		forced_cards.append(card)
 		return self

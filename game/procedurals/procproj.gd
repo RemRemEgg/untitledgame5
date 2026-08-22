@@ -36,8 +36,8 @@ func calculate_stats() -> void:
 
 ## Duration of the bullet. Default 1.0
 var time := Stat.new(&"Bullet Time", 1.0, 0.001, 15.0)
-## Size of the bullet. Default 1.0
-var scale := Stat.new(&"Bullet Size", 1.0, 0.15)
+## Size of the bullet. Default 2.0
+var scale := Stat.new(&"Bullet Size", 2.0, 0.15)
 ## Damage of the bullet. Default 20.0
 var damage := Stat.new(&"Bullet Damage", 20.0)
 ## bounces of the bullet. Default 0

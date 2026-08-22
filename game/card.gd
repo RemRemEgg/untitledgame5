@@ -11,12 +11,13 @@ static var DECK_TEXTURE_TEST: CardDeck
 static var DECK_DEBUG: CardDeck
 
 static var DECK_INIT: CardDeck
+static var DECK_ARTIFACT: CardDeck
+static var ARTIFACT_DRAW_CARD: Card
 
 static var DECK_GUN: CardDeck
 static var DECK_MAGIC: CardDeck
 static var DECK_SPELL: CardDeck
 static var DECK_PLAYER: CardDeck
-static var DECK_ALIGN: CardDeck
 static var DECK_OTHER: CardDeck
 
 # TODO more event hooks
@@ -33,9 +34,9 @@ static func spider_to_color(data: Array[float]) -> Color:
 	return Color.from_hsv(a.angle()/(PI/2.0), 1.0, 1.0)
 
 
-#            INTERNAL         GREEN          YELLOW          BLUE         PURPLE
-enum {RARITY_INTERNAL, RARITY_COMMON, RARITY_UNUSUAL, RARITY_RARE, RARITY_EPIC}
-const RARITY_COLORS: Array[StringName] = [&"#555555", &"1ad933", &"fff200", &"33cce6", &"ff00ff"]
+#            INTERNAL         GREEN          YELLOW          BLUE         PURPLE            RED
+enum {RARITY_INTERNAL, RARITY_COMMON, RARITY_UNUSUAL, RARITY_RARE, RARITY_EPIC, RARITY_ARTIFACT}
+const RARITY_COLORS: Array[StringName] = [&"#555555", &"1ad933", &"fff200", &"33cce6", &"ff00ff", &"fd0000"]
 # NYI
 enum {STYLE_INTERNAL, STYLE_BASIC}
 
@@ -46,10 +47,12 @@ var style: int
 var spider: Array[float] # [Toughness, Sp.Def, Agility, Lethality, Ammo, Sp.Atk]
 var desc: StringName
 var card_effect: Callable
+var card_take_effect: Callable
 var rarity_eval: RarityEval
 var use_spell_selection: bool
 # TODO does not work when nested
 var is_draw_once: bool
+var is_fake: bool
 
 var display: CardDisplay
 var wrapper_3d: Sprite3D
@@ -129,7 +132,7 @@ static func get_card(card_uuid: StringName) -> Card:
 ##		)
 ##)
 ##[/codeblock]
-static func register_card(uuid_: StringName, name_: StringName, flavor_: StringName, deck_: CardDeck, rarity_: int, style_: int, spider_: Array[float], rarityeval: RarityEval, effect: Callable) -> void:
+static func register_card(uuid_: StringName, name_: StringName, flavor_: StringName, deck_: CardDeck, rarity_: int, style_: int, spider_: Array[float], rarityeval: RarityEval, effect: Callable) -> Card:
 	Console.print(&"Loading card %s" % uuid_)
 	
 	var uuid_exists := ALL_CARDS.find_custom(func(c:Card)->bool: return c.uuid == uuid_) + 1
@@ -177,6 +180,7 @@ static func register_card(uuid_: StringName, name_: StringName, flavor_: StringN
 	ALL_CARDS.append(card)
 	deck_.cards.append(card)
 	Console.print(&"Loaded %s" % card)
+	return card
 
 
 static func register_all_decks() -> void:
@@ -186,6 +190,8 @@ static func register_all_decks() -> void:
 	DECKS.append(DECK_DEBUG)
 	DECK_INIT = CardDeck.new(&"init", load("res://textures/decks/deck_init.png") as Texture2D)
 	DECKS.append(DECK_INIT)
+	DECK_ARTIFACT = CardDeck.new(&"artifact", load("res://textures/decks/deck_artifact.png") as Texture2D)
+	DECKS.append(DECK_ARTIFACT)
 	DECK_GUN = CardDeck.new(&"gun", load("res://textures/decks/deck_gun.png") as Texture2D)
 	DECKS.append(DECK_GUN)
 	DECK_MAGIC = CardDeck.new(&"magic", load("res://textures/decks/deck_magic.png") as Texture2D)
@@ -194,8 +200,6 @@ static func register_all_decks() -> void:
 	DECKS.append(DECK_SPELL)
 	DECK_PLAYER = CardDeck.new(&"player", load("res://textures/decks/deck_player.png") as Texture2D)
 	DECKS.append(DECK_PLAYER)
-	DECK_ALIGN = CardDeck.new(&"align", load("res://textures/decks/deck_init.png") as Texture2D)
-	DECKS.append(DECK_ALIGN)
 	DECK_OTHER = CardDeck.new(&"other", load("res://textures/decks/deck_debug.png") as Texture2D)
 	DECKS.append(DECK_OTHER)
 
@@ -251,134 +255,146 @@ static func register_all_cards() -> void:
 	#endregion
 	
 	
-	#region alignment cards
-	register_card(&"RNGR", &"Ranger's Soul", &"",
-		DECK_ALIGN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 1.0, 0.0], DRAW_ONCE,
+	#region artifact cards
+	ARTIFACT_DRAW_CARD = register_card(&"ARTF", &"Artifact", &"What power is contained inside?",
+		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 1.0, 0.0], NEVER(),
+		func card(cd:CardData) -> void:
+			cd.add_description(&"Pick an Artifact", true)
+	)
+	ARTIFACT_DRAW_CARD.card_take_effect = func(player: Player) -> void:
+		player.cards_menu.new_draw().set_weights({Card.DECK_ARTIFACT:1.0}).set_exclusive(true).set_max_cards(3)
+	ARTIFACT_DRAW_CARD.is_fake = true
+	
+	register_card(&"GDBL", &"Golden Bullets", &"",
+		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 1.0, 0.0], ALL(NOT(&"CRYS"), NOT(&"BRSS"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
 			cd.add_description(&"Align yourself with the rangers, finding gun cards more often", true)
-			cd.player.deck_weights[DECK_GUN] += 0.4
-			cd.player.deck_weights[DECK_ALIGN] *= 0.5
+			cd.player.deck_weights[DECK_GUN] *= 1.4
 	)
-	register_card(&"MGCN", &"Magicians's Soul", &"",
-		DECK_ALIGN, RARITY_EPIC, STYLE_BASIC, [1.0, 0.0, 0.0, 0.0, 0.0, 1.0], DRAW_ONCE,
+	register_card(&"CRYS", &"Crystal Ball", &"",
+		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [1.0, 0.0, 0.0, 0.0, 0.0, 1.0], ALL(NOT(&"GDBL"), NOT(&"BRSS"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
 			cd.add_description(&"Align yourself with the magicians, finding magic cards more often", true)
-			cd.player.deck_weights[DECK_MAGIC] += 0.4
-			cd.player.deck_weights[DECK_ALIGN] *= 0.5
+			cd.player.deck_weights[DECK_MAGIC] *= 1.4
 	)
-	register_card(&"MONK", &"Monk's Soul", &"",
-		DECK_ALIGN, RARITY_EPIC, STYLE_BASIC, [0.0, 1.0, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
+	register_card(&"BRSS", &"Brass Nuckles", &"",
+		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 1.0, 1.0, 0.0, 0.0, 0.0], ALL(NOT(&"CRYS"), NOT(&"GDBL"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
 			cd.add_description(&"Align yourself with the monks, finding player cards more often", true)
-			cd.player.deck_weights[DECK_PLAYER] += 0.4
-			cd.player.deck_weights[DECK_ALIGN] *= 0.5
+			cd.player.deck_weights[DECK_PLAYER] *= 1.4
 	)
-	register_card(&"PRAY", &"Pray to the Obelisk", &"Pray to the Obelisk",
-		DECK_ALIGN, RARITY_RARE, STYLE_BASIC, [1.0, 1.0, 1.0, 1.0, 1.0, 1.001], ANY(&"align_gun", &"align_magic", &"align_player"),
+	
+	register_card(&"PLRZ", &"Polarizer", &"",
+		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 1.0, 1.0, 0.0, 0.0, 0.0], NOT(&"NORM"),
 		func card(cd:CardData) -> void:
-			cd.add_description(&"Your alignments are more polarized", true)
-			cd.player.deck_weights[DECK_ALIGN] *= 0.5
+			cd.add_description(&"Polarizes your alignment, granting higher chances to draw common and epic cards", true)
+			cd.player.rarity_weights[RARITY_COMMON] *= 1.4
+			cd.player.rarity_weights[RARITY_UNUSUAL] /= 1.4
+			cd.player.rarity_weights[RARITY_RARE] /= 1.4
+			cd.player.rarity_weights[RARITY_EPIC] *= 1.4
+	)
+	register_card(&"NORM", &"Normalizer", &"",
+		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 1.0, 1.0, 0.0, 0.0, 0.0], NOT(&"PLRZ"),
+		func card(cd:CardData) -> void:
+			cd.add_description(&"Normalizes your alignment, granting higher chances to draw unusual and rare cards", true)
+			cd.player.rarity_weights[RARITY_COMMON] /= 1.4
+			cd.player.rarity_weights[RARITY_UNUSUAL] *= 1.4
+			cd.player.rarity_weights[RARITY_RARE] *= 1.4
+			cd.player.rarity_weights[RARITY_EPIC] /= 1.4
+	)
+	
+	register_card(&"OBSK", &"Obsidian Obelisk", &"Pray to the Obelisk.",
+		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [1.0, 1.0, 1.0, 1.0, 1.0, 1.001], ANY(&"GDBL", &"CRYS", &"BRSS", &"NORM", &"PLRZ"),
+		func card(cd:CardData) -> void:
+			cd.add_description(&"Your alignments have greater infulence", true)
 			for ideck in cd.player.deck_weights:
 				cd.player.deck_weights[ideck] *= cd.player.deck_weights[ideck]
+			for i in cd.player.rarity_weights:
+				cd.player.rarity_weights[i] *= cd.player.rarity_weights[i]
+	)
+	
+	var mime := register_card(&"MIME", &"Imperfect Mimic", &"",
+		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 1.0, 0.0], DRAW_ONCE,
+		func card(cd:CardData) -> void:
+			cd.add_description(&"Duplicate one of three random cards from your deck", true)
+			cd.mult(cd.player.max_health, 0.80)
+	)
+	mime.card_take_effect = func(player: Player) -> void:
+		var cdd := player.cards_menu.new_draw().set_max_cards(0)
+		var all_rng_cards := player.cards.keys() as Array[Card]
+		for i in 3:
+			var rng_card := all_rng_cards[randi_range(0, all_rng_cards.size()-1)]
+			cdd.add_forced_card(rng_card)
+	
+	register_card(&"AOSP", &"Ace of Spades", &"",
+		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 1.0, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
+		func card(cd:CardData) -> void:
+			cd.add_description(&"When drawing cards, draw one more", false)
+			cd.player.card_draw_mod += 1
 	)
 	#endregion
 	
 	
 	
 	#region init card
-	register_card(&"RFLE", &"Rifle", &"For the campers",
-		DECK_INIT, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 0.2, 1.0, 0.0], null,
-		func card(cd:CardData) -> void:
-			cd.mult(cd.proj.damage, 1.5)
-			cd.add(cd.gun.fire_rate, -10.5)
-			cd.add(cd.gun.b_speed, 300)
-			cd.mult(cd.gun.inaccuracy, 0.4)
-			cd.add(cd.gun.clip_size, -6)
-			cd.add(cd.gun.reload_time, 2.25)
-	)
-	register_card(&"STGN", &"Shotgun", &"must.....kill.......",
-		DECK_INIT, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 0.5, 1.0, 0.0], null,
-		func card(cd:CardData) -> void:
-			cd.mult(cd.proj.damage, 0.25)
-			cd.mult(cd.gun.inaccuracy, 3.2)
-			cd.add(cd.gun.fire_rate, -11.0)
-			cd.add(cd.gun.inaccuracy, 10.0)
-			cd.add(cd.gun.clip_size, 10)
-			cd.add(cd.gun.bullets_per_shot, 6)
-			cd.add(cd.gun.reload_time, 1.0)
-	)
-	register_card(&"REVO", &"Revolver", &"Fires faster than you can click",
-		DECK_INIT, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 1.0, 0.0], null,
-		func card(cd:CardData) -> void:
-			cd.mult(cd.proj.damage, 1.2)
-			cd.add(cd.gun.clip_size, -5)
-			cd.add(cd.gun.reload_time, 1.5)
-	)
-	register_card(&"QUAD", &"Quadruple Barrel", &"4 Bullets > 1 Bullet",
-		DECK_INIT, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.5, 0.0], null,
-		func card(cd:CardData) -> void:
-			cd.add_description(&"Enables Full Auto", true, true)
-			cd.player.full_auto = true
-			cd.mult(cd.proj.damage, 0.3)
-			cd.add(cd.gun.inaccuracy, 12)
-			cd.add(cd.gun.clip_size, 14)
-			cd.add(cd.gun.bullets_per_shot, 3)
-			cd.add(cd.gun.fire_rate, -9.0)
-			cd.add(cd.gun.reload_time, 1.0)
-			cd.mult(cd.gun.b_speed, 0.65)
-	)
-	register_card(&"BLND", &"Blunderbuss", &"Hoist the sails!",
+	register_card(&"PESH", &"Peashooter", &"High Uptime",
 		DECK_INIT, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.2, 0.0], null,
 		func card(cd:CardData) -> void:
-			cd.add(cd.proj.damage, 10)
-			cd.mult(cd.proj.damage, 1.3)
-			cd.add(cd.proj.scale, 5.0)
-			cd.add(cd.gun.clip_size, -8)
-			cd.add(cd.gun.fire_rate, -11)
-			cd.add(cd.gun.reload_time, 0.5)
-			cd.add(cd.proj.knockback, 100.0)
-			cd.mult(cd.gun.b_speed, 0.6)
+			pass
 	)
-	register_card(&"MIGN", &"Minigun", &"\"Glorified noise-maker\"",
-		DECK_INIT, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.2, 0.0], null,
-		func card(cd:CardData) -> void:
-			cd.player.full_auto = true
-			cd.add_description(&"Enables Full Auto", true, true)
-			cd.mult(cd.proj.damage, 0.2)
-			cd.mult(cd.gun.inaccuracy, 2.5)
-			cd.add(cd.gun.inaccuracy, 8.0)
-			cd.add(cd.gun.clip_size, 32)
-			cd.add(cd.gun.fire_rate, 1.0)
-			cd.add(cd.gun.reload_time, 1.75)
-			cd.add(cd.gun.b_speed, 50)
-	)
-	register_card(&"SMGN", &"Submachine Gun", &"bewp!",
+	register_card(&"SMGN", &"Submachine Gun", &"Super fast RoF",
 		DECK_INIT, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.2, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.player.full_auto = true
-			cd.add_description(&"small mag, high RoF", true)
-			cd.mult(cd.proj.damage, 0.2, false)
-			cd.add(cd.gun.inaccuracy, 10, false)
-			cd.add(cd.gun.clip_size, 16, false)
-			cd.add(cd.gun.fire_rate, 7, false)
+			cd.mult(cd.proj.damage, 0.25, false)
+			cd.add(cd.gun.inaccuracy, 8, false)
+			cd.add(cd.gun.clip_size, 14, false)
+			cd.add(cd.gun.fire_rate, 5, false)
 			cd.add(cd.gun.reload_time, 0.25, false)
 	)
-	register_card(&"LMGN", &"Light Machine Gun", &"gorp!",
+	register_card(&"STGN", &"Shotgun", &"1) Point 2) Click",
+		DECK_INIT, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 0.5, 1.0, 0.0], null,
+		func card(cd:CardData) -> void:
+			cd.mult(cd.proj.damage, 0.3, false)
+			cd.mult(cd.gun.inaccuracy, 3.0, false)
+			cd.add(cd.gun.fire_rate, -10.0, false)
+			cd.add(cd.gun.inaccuracy, 8.0, false)
+			cd.add(cd.gun.clip_size, -8, false)
+			cd.add(cd.gun.pellets, 6, false)
+			cd.add(cd.gun.reload_time, 1.0, false)
+	)
+	register_card(&"AR15", &"Assault Rifle", &"Balanced Range and Damage",
 		DECK_INIT, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.2, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.player.full_auto = true
-			cd.add_description(&"Balanced RoF, high speed and reload time", true)
-			cd.mult(cd.proj.damage, 0.38, false)
-			cd.add(cd.gun.inaccuracy, 1, false)
+			cd.mult(cd.proj.damage, 0.29, false)
+			cd.add(cd.gun.inaccuracy, 10.0, false)
 			cd.add(cd.gun.clip_size, 40, false)
-			cd.add(cd.gun.fire_rate, -8, false)
-			cd.add(cd.gun.b_speed, 200, false)
+			cd.add(cd.gun.fire_rate, -5, false)
+			cd.add(cd.gun.b_speed, 100, false)
 			cd.add(cd.gun.reload_time, 1.5, false)
 	)
-	register_card(&"PESH", &"Peashooter", &"pew pew pew",
+	register_card(&"HELR", &"HEL Rifle", &"Hybrid Electrothermal Light-gas",
+		DECK_INIT, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 0.2, 1.0, 0.0], null,
+		func card(cd:CardData) -> void:
+			cd.mult(cd.proj.damage, 1.7, false)
+			cd.add(cd.gun.fire_rate, -10, false)
+			cd.add(cd.gun.b_speed, 700, false)
+			cd.mult(cd.gun.inaccuracy, 0.25, false)
+			cd.add(cd.gun.clip_size, -7, false)
+			cd.add(cd.gun.reload_time, 2.5, false)
+	)
+	register_card(&"HICL", &"Hicaliber Handcannon", &"Hoist the sails!",
 		DECK_INIT, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.2, 0.0], null,
 		func card(cd:CardData) -> void:
-			cd.add_description(&"Pistol", true)
+			cd.add(cd.proj.damage, 8, false)
+			cd.mult(cd.proj.damage, 1.3, false)
+			cd.add(cd.proj.scale, 2.5, false)
+			cd.add(cd.gun.clip_size, -5, false)
+			cd.add(cd.gun.fire_rate, -10.0, false)
+			cd.add(cd.gun.reload_time, 1.2, false)
+			cd.add(cd.proj.knockback, 100.0, false)
+			cd.mult(cd.gun.b_speed, 0.6, false)
 	)
 	#endregion
 	
@@ -395,7 +411,7 @@ static func register_all_cards() -> void:
 	register_card(&"GRPL", &"Grapple", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
-			cd.add_description("Bullets pull players toward you", true)
+			cd.add_description(&"Inverts the direction of your knockback", true)
 			cd.mult(cd.proj.knockback, -1, false)
 	)
 	
@@ -466,7 +482,7 @@ static func register_all_cards() -> void:
 	)
 	
 	register_card(&"OCFM", &"Overclocked Firing Mechanism", &"",
-		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, -0.2, 0.0], ALL(NOT(&"OCFM"), DRAW_ONCE),
+		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, -0.2, 0.0], ALL(NOT(&"SAWN"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
 			cd.add_description(&"Enables Full Auto", true, true)
 			cd.player.full_auto = true
@@ -478,14 +494,12 @@ static func register_all_cards() -> void:
 	)
 	
 	register_card(&"SAWN", &"Sawed-Off", &"",
-		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, -0.2, 0.0], ALL(NOT(&"SAWN"), DRAW_ONCE),
+		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, -0.2, 0.0], ALL(NOT(&"OFCM"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
-			cd.mult(cd.gun.fire_rate, 1.5)
-			cd.mult(cd.gun.clip_size, 1.5)
-			cd.mult(cd.gun.bullets_per_shot, 2.0)
-			cd.mult(cd.proj.damage, 0.6)
+			cd.mult(cd.proj.damage, 1.2)
+			cd.add(cd.gun.pellets, 8.0)
 			cd.add(cd.gun.reload_time, 0.3)
-			cd.add(cd.gun.inaccuracy, 8.5)
+			cd.add(cd.gun.inaccuracy, 8.0)
 	)
 	
 	register_card(&"IRON", &"Iron Cannon", &"",
@@ -569,16 +583,6 @@ static func register_all_cards() -> void:
 			cd.add(cd.proj.damage, 4.0)
 			cd.add(cd.gun.inaccuracy, -12.0)
 			cd.add(cd.gun.fire_rate, 0.2)
-			cd.add(cd.gun.reload_time, 0.5)
-	)
-	
-	register_card(&"BRGE", &"Barrage", &"",
-		DECK_GUN, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.2, 0.0], null,
-		func card(cd:CardData) -> void:
-			cd.add(cd.gun.bullets_per_shot, 5)
-			cd.add(cd.gun.clip_size, 10)
-			cd.add(cd.gun.inaccuracy, 8)
-			cd.mult(cd.proj.damage, 0.6)
 			cd.add(cd.gun.reload_time, 0.5)
 	)
 	
@@ -932,7 +936,7 @@ static func register_all_cards() -> void:
 				func effect(ed:EventHook.EventData) -> void:
 					var vel := ed.player.velocity
 					ed.player.velocity = -ed.player.camera.global_basis.z * 96.0 * ed.mult
-					vel += ed.player.velocity * ed.player.speed.value * ed.mult * (3 / 100.0)
+					vel += ed.player.velocity * ed.player.get_dash_power() * ed.mult * (3 / 100.0)
 					ed.player.move_and_slide()
 					ed.player.velocity = vel
 			)
@@ -1114,8 +1118,10 @@ static func register_all_cards() -> void:
 	register_card(&"BRDN", &"Burden Breaker", &"",
 		DECK_PLAYER, RARITY_EPIC, STYLE_BASIC, [0.0, -0.5, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
-			cd.mult(cd.player.speed, 2.0)
-			cd.mult(cd.player.accel, 0.75)
+			cd.mult(cd.player.speed, 100.0, false)
+			cd.add(cd.player.speed, 100.0, false)
+			cd.add_description(&"Uncapped maximum speed", true)
+			cd.mult(cd.player.accel, 0.5)
 	)
 	
 	register_card(&"LGDY", &"Leg Day", &"Never skip!",
@@ -1330,6 +1336,7 @@ func get_weight(player: Player) -> float:
 		Card.RARITY_RARE: weight = 2**0.7
 		Card.RARITY_EPIC: weight = 2**0.0
 	weight *= player.deck_weights.get(deck, 1.0)
+	weight *= player.rarity_weights[rarity]
 	return weight
 
 
@@ -1337,7 +1344,7 @@ class CardData:
 	var n: int
 	## Stats: [code]max_health, speed, accel, jump, max_jumps, max_stamina, magic_cd, melee_cd[/code][br]Hooks: [code]shooting_hook, damage_hook, spell_hook[/code]
 	var player: Player
-	## Stats: [code]fire_rate, b_speed, inaccuracy, bullets_per_shot, clip_size, reload_time[/code]
+	## Stats: [code]fire_rate, b_speed, inaccuracy, pellets, clip_size, reload_time[/code]
 	var gun: ProcGun
 	## Stats: [code]time, scale, damage, bounces, knockback[/code][br]Hooks: [code]collide_hook, damage_hook[/code]
 	var proj: ProcProj
@@ -1413,8 +1420,9 @@ class RarityEval:
 	var cards: Array[Card] = []
 	
 	
-	func _init(mode_: int) -> void:
+	func _init(mode_: int, invert: bool = false) -> void:
 		mode = mode_
+		inverted = invert
 	
 	
 	func update_draw_once(id: StringName) -> bool:

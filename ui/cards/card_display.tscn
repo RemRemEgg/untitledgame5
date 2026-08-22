@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://b5ava4xusp4lu"]
 
+[ext_resource type="Material" uid="uid://bwblbnbrntr11" path="res://shaders/cards/outline_artifact.res" id="1_p1uqy"]
+[ext_resource type="Texture2D" uid="uid://kbi0sfvh8vex" path="res://textures/decks/deck_artifact.png" id="2_5kb46"]
 [ext_resource type="Script" uid="uid://b842d5orwjbbc" path="res://ui/spider_graph.gd" id="2_m1mul"]
 [ext_resource type="Script" uid="uid://b7ao38spyywla" path="res://ui/cards/card_display.gd" id="2_p1uqy"]
 [ext_resource type="Theme" uid="uid://bg5liorxv7qwu" path="res://ui/ui_theme.tres" id="2_y4850"]
@@ -62,6 +64,7 @@ corner_radius_bottom_left = 20
 corner_detail = 1
 
 [node name="card_display" type="TextureRect" unique_id=2030955788]
+material = ExtResource("1_p1uqy")
 custom_minimum_size = Vector2(256, 384)
 anchors_preset = 8
 anchor_left = 0.5
@@ -77,6 +80,7 @@ grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 size_flags_horizontal = 0
 size_flags_vertical = 0
+texture = ExtResource("2_5kb46")
 script = ExtResource("2_p1uqy")
 
 [node name="background" type="Panel" parent="." unique_id=1448278104]

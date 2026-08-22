@@ -55,6 +55,8 @@ func set_data(data: Network.PlayerInfo) -> void:
 
 var cards: Dictionary[Card, int]
 var deck_weights: Dictionary[CardDeck, float]
+var rarity_weights: PackedFloat64Array
+var card_draw_mod: int
 var stamina: float = 0.0
 var armor: float = 0.0
 var magic_timer: float = 0.0
@@ -125,6 +127,8 @@ var spell_2 := Spell.new()
 func reset_stats() -> void:
 	for deck in Card.DECKS:
 		deck_weights[deck] = 1.0
+	rarity_weights = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+	card_draw_mod = 0
 	
 	full_auto = false
 	for stat in all_stats:
@@ -405,12 +409,16 @@ func dash() -> void:
 			if !dir: dir_3 = -camera.global_transform.basis.z
 			dir_3 *= speed.value * 1.2
 			velocity = Vector3(dir_3.x, velocity.y*0.5+dir_3.y, dir_3.z)
-		5:
+		5: # this is the one used
 			var dir := Input.get_vector(&"left", &"right", &"forward", &"backward")
 			if !dir: dir = Vector2(0, -1)
 			var target := (camera.global_transform.basis * Vector3(dir.x, 0, dir.y)).normalized()
 			var bonus := maxf(0.1, velocity.normalized().dot(target) * 0.9)
-			velocity = velocity*bonus + Vector3(target.x, target.y, target.z)*speed.value*0.85
+			velocity = velocity*bonus + Vector3(target.x, target.y, target.z)*get_dash_power()*0.85
+
+
+func get_dash_power() -> float:
+	return minf(speed.value, accel.value/3.0)
 
 
 func melee(vel: Vector3) -> void: # TODO cleanup

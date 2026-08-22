@@ -19,6 +19,8 @@
 - Spells can be chain cast
 - Indirect kills count as player kills
 - Many small fixes and qol changes that didnt make the list (yet)
+- Only 2 gun cards offered at start of game
+- Increased default bullet size
 
 ### Cards
 - Balance changes, spelling fixes
@@ -54,6 +56,7 @@
 - Spectators still have collision
 - Players can be hit through walls
 - Explosions dont hurt levelbodies
+- FUCKING DUCKS?????
 
 
 # TODO List
@@ -62,6 +65,26 @@
 - Update spell charge visuals
 - Netcode updates
 - Player animation & model rework
+- Explosive trap fix
+- Higher shield regen delay
+- Enter to join game
+- LOS checks for AOE
+- Card purge
+- Larger base bullet size
+- Card stat preview
+- Grapple desc fix
+- Player trackers need to be more visible
+- Snare ping fix
+- Incorrect damage sources
+- Too much speed prevents melee from blocking border damage
+- Spectators need to disable collision
+- 12GS too much kb?
+- Spell 1 and 2 flipped in stat menu?
+- Improve slide
+- Projectiles clip through walls
+- Levelgeo anim errors vector to infinity
+- Remove card spider graphs
+- Add card reload command
 
 - Console command updates
 - More magic cards / abilities

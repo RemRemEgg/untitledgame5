@@ -180,10 +180,13 @@ class PlayerTracker extends Control:
 			
 			draw_set_transform(cntr + Vector2.RIGHT.rotated(angle) * radius, angle, Vector2.ONE * scale)
 			var color := player.color
-			color.a = alpha
-			draw_player(color)
+			draw_player(color, alpha ** 2.0)
 	
 	
-	func draw_player(color: Color) -> void:
-		draw_circle(Vector2(), 11.0, color, false, 4)
-		draw_arc(Vector2(10, 0), 12.0, 2.0, -2.0, 3, color, 2)
+	const POINTS: PackedVector2Array = [Vector2(-12, 0), Vector2(0, -12) , Vector2(24, 0), Vector2(0, 12), Vector2(-12, 0)]
+	var outline := Color.GHOST_WHITE
+	func draw_player(color: Color, alpha: float) -> void:
+		color.a = alpha
+		outline.a = alpha
+		draw_polyline(POINTS, outline, 6, true)
+		draw_polyline(POINTS, color, 4, true)

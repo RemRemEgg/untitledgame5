@@ -154,13 +154,13 @@ handle_input_locally = false
 size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
+[node name="cards_menu" parent="camera/ui3d_container/ui3d_vp" unique_id=361756010 instance=ExtResource("3_du4nq")]
+
 [node name="camera" type="Camera3D" parent="camera/ui3d_container/ui3d_vp" unique_id=1066895993]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 keep_aspect = 0
 cull_mask = 2
 fov = 50.0
-
-[node name="cards_menu" parent="camera/ui3d_container/ui3d_vp" unique_id=361756010 instance=ExtResource("3_du4nq")]
 
 [node name="card_light" type="OmniLight3D" parent="camera/ui3d_container/ui3d_vp" unique_id=130150982]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 2)

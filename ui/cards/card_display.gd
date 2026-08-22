@@ -6,6 +6,8 @@ const OUTLINE_COMMON := preload("uid://cr73ecy66f8or") as ShaderMaterial
 const OUTLINE_UNUSUAL := preload("uid://b8j6y8svxyb2q") as ShaderMaterial
 const OUTLINE_RARE = preload("uid://fif1sx8k4w8f") as ShaderMaterial
 const OUTLINE_EPIC = preload("uid://caexkypvp4txu") as ShaderMaterial
+const OUTLINE_ARTIFACT = preload("uid://bwblbnbrntr11") as ShaderMaterial
+
 
 var background: Panel
 
@@ -38,6 +40,7 @@ static func from_card(card: Card, deck: CardDeck) -> CardDisplay:
 		Card.RARITY_UNUSUAL: cdisp.material = OUTLINE_UNUSUAL
 		Card.RARITY_RARE: cdisp.material = OUTLINE_RARE
 		Card.RARITY_EPIC: cdisp.material = OUTLINE_EPIC
+		Card.RARITY_ARTIFACT: cdisp.material = OUTLINE_ARTIFACT
 	
 	cdisp.spider_graph.values = card.spider as PackedFloat64Array
 	cdisp.spider_graph.data_outline_color = Card.spider_to_color(card.spider)

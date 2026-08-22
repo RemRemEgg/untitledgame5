@@ -117,16 +117,7 @@ func change_to_state(new_state: int) -> void: # peer side
 			Console.print(&"change to  NS_DRAWING")
 			next_state = NS_PROJ_SYNC
 			get_tree().current_scene.process_mode = Node.PROCESS_MODE_INHERIT
-			Game.player.deck_weights[Card.DECK_INIT] = 0.0
-			if round_count == 0: # first card draw
-				var cm := Game.player.cards_menu
-				cm.new_draw().set_weights({Card.DECK_INIT:1.0}).set_exclusive(true)
-				cm.new_draw().set_weights({Card.DECK_SPELL:1.0}).set_exclusive(true)
-				Game.player.cards_menu.card_selection_time()
-			else:
-				var cm := Game.player.cards_menu
-				cm.new_draw()
-				Game.player.cards_menu.card_selection_time()
+			Game.player.cards_menu.card_selection_time()
 			game_won.emit.call_deferred(-1)
 		NS_PROJ_SYNC:
 			Console.print(&"change to  NS_PROJ_SYNC")
@@ -246,7 +237,10 @@ func player_won_game(id: int) -> void:
 	round_count += 1
 	self_player.linked_player.respawn()
 	self_player.linked_player.on_round_end(id == uuid)
-	players[id].wins += 1
+	for player: PlayerInfo in players.values():
+		if player.uuid == id: player.wins += 1
+		else: player.losses += 1
+	
 	if id == uuid: # won
 		Console.print(&"i won, skip card draw")
 		change_to_state(NS_IDLE)
@@ -320,6 +314,7 @@ class PlayerInfo:
 	var death_time := -1.0
 	var proj_synced := false
 	var wins: int = 0
+	var losses: int = 0 # not fully tracked, only used for artifacts
 
 	var cards: Dictionary[StringName, int]
 
@@ -359,7 +354,7 @@ func send_projectile(trans: Transform3D) -> Projectile:
 	var payload := [0, {"trans":trans, "uuid":uuid}]
 	var node := out_proj_spawner.spawn(payload)
 	if !node:
-		push_error(&"ops data; tree: %s, has_multiplayer: %s, is_auth: %s" % [out_proj_spawner.is_inside_tree(), multiplayer.has_multiplayer_peer(), out_proj_spawner.is_multiplayer_authority()])
+		Console.print_err(&"ops data; tree: %s, has_multiplayer: %s, is_auth: %s" % [out_proj_spawner.is_inside_tree(), multiplayer.has_multiplayer_peer(), out_proj_spawner.is_multiplayer_authority()])
 		Game.player.hud.add_chat_message(&"[color=red]Failed to create projectile[/color]")
 		return _recieve_projectile(payload)
 	return node as Projectile
@@ -370,7 +365,7 @@ func send_alt_projectile(trans: Transform3D) -> Projectile:
 	var payload := [1, {"trans":trans, "uuid":uuid}]
 	var node := out_proj_spawner.spawn(payload)
 	if !node:
-		push_error(&"alt ops data; tree: %s, has_multiplayer: %s, is_auth: %s" % [out_proj_spawner.is_inside_tree(), multiplayer.has_multiplayer_peer(), out_proj_spawner.is_multiplayer_authority()])
+		Console.print_err(&"alt ops data; tree: %s, has_multiplayer: %s, is_auth: %s" % [out_proj_spawner.is_inside_tree(), multiplayer.has_multiplayer_peer(), out_proj_spawner.is_multiplayer_authority()])
 		Game.player.hud.add_chat_message(&"[color=red]Failed to create alt projectile[/color]")
 		return _recieve_projectile(payload)
 	return node as Projectile
