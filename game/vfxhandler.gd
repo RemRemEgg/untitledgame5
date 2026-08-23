@@ -72,7 +72,7 @@ static func spawn_local(effect_id: int, pos: Vector3, data: Array) -> Node3D:
 		AREA_SPHERE:
 			vfx = quick_setup(effect_id, pos) as MeshInstance3D
 			vfx.get_tree().create_timer(data[2]).timeout.connect(vfx.queue_free)
-			vfx.scale *= data[1] * 0.5
+			vfx.scale *= data[1]
 			vfx.material_override = vfx.material_override.duplicate()
 			(vfx.material_override as ShaderMaterial).set_shader_parameter(&"modulo", data[0] as Color)
 			
@@ -80,7 +80,7 @@ static func spawn_local(effect_id: int, pos: Vector3, data: Array) -> Node3D:
 		AREA_MINE:
 			vfx = quick_setup(effect_id, pos) as MeshInstance3D
 			vfx.get_tree().create_timer(data[1]).timeout.connect(vfx.queue_free)
-			vfx.scale *= data[0] * 0.5
+			vfx.scale *= data[0]
 			vfx.material_override = vfx.material_override.duplicate()
 		
 		BLOCK_BREAK:

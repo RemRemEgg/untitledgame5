@@ -56,9 +56,9 @@ func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire:
 			ed.percent = pellets_shot / clip_size.value
 			(ownr as Player).shooting_hook.execute(ed)
 		
+		gun.clip -= 1
 		for __ in pellets_shot:
 			fire_one_bullet(trans, ownr, (gun.fire_timer - 1.0) / fire_rate.value, 1.0 / clip_size.value)
-			gun.clip -= 1
 		
 		gun.fire_timer -= 1.0
 		var volume := (pellets_shot/clip_size.value)*4.0 - 2.3

@@ -39,7 +39,7 @@ func card_selection_time() -> void:
 	else:
 		# artifact draws
 		if Network.self_player.losses in [4, 8, 16, 32, 64, 128]:
-			new_draw().set_max_cards(3).add_forced_card(Card.ARTIFACT_DRAW_CARD)
+			new_draw().add_forced_card(Card.ARTIFACT_DRAW_CARD)
 		else: new_draw()
 	
 	visible = true

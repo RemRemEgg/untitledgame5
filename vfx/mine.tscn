@@ -25,7 +25,7 @@ height = 0.1
 radial_segments = 7
 rings = 2
 
-[node name="shockwave" type="MeshInstance3D" unique_id=1931980953]
+[node name="mine" type="MeshInstance3D" unique_id=1931980953]
 material_override = SubResource("ShaderMaterial_kftyi")
 mesh = SubResource("SphereMesh_kftyi")
 

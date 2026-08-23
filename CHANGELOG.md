@@ -21,6 +21,7 @@
 - Many small fixes and qol changes that didnt make the list (yet)
 - Only 2 gun cards offered at start of game
 - Increased default bullet size
+- Mines now have a startup (1.0s) and dont explode instantly (0.25s)
 
 ### Cards
 - Balance changes, spelling fixes
@@ -42,6 +43,7 @@
 - Fix bounds visualizers getting removed twice
 - Fixed some levelbodies not syncing correctly
 - Particle instancing no longer causes frame stuttering
+- Fields were affecting bodies when they shouldnt have been
 
 
 # Known Bugs
@@ -65,7 +67,6 @@
 - Update spell charge visuals
 - Netcode updates
 - Player animation & model rework
-- Explosive trap fix
 - Higher shield regen delay
 - Enter to join game
 - LOS checks for AOE

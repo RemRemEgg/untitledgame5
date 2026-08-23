@@ -391,9 +391,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 				full_auto = !full_auto
 			KEY_A when iek.pressed:
 				var trans := camera.global_transform
-				var radius := 16.0 * 1.0
-				trans.origin = global_position + camera.global_basis.z * -0.5*(radius + 4.0)
-				FieldHandler.spawn(FieldHandler.WIND, trans, radius, 8.0, 2.0)
+				var radius := 4.0
+				trans.origin = global_position + camera.global_basis.z * -(radius + 4.0)
+				FieldHandler.spawn(FieldHandler.SHRINK, trans, radius, 12.0, 20.0)
 
 
 func dash() -> void:

@@ -5,15 +5,16 @@ static var MESH: SphereMesh
 
 static func _static_init() -> void:
 	MESH = SphereMesh.new()
-	MESH.height = 0.5
-	MESH.radius = 0.25
+	MESH.height = 2.0
+	MESH.radius = 1.0
 	MESH.radial_segments = 8
 	MESH.rings = 4
 
 
-static func mark_location(pos: Vector3, color: Color = Color.AQUA, duration: float = 4.0) -> DebugMarker:
+static func mark_location(pos: Vector3, color: Color = Color.AQUA, duration: float = 4.0, radius: float = 0.25) -> DebugMarker:
 	var dm := DebugMarker.new(pos, color, duration)
 	Game.world.add_child(dm)
+	dm.scale *= radius
 	return dm
 
 
@@ -25,6 +26,7 @@ func _init(pos: Vector3, color: Color, duration: float) -> void:
 	mesh = MESH
 	var sm := StandardMaterial3D.new()
 	sm.albedo_color = color
+	if color.a != 1.0: sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material_override = sm
 
 

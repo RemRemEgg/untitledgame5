@@ -188,12 +188,12 @@ func place_random_field(pos: Vector3, rng: RandomNumberGenerator) -> void:
 	var trans := Transform3D.IDENTITY
 	trans.origin = pos
 	match rng.randi_range(0, 5):
-		0: FieldHandler.spawn_local(FieldHandler.REVERSE_GRAV, trans, 62.0, 60.0, 0.5)
-		1: FieldHandler.spawn_local(FieldHandler.ACCELERATE, trans, 62.0, 60.0, 2.0)
-		2: FieldHandler.spawn_local(FieldHandler.SHRINK, trans, 62.0, 30.0, 1.0)
-		3: FieldHandler.spawn_local(FieldHandler.IMPLODE, trans, 62.0, 60.0, 1.0)
-		4: FieldHandler.spawn_local(FieldHandler.MINE, trans, 62.0, 60.0, 2.0)
-		5: FieldHandler.spawn_local(FieldHandler.HEAL, trans, 62.0, 30.0, 1.0)
+		0: FieldHandler.spawn_local(FieldHandler.REVERSE_GRAV, trans, 31.0, 60.0, 0.5)
+		1: FieldHandler.spawn_local(FieldHandler.ACCELERATE, trans, 31.0, 60.0, 2.0)
+		2: FieldHandler.spawn_local(FieldHandler.SHRINK, trans, 31.0, 30.0, 1.0)
+		3: FieldHandler.spawn_local(FieldHandler.IMPLODE, trans, 31.0, 60.0, 1.0)
+		4: FieldHandler.spawn_local(FieldHandler.MINE, trans, 31.0, 60.0, 2.0)
+		5: FieldHandler.spawn_local(FieldHandler.HEAL, trans, 31.0, 30.0, 1.0)
 
 
 func _is_room(pos: Vector3i) -> bool:

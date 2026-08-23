@@ -1,3 +1,4 @@
+class_name ConsoleWrapper
 extends CanvasLayer
 
 @onready var lines: RichTextLabel

@@ -329,7 +329,7 @@ static func register_all_cards() -> void:
 	register_card(&"AOSP", &"Ace of Spades", &"",
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 1.0, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
-			cd.add_description(&"When drawing cards, draw one more", false)
+			cd.add_description(&"When drawing cards, draw one more", true)
 			cd.player.card_draw_mod += 1
 	)
 	#endregion
@@ -406,7 +406,6 @@ static func register_all_cards() -> void:
 	
 	
 	#region deck gun
-	
 	
 	register_card(&"GRPL", &"Grapple", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
@@ -652,7 +651,7 @@ static func register_all_cards() -> void:
 					trans.origin = ed.position
 					var rt := sqrt(ed.mult)
 					var radius := 4.0 * rt
-					FieldHandler.spawn(FieldHandler.MINE, trans, radius, 15.0, rt*0.5)
+					FieldHandler.spawn(FieldHandler.MINE, trans, radius, 8.0, rt*0.5)
 			)
 	)
 	
@@ -977,7 +976,7 @@ static func register_all_cards() -> void:
 			cd.add_spell_effect(&"[Spell] Spawn an anti-gravity field", true,
 				func effect(ed:EventHook.EventData) -> void:
 					var trans := Transform3D.IDENTITY
-					var radius := 16.0 * ed.mult
+					var radius := 12.0 * ed.mult
 					trans.origin = ed.player.global_position + ed.player.camera.global_basis.z * -0.5*(radius + 4.0)
 					FieldHandler.spawn(FieldHandler.REVERSE_GRAV, trans, radius, 8.0, 0.5)
 			)
@@ -991,7 +990,7 @@ static func register_all_cards() -> void:
 				func effect(ed:EventHook.EventData) -> void:
 					var trans := ed.player.camera.global_transform
 					var rt := ed.mult ** 0.5
-					var radius := 16.0 * rt
+					var radius := 12.0 * rt
 					trans.origin = ed.player.global_position + ed.player.camera.global_basis.z * -0.5*(radius + 4.0)
 					FieldHandler.spawn(FieldHandler.WIND, trans, radius, 8.0, rt * 2.0)
 			)
@@ -1006,7 +1005,7 @@ static func register_all_cards() -> void:
 					var trans := Transform3D.IDENTITY
 					trans.origin = ed.position
 					var rt := sqrt(ed.mult)
-					var radius := 16.0 * rt
+					var radius := 12.0 * rt
 					trans.origin = ed.player.global_position + ed.player.camera.global_basis.z * -0.5*(radius + 4.0)
 					FieldHandler.spawn(FieldHandler.IMPLODE, trans, radius, 4.0, rt)
 			)
@@ -1021,7 +1020,7 @@ static func register_all_cards() -> void:
 					var trans := Transform3D.IDENTITY
 					trans.origin = ed.position
 					var rt := sqrt(ed.mult)
-					var radius := 12.0 * rt
+					var radius := 8.0 * rt
 					trans.origin = ed.player.global_position + ed.player.camera.global_basis.z * -0.5*(radius + 4.0)
 					FieldHandler.spawn(FieldHandler.ACCELERATE, trans, radius, 4.0, rt*1.25)
 			)
@@ -1036,7 +1035,7 @@ static func register_all_cards() -> void:
 					var trans := Transform3D.IDENTITY
 					trans.origin = ed.position
 					var rt := sqrt(ed.mult)
-					var radius := 16.0 * rt
+					var radius := 12.0 * rt
 					trans.origin = ed.player.global_position + ed.player.camera.global_basis.z * -0.5*(radius + 6.0)
 					FieldHandler.spawn(FieldHandler.MINE, trans, radius, 15.0, rt)
 			)
