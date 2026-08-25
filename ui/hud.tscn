@@ -26,12 +26,12 @@ border_color = Color(0.99609375, 0.99609375, 0.99609375, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q43x7"]
 bg_color = Color(0.08208982, 0.082089834, 0.082089774, 1)
-corner_radius_top_right = 8
+corner_radius_bottom_right = 64
 corner_detail = 1
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_srpbi"]
 bg_color = Color(0.4565314, 0.6364151, 0.8805397, 1)
-corner_radius_top_right = 8
+corner_radius_bottom_right = 64
 corner_detail = 1
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ihmi"]
@@ -289,6 +289,18 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="holder" type="ColorRect" parent="stats" unique_id=180459799]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -76.0
+offset_right = 82.0
+offset_bottom = -12.0
+grow_vertical = 0
+color = Color(0.77213544, 0.7239272, 0.53583795, 1)
+
 [node name="armor" type="ProgressBar" parent="stats" unique_id=1963419990]
 texture_filter = 2
 layout_mode = 1
@@ -297,8 +309,8 @@ anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 20.0
 offset_top = -72.0
-offset_right = 340.0
-offset_bottom = -64.0
+offset_right = 350.0
+offset_bottom = -32.0
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_q43x7")
@@ -313,9 +325,9 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 20.0
-offset_top = -64.0
+offset_top = -68.0
 offset_right = 340.0
-offset_bottom = -32.0
+offset_bottom = -36.0
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_7ihmi")

@@ -87,10 +87,10 @@ var jump := Stat.new(&"Jump Height", 10.0, 0.5)
 var max_jumps := Stat.new(&"Jumps", 2, 1)
 ## Default 1
 var max_stamina := Stat.new(&"Stamina", 1.0, 0.0)
-## Default 32.0
-var armor_density := Stat.new(&"Armor Strength", 32.0, 0.0)
-## Default 8.0
-var armor_regen := Stat.new(&"Armor Regen", 8.0, 0.0)
+## Default 24.0
+var armor_density := Stat.new(&"Armor Strength", 24.0, 0.0)
+## Default 6.0
+var armor_regen := Stat.new(&"Armor Regen", 6.0, 0.0)
 ## Default 0.7
 var melee_cd := Stat.new(&"Melee CD", 0.7, 0.01, 9e9, false)
 ## Default 30.0
@@ -225,7 +225,7 @@ func _process(delta: float) -> void:
 		if slide_vfx_timer == 0.0: slide_vfx_timer = 0.5
 	
 	stamina = minf(stamina + delta * (2.0 if is_floor else 0.8), max_stamina.value) # dash recharge
-	if armor_regen_delay <= 0.0: armor = minf(armor + delta*8.0, armor_density.value)
+	if armor_regen_delay <= 0.0: armor = minf(armor + delta*armor_regen.value, armor_density.value)
 	time_survived += delta
 	magic_timer -= delta
 	armor_regen_delay -= delta
@@ -527,11 +527,6 @@ func take_damage_seralized(data: Array[Variant]) -> void:
 func take_damage(de: DamageEvent) -> void:
 	de.target_entity = self
 	
-	var hp := armor_density.value
-	hp = hp / (hp + 64)
-	var dr := lerpf(0.75, 1.0-(hp*0.95), armor/armor_density.value)
-	if armor > 0.0: de.amount *= dr
-	
 	var ed := EventHook.EventData.from_player(self)
 	ed.damage = de
 	damage_hook.execute(ed)
@@ -543,15 +538,19 @@ func take_damage(de: DamageEvent) -> void:
 		last_damage_uuid = de.source_uuid
 		last_damage_stamp = time_survived
 	
-	
+	var hp := armor_density.value
+	hp = hp / (hp + 64)
+	var dr := lerpf(0.75, 1.0-hp, armor/armor_density.value)
 	var armor_broke := armor > 0.0 && armor-de.amount <= 0.0
+	
 	armor = maxf(armor - de.amount, 0.0)
 	if armor_broke:
 		ed = EventHook.EventData.from_player(self)
 		ed.damage = de
 		armor_break_hook.execute(ed)
+	if armor > 0.0: de.amount *= dr
 	health -= de.amount
-	armor_regen_delay = 1.0
+	armor_regen_delay = 3.5
 	
 	VFXHandler.spawn(VFXHandler.PLAYER_DUST, global_position, [uuid])
 	SFXHandler.play_user(SFXHandler.HURT, -0.5)

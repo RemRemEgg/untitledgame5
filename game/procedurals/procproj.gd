@@ -29,6 +29,9 @@ var shader_mat: StandardMaterial3D
 func reset_stats() -> void:
 	for stat in all_stats:
 		stat.reset_value()
+	
+	for hook in all_hooks:
+		hook.clear_effects()
 
 func calculate_stats() -> void:
 	for stat in all_stats:
@@ -54,6 +57,8 @@ var collide_hook := EventHook.new()
 ## Hook for projectile damaging entity
 ## [codeblock]func(n:int, bullet:Projectile, hit_player:Player) -> void:[/codeblock]
 var damage_hook := EventHook.new()
+## All hooks
+var all_hooks: Array[EventHook] = [collide_hook, damage_hook]
 
 
 func _init() -> void:
@@ -85,7 +90,7 @@ func bind(proj: Projectile) -> void:
 	proj.proc = self
 	
 	proj.time = 0.0
-	proj.damage = damage.value
+	proj.damage *= damage.value
 	proj.mesh = mesh
 	proj.scale *= scale.value
 	proj.bounces = bounces.value_int

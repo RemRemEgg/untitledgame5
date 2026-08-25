@@ -13,7 +13,7 @@ var ownr: Entity
 
 var velocity: Vector3
 
-var damage: float = 4.0
+var damage: float = 1.0
 var time: float = 0.0
 var bounces: int = 0
 var knockback: float = 0.0

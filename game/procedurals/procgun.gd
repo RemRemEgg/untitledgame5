@@ -58,10 +58,10 @@ func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire:
 		
 		gun.clip -= 1
 		for __ in pellets_shot:
-			fire_one_bullet(trans, ownr, (gun.fire_timer - 1.0) / fire_rate.value, 1.0 / clip_size.value)
+			fire_one_bullet(trans, ownr, (gun.fire_timer - 1.0) / fire_rate.value, 1.0 / pellets_shot)
 		
 		gun.fire_timer -= 1.0
-		var volume := (pellets_shot/clip_size.value)*4.0 - 2.3
+		var volume := (pellets_shot*4.0) - 2.3
 		var pitch := (gun.clip / clip_size.value)
 		# hp of current bullets relative to max bullets
 		pitch = 1.0 - (pitch / (pitch + 0.2))
@@ -88,6 +88,7 @@ func make_bullet(vel: Vector3, trans: Transform3D, ownr: Entity, delta: float, s
 		return
 	
 	proj.strength = strength
+	proj.damage *= strength
 	proj.ownr = ownr
 	proj.velocity = trans.basis * vel
 	pproj.update(proj, delta)
