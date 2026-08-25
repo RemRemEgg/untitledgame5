@@ -24,6 +24,7 @@ static var half_rooms: Array[PackedScene]
 var is_sudden_death: bool = false
 @onready var sd_walls: Node3D = $sd_walls as Node3D
 @onready var levelgeo: Node3D = $levelgeo as Node3D
+@onready var bounds: Node3D = $bounds as Node3D
 @onready var players: Node3D = $players as Node3D
 @onready var projectiles: Node3D = $projectiles as Node3D
 @onready var visuals: Node3D = $visuals as Node3D
@@ -94,17 +95,15 @@ func change_level(sseed: int, stasis_pos: Vector3) -> void:
 	
 	# move player to spawn pos and wait
 	var stasis := Game.player.create_tween()
-	stasis.tween_property(Game.player, "position", stasis_pos, 0.5)
+	stasis.tween_property(Game.player, "position", stasis_pos, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUINT)
 	await stasis.finished
 	Game.player.stasis = stasis_pos
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(0.75).timeout
 	
 	# shrink old level
 	levelgeo.process_mode = Node.PROCESS_MODE_DISABLED
 	var tween := create_tween()
-	tween.tween_property(levelgeo, "rotation:y", PI, 1.0).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUINT)
-	tween = create_tween()
-	tween.tween_property(levelgeo, "scale", Vector3.ONE*0.001, 1.0)
+	tween.tween_property(levelgeo, "position:y", 256, 2.5)
 	await tween.finished
 	
 	# setup new level
@@ -112,11 +111,9 @@ func change_level(sseed: int, stasis_pos: Vector3) -> void:
 	
 	# grow new level
 	levelgeo.rotation.y = -PI
-	levelgeo.scale = Vector3.ONE*0.001
+	levelgeo.position.y = -256
 	tween = create_tween()
-	tween.tween_property(levelgeo, "rotation:y", 0.0, 1.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUINT)
-	tween = create_tween()
-	tween.tween_property(levelgeo, "scale", Vector3.ONE, 1.0)
+	tween.tween_property(levelgeo, "position:y", 0.0, 2.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	await tween.finished
 	
 	await get_tree().create_timer(0.25).timeout
@@ -180,7 +177,7 @@ func place_room(rooms_arr: Array[PackedScene], r_pos: Vector3, rng: RandomNumber
 func place_worldbound(pos: Vector3) -> void:
 	var wb := WB_SCN.instantiate() as Node3D
 	wb.name = &"wb%d+_%+d_%+d" % [pos.x,pos.y,pos.z]
-	levelgeo.add_child(wb)
+	bounds.add_child(wb)
 	wb.position = pos
 
 

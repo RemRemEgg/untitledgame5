@@ -168,7 +168,7 @@ class PlayerTracker extends Control:
 			dir /= dist
 			
 			var dot := facing.dot(dir)
-			if dot >= 0.6: continue
+			if dot >= 0.75: continue
 			dir -= dot*facing
 			
 			var angle := dir.angle_to(ortho) * signf(-dir.dot(biortho))
@@ -176,7 +176,7 @@ class PlayerTracker extends Control:
 			@warning_ignore("shadowed_variable_base_class")
 			var scale := 2.0 - Util.hp(dist, 16.0)
 			
-			var alpha := (1.0 - dot/0.6)
+			var alpha := (1.0 - dot/0.75)
 			
 			draw_set_transform(cntr + Vector2.RIGHT.rotated(angle) * radius, angle, Vector2.ONE * scale)
 			var color := player.color

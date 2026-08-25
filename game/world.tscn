@@ -133,4 +133,6 @@ process_material = SubResource("ParticleProcessMaterial_0q2ew")
 
 [node name="sounds" type="Node3D" parent="." unique_id=1052009255]
 
+[node name="bounds" type="Node3D" parent="." unique_id=1919128974]
+
 [node name="levelgeo" type="Node3D" parent="." unique_id=2081258403]

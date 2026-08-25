@@ -131,3 +131,12 @@ static func calculate_spider(spider: PackedFloat64Array, stat_groups: Array[Arra
 		spider[i] = (spider[i] - smin) / r
 		
 	#Console.print(&"@@ Spider post-fix %s" % Util.format_array(spider))
+
+
+## Adds inaccuracy to a transform, relative to its -Z axis.
+## Spread is in radians off from center.
+## Distribution favors the center
+static func trans_inaccuracy(trans: Transform3D, spread: float) -> Transform3D:
+	return trans \
+		.rotated_local(Vector3.FORWARD, randf_range(0, PI*2.0)) \
+		.rotated_local(Vector3.RIGHT, randf() * spread)
