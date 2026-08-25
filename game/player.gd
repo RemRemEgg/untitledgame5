@@ -91,10 +91,10 @@ var max_stamina := Stat.new(&"Stamina", 1.0, 0.0)
 var armor_density := Stat.new(&"Armor Strength", 24.0, 0.0)
 ## Default 6.0
 var armor_regen := Stat.new(&"Armor Regen", 6.0, 0.0)
-## Default 0.7
-var melee_cd := Stat.new(&"Melee CD", 0.7, 0.01, 9e9, false)
-## Default 30.0
-var melee_damage := Stat.new(&"Melee Damage", 30.0)
+## Default 0.4
+var melee_cd := Stat.new(&"Melee CD", 0.4, 0.01, 9e9, false)
+## Default 20.0
+var melee_damage := Stat.new(&"Melee Damage", 20.0)
 ## Default 1.0
 var magic_cd := Stat.new(&"All Spell CD", 1.0, 0.01, 9e9, false)
 ## [b]Multiplier[/b] for all spell potency. Default 1.0

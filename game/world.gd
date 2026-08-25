@@ -162,7 +162,8 @@ func load_levelgeo(sseed: int) -> void:
 				place_random_field(r_pos, rng)
 			
 		else:
-			place_worldbound(r_pos)
+			if Network.round_count == 0:
+				place_worldbound(r_pos)
 			is_half_filled = false
 
 

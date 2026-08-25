@@ -122,7 +122,7 @@ static func get_card(card_uuid: StringName) -> Card:
 ##	-10% Jump Height",
 ##	func(player: Player, gun: ProcGun, proj: ProcProj) -> void:
 ##		player.max_health *= 1.15
-##		player.speed *= 0.8	
+##		player.speed *= 0.8
 ##		player.jump *= 0.9
 ##		hook(player.damage_hooks, func(de:DamageEvent) -> DamageEvent:
 ##			var amount := clampf(de.amount / player.max_health, 0.0, 1.0)
@@ -134,22 +134,22 @@ static func get_card(card_uuid: StringName) -> Card:
 ##[/codeblock]
 static func register_card(uuid_: StringName, name_: StringName, flavor_: StringName, deck_: CardDeck, rarity_: int, style_: int, spider_: Array[float], rarityeval: RarityEval, effect: Callable) -> Card:
 	Console.print(&"Loading card %s" % uuid_)
-	
+
 	var uuid_exists := ALL_CARDS.find_custom(func(c:Card)->bool: return c.uuid == uuid_) + 1
 	if uuid_exists:
 		Console.print_err(&"Cannot load card %s(%s), uuid is already in use" % [uuid_, name_])
 		return
-	
+
 	if name_.is_empty() || name_.length() > 32:
 		Console.print_err(&"Cannot load card %s(%s), name is too long or nonexistant" % [uuid_, name_])
 		return
-	
+
 	if spider_.size() != 6:
 		Console.print_err(&"Cannot load card %s(%s), spider must have 6 entries" % [uuid_, name_])
 		return
-	
+
 	var card := Card.new()
-	
+
 	if !rarityeval:
 		rarityeval = RarityEval.new(RarityEval.MODE_TRUE)
 	if rarityeval == DRAW_ONCE:
@@ -157,8 +157,8 @@ static func register_card(uuid_: StringName, name_: StringName, flavor_: StringN
 		card.is_draw_once = true
 	elif rarityeval.update_draw_once(uuid_):
 		card.is_draw_once = true
-	
-	
+
+
 	var card_data := CardData.from_player(_temp_player, true)
 	card.uuid = uuid_
 	card.name = name_
@@ -170,13 +170,13 @@ static func register_card(uuid_: StringName, name_: StringName, flavor_: StringN
 	card.desc = card_data.get_description(flavor_)
 	card.rarity_eval = rarityeval
 	card.use_spell_selection = card_data.use_spell_selection
-	
+
 	card.display = CardDisplay.from_card(card, deck_)
 	card.wrapper_3d = CARD_3D_WRAPPER.instantiate() as Sprite3D
 	card.wrapper_3d.get_child(0).add_child(card.display)
 	card.deck = deck_
-	
-	
+
+
 	ALL_CARDS.append(card)
 	deck_.cards.append(card)
 	Console.print(&"Loaded %s" % card)
@@ -214,15 +214,15 @@ static func register_all_cards() -> void:
 	_temp_player.procgun.pproj = ProcProj.new()
 	_temp_player.reset_stats()
 	@warning_ignore_start("unused_parameter")
-	
+
 	#register_card(&"debug_unlock", &"Debug Unblocker", &"DEBG", &"Adds $sDebug$d cards",
 		#DECK_DEBUG, RARITY_COMMON, STYLE_BASIC, [1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
 		#DRAW_ONCE,
 		#func card(cd:CardData) -> void:
 			#cd.add(cd.player.max_health, 25.0)
 	#)
-	
-	
+
+
 	#region texture debugging
 	register_card(&"TXTR", &"Texture Unlocker", &"Adds $sTexture Debug$d cards",
 		DECK_TEXTURE_TEST, RARITY_COMMON, STYLE_BASIC, [1.1, 1.0, 1.0, 1.0, 1.0, 1.0], NEVER(),
@@ -253,8 +253,8 @@ static func register_all_cards() -> void:
 		func card(cd:CardData) -> void: pass
 	)
 	#endregion
-	
-	
+
+
 	#region artifact cards
 	ARTIFACT_DRAW_CARD = register_card(&"ARTF", &"Artifact", &"What power is contained inside?",
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 1.0, 0.0], NEVER(),
@@ -264,7 +264,7 @@ static func register_all_cards() -> void:
 	ARTIFACT_DRAW_CARD.card_take_effect = func(player: Player) -> void:
 		player.cards_menu.new_draw().set_weights({Card.DECK_ARTIFACT:1.0}).set_exclusive(true).set_max_cards(3)
 	ARTIFACT_DRAW_CARD.is_fake = true
-	
+
 	register_card(&"GDBL", &"Golden Bullets", &"",
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 1.0, 0.0], ALL(NOT(&"CRYS"), NOT(&"BRSS"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
@@ -283,7 +283,7 @@ static func register_all_cards() -> void:
 			cd.add_description(&"Align yourself with the monks, finding player cards more often", true)
 			cd.player.deck_weights[DECK_PLAYER] *= 1.4
 	)
-	
+
 	register_card(&"PLRZ", &"Polarizer", &"",
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 1.0, 1.0, 0.0, 0.0, 0.0], NOT(&"NORM"),
 		func card(cd:CardData) -> void:
@@ -302,7 +302,7 @@ static func register_all_cards() -> void:
 			cd.player.rarity_weights[RARITY_RARE] *= 1.6
 			cd.player.rarity_weights[RARITY_EPIC] /= 1.5
 	)
-	
+
 	register_card(&"OBSK", &"Obsidian Obelisk", &"Pray to the Obelisk.",
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [1.0, 1.0, 1.0, 1.0, 1.0, 1.001], ANY(&"GDBL", &"CRYS", &"BRSS", &"NORM", &"PLRZ"),
 		func card(cd:CardData) -> void:
@@ -312,7 +312,7 @@ static func register_all_cards() -> void:
 			for i in cd.player.rarity_weights:
 				cd.player.rarity_weights[i] *= cd.player.rarity_weights[i]
 	)
-	
+
 	var mime := register_card(&"MIME", &"Imperfect Mimic", &"",
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 1.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -329,7 +329,7 @@ static func register_all_cards() -> void:
 				draws.append(rng_card)
 		for draw in draws:
 			cdd.add_forced_card(draw)
-	
+
 	register_card(&"AOSP", &"Ace of Spades", &"",
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 1.0, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -337,9 +337,9 @@ static func register_all_cards() -> void:
 			cd.player.card_draw_mod += 1
 	)
 	#endregion
-	
-	
-	
+
+
+
 	#region init card
 	register_card(&"PESH", &"Peashooter", &"High Uptime",
 		DECK_INIT, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.2, 0.0], null,
@@ -359,7 +359,7 @@ static func register_all_cards() -> void:
 	register_card(&"STGN", &"Shotgun", &"1) Point 2) Click",
 		DECK_INIT, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 0.5, 1.0, 0.0], null,
 		func card(cd:CardData) -> void:
-			cd.mult(cd.proj.damage, 0.3, false)
+			cd.mult(cd.proj.damage, 1.2, false)
 			cd.mult(cd.gun.inaccuracy, 3.0, false)
 			cd.add(cd.gun.fire_rate, -10.0, false)
 			cd.add(cd.gun.inaccuracy, 8.0, false)
@@ -401,30 +401,30 @@ static func register_all_cards() -> void:
 			cd.mult(cd.gun.b_speed, 0.6, false)
 	)
 	#endregion
-	
-	
+
+
 	register_card(&"LDUD", &"Dud lmao", &"Does nothing.",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.01, 0.0, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void: pass
 	)
-	
-	
+
+
 	#region deck gun
-	
+
 	register_card(&"GRPL", &"Grapple", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
 			cd.add_description(&"Inverts the direction of your knockback", true)
 			cd.mult(cd.proj.knockback, -1, false)
 	)
-	
+
 	register_card(&"LBRL", &"Long barrel", &"me when i see femboys",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.gun.inaccuracy, -8)
 			cd.add(cd.gun.b_speed, 100)
 	)
-	
+
 	register_card(&"SBRL", &"Short barrel", &"estrogen",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -432,7 +432,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.proj.damage, 8)
 			cd.add(cd.gun.fire_rate, 2)
 	)
-	
+
 	register_card(&"WSTE", &"Wasteful", &"who needs the rest of the mag?",
 		DECK_GUN, RARITY_UNUSUAL, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -442,48 +442,48 @@ static func register_all_cards() -> void:
 					ed.player.gun.reload = ed.player.procgun.reload_time.value
 			)
 	)
-	
+
 	register_card(&"RUBB", &"Rubber Bullets", &"Boing!",
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
 			cd.add(cd.proj.bounces, 3)
 	)
-	
+
 	register_card(&"SHRP", &"Sharper Bullets", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 0.0, 0.0, 1.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.proj.damage, 11)
 			cd.add(cd.gun.reload_time, 0.15)
 	)
-	
+
 	register_card(&"HVHT", &"Heavy Hitter", &"",
 		DECK_GUN, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 0.0, 1.0, 0.0], ALL(DRAW_ONCE, &"SHRP"),
 		func card(cd:CardData) -> void:
 			cd.add(cd.proj.damage, 25)
 			cd.mult(cd.gun.fire_rate, 0.75)
 	)
-	
+
 	register_card(&"CMBN", &"Combine", &"",
 		DECK_GUN, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 0.0, 1.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
 			cd.mult(cd.proj.damage, 1.5)
 			cd.mult(cd.gun.clip_size, 0.7)
 	)
-	
+
 	register_card(&"BGBU", &"Big Bullets", &"",
 		DECK_GUN, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 0.5, 1.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.proj.scale, 4.5)
 			cd.mult(cd.gun.b_speed, 0.75)
 	)
-	
+
 	register_card(&"FSBL", &"Fastball", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 0.0, -0.2, 1.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.gun.b_speed, 100)
 			cd.add(cd.proj.damage, 3.0)
 	)
-	
+
 	register_card(&"OCFM", &"Overclocked Firing Mechanism", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, -0.2, 0.0], ALL(NOT(&"SAWN"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
@@ -495,7 +495,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.gun.reload_time, 0.15)
 			cd.add(cd.gun.inaccuracy, 3)
 	)
-	
+
 	register_card(&"SAWN", &"Sawed-Off", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, -0.2, 0.0], ALL(NOT(&"OFCM"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
@@ -504,7 +504,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.gun.reload_time, 0.3)
 			cd.add(cd.gun.inaccuracy, 8.0)
 	)
-	
+
 	register_card(&"IRON", &"Iron Cannon", &"",
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -514,7 +514,7 @@ static func register_all_cards() -> void:
 			cd.mult(cd.gun.fire_rate, 0.65)
 			cd.add(cd.gun.clip_size, -2)
 	)
-	
+
 	register_card(&"WD40", &"WD-40", &"",
 		DECK_GUN, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.5, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -522,7 +522,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.gun.b_speed, 75)
 			cd.mult(cd.proj.damage, 0.90)
 	)
-	
+
 	register_card(&"OVLB", &"Over-Lubricated", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, -0.2, 0.0], ALL(&"WD40", DRAW_ONCE),
 		func card(cd:CardData) -> void:
@@ -530,7 +530,7 @@ static func register_all_cards() -> void:
 			cd.player.full_auto = true
 			cd.mult(cd.gun.fire_rate, 0.75)
 	)
-	
+
 	register_card(&"QCTC", &"Quick Trick", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.5, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -538,7 +538,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.gun.reload_time, -0.1)
 			cd.mult(cd.gun.reload_time, 0.95)
 	)
-	
+
 	register_card(&"TACH", &"Tachyon Bullets", &"",
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 0.5, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -547,7 +547,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.gun.fire_rate, 1.44)
 			cd.add(cd.gun.reload_time, 0.144)
 	)
-	
+
 	register_card(&"SCAV", &"Scavenger", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.5, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -557,7 +557,7 @@ static func register_all_cards() -> void:
 					ed.player.gun.clip = mini(ed.gun.clip_size.value_int, roundi(ed.player.gun.clip + ed.multi+0.1))
 			)
 	)
-	
+
 	register_card(&"BCBB", &"Bloody Cold Bullets", &"",
 		DECK_MAGIC, RARITY_RARE, STYLE_BASIC, [1.0, 0.1, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -567,7 +567,7 @@ static func register_all_cards() -> void:
 					cd.gun.fire_rate.mult_temp(1.2, 1.0*ed.mult**0.75, ed.mult)
 			)
 	)
-	
+
 	register_card(&"ACEL", &"Accelerator", &"Accelerator is an Understatement",
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, 0.75, 0.5, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -578,7 +578,7 @@ static func register_all_cards() -> void:
 			)
 			cd.mult(cd.gun.fire_rate, 0.85)
 	)
-	
+
 	register_card(&"HKEY", &"Hawkeye", &"",
 		DECK_GUN, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 1.0, 0.2], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -588,7 +588,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.gun.fire_rate, 0.2)
 			cd.add(cd.gun.reload_time, 0.5)
 	)
-	
+
 	register_card(&"MINI", &"Mini Bullets", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, -0.2, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -597,21 +597,21 @@ static func register_all_cards() -> void:
 			cd.mult(cd.proj.damage, 0.85)
 			cd.mult(cd.proj.scale, 0.85)
 	)
-	
+
 	register_card(&"LRGM", &"Larger Magazine", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, -0.2, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.mult(cd.gun.clip_size, 1.25)
 			cd.add(cd.gun.reload_time, 0.2)
 	)
-	
+
 	register_card(&"GLSS", &"Glass Cannon", &"",
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [0.0, 1.0, -0.5, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
 			cd.mult(cd.proj.damage, 1.55)
 			cd.mult(cd.player.max_health, 0.65)
 	)
-	
+
 	register_card(&"NLTH", &"Nonlethals", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], null,
 		func card(cd:CardData) -> void:
@@ -619,21 +619,21 @@ static func register_all_cards() -> void:
 			cd.add(cd.proj.scale, 1.5)
 			cd.mult(cd.proj.damage, 0.90)
 	)
-	
+
 	register_card(&"SPNG", &"Sproing", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.proj.knockback, 10.0)
 			cd.add(cd.proj.bounces, 1)
 	)
-	
+
 	register_card(&"SPLD", &"Spring Loaded", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.gun.b_speed, 85)
 			cd.add(cd.proj.knockback, 15)
 	)
-	
+
 	register_card(&"EXBU", &"Explosive Bullets", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -644,7 +644,7 @@ static func register_all_cards() -> void:
 					Game.world.create_explosion(ed.position, rt * 2.0, rt * 10.0, rt * 15.0, [], ed.player)
 			)
 	)
-	
+
 	register_card(&"MINE", &"Mines", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -658,7 +658,7 @@ static func register_all_cards() -> void:
 					FieldHandler.spawn(FieldHandler.MINE, trans, radius, 8.0, rt*0.5)
 			)
 	)
-	
+
 	register_card(&"TRGT", &"Target Bounce", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -679,8 +679,8 @@ static func register_all_cards() -> void:
 			)
 	)
 	#endregion
-	
-	
+
+
 	#region deck magic
 	register_card(&"BLIN", &"Blood Infusion", &"A prick of the finger should suffice",
 		DECK_MAGIC, RARITY_UNUSUAL, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], null,
@@ -688,9 +688,9 @@ static func register_all_cards() -> void:
 			cd.add(cd.player.max_health, -15)
 			cd.mult(cd.player.magic_cd, 0.85)
 			cd.add(cd.player.magic_potency, 0.5)
-			
+
 	)
-	
+
 	register_card(&"MEDT", &"Meditate", &"Let go or be dragged",
 		DECK_MAGIC, RARITY_COMMON, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -699,7 +699,7 @@ static func register_all_cards() -> void:
 			cd.mult(cd.selected_spell.cooldown, 0.85)
 			cd.add(cd.selected_spell.potency, 0.3)
 	)
-	
+
 	register_card(&"BOTM", &"Blessing of the Monk", &"",
 		DECK_MAGIC, RARITY_EPIC, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], ALL(NOT(&"BOTM"),NOT(&"BOTW"),NOT(&"BOTN"),&"MEDT"),
 		func card(cd:CardData) -> void:
@@ -708,14 +708,14 @@ static func register_all_cards() -> void:
 			cd.mult(cd.player.magic_potency, 1.75)
 			cd.add(cd.selected_spell.max_charges,1)
 	)
-		
+
 	register_card(&"BOTW", &"Blessing of the Wizard", &"",
 		DECK_MAGIC, RARITY_EPIC, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], ALL(NOT(&"BOTM"),NOT(&"BOTW"),NOT(&"BOTN"),&"MEDT"),
 		func card(cd:CardData) -> void:
 			cd.mult(cd.player.magic_potency, 1.25)
 			cd.mult(cd.player.magic_cd, .75)
 	)
-	
+
 	register_card(&"BOTN", &"Blessing of the Necromancer", &"[i]breath of the nild[/i]",
 		DECK_MAGIC, RARITY_EPIC, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], ALL(NOT(&"BOTM"),NOT(&"BOTW"),NOT(&"BOTN"),&"MEDT"),
 		func card(cd:CardData) -> void:
@@ -723,7 +723,7 @@ static func register_all_cards() -> void:
 			cd.mult(cd.player.magic_potency, 1.5)
 			cd.mult(cd.player.magic_cd, 0.75)
 	)
-	
+
 	register_card(&"MASO", &"Masochist", &"",
 		DECK_MAGIC, RARITY_RARE, STYLE_BASIC, [1.0, 0.1, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -734,20 +734,20 @@ static func register_all_cards() -> void:
 					cd.player.magic_cd.mult_temp(1.0 / (amo * ed.mult + 1.0), 4.0, ed.mult)
 			)
 	)
-	
+
 	register_card(&"APRN", &"Apprentice", &"",
 		DECK_MAGIC, RARITY_COMMON, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
 			cd.mult(cd.player.magic_cd, 0.75)
 	)
-	
+
 	register_card(&"MAGE", &"Mage", &"",
 		DECK_MAGIC, RARITY_UNUSUAL, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], ALL(DRAW_ONCE, &"APRN"),
 		func card(cd:CardData) -> void:
 			cd.add(cd.player.magic_potency, 0.5)
 			cd.add(cd.player.max_health, 50)
 	)
-	
+
 	register_card(&"SORC", &"Sorcerer", &"",
 		DECK_MAGIC, RARITY_EPIC, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], ALL(DRAW_ONCE, &"MAGE", NOT(&"WRLK")),
 		func card(cd:CardData) -> void:
@@ -757,7 +757,7 @@ static func register_all_cards() -> void:
 					if ed.is_chain && randf() > 0.5: ed.spell.cast(ed.player, true)
 			)
 	)
-	
+
 	register_card(&"WRLK", &"Warlock", &"",
 		DECK_MAGIC, RARITY_EPIC, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], ALL(DRAW_ONCE, &"MAGE", NOT(&"SORC")),
 		func card(cd:CardData) -> void:
@@ -768,7 +768,7 @@ static func register_all_cards() -> void:
 					ed.player.health *= 0.7
 			)
 	)
-	
+
 	register_card(&"MCHN", &"Mythical Chains", &"",
 		DECK_MAGIC, RARITY_RARE, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], ALL(DRAW_ONCE, &"MAGE"),
 		func card(cd:CardData) -> void:
@@ -778,7 +778,7 @@ static func register_all_cards() -> void:
 					if ed.is_chain: ed.player.magic_timer = 0.5
 			)
 	)
-	
+
 	register_card(&"FSRD", &"Fast Reader", &"",
 		DECK_MAGIC, RARITY_COMMON, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -786,7 +786,7 @@ static func register_all_cards() -> void:
 			cd.mult(cd.selected_spell.cooldown, 0.7)
 			cd.mult(cd.selected_spell.potency, 0.9)
 	)
-	
+
 	register_card(&"BDUP", &"Buildup", &"",
 		DECK_MAGIC, RARITY_COMMON, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -794,7 +794,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.selected_spell.potency, 0.5)
 			cd.add(cd.selected_spell.cooldown, 0.2)
 	)
-	
+
 	register_card(&"FOCS", &"Focus", &"",
 		DECK_MAGIC, RARITY_RARE, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -802,7 +802,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.selected_spell.potency, 1.0)
 			cd.add(cd.selected_spell.cooldown, 0.5)
 	)
-	
+
 	register_card(&"QKCS", &"Quick Cast", &"",
 		DECK_MAGIC, RARITY_UNUSUAL, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -810,7 +810,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.selected_spell.max_charges, 1.0)
 			cd.mult(cd.selected_spell.potency, 0.75)
 	)
-	
+
 	register_card(&"DNSE", &"Condense", &"[i]condesnse![/i]",
 		DECK_MAGIC, RARITY_RARE, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -819,14 +819,14 @@ static func register_all_cards() -> void:
 			cd.add(cd.selected_spell.potency, 2.0)
 			cd.add(cd.selected_spell.cooldown, 1.0)
 	)
-	
+
 	register_card(&"BMAW", &"Blood Magic", &"Alchemical wizardry!",
 		DECK_MAGIC, RARITY_RARE, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
 			cd.mult(cd.player.magic_cd, 0.75)
 			cd.add(cd.player.max_health, -25)
 	)
-	
+
 	register_card(&"TRNS", &"Transmutation", &"",
 		DECK_MAGIC, RARITY_RARE, STYLE_BASIC, [1.0, 0.3, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -835,8 +835,8 @@ static func register_all_cards() -> void:
 			cd.mult(cd.gun.clip_size, 0.5)
 	)
 	#endregion
-	
-	
+
+
 	#region deck spell
 	#register_card(&"PLAT", &"Platform", &"",
 		#DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [1.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
@@ -849,7 +849,7 @@ static func register_all_cards() -> void:
 						#LevelBody.Type.BREAKABLE, true)
 			#)
 	#)
-	
+
 	register_card(&"WALL", &"Wall", &"[i]thunk.[/i]",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [1.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -865,7 +865,7 @@ static func register_all_cards() -> void:
 						LevelBody.Type.BREAKABLE, true)
 			)
 	)
-	
+
 	register_card(&"SNRE", &"Snare", &"",
 		DECK_SPELL, RARITY_RARE, STYLE_BASIC, [1.0, 0.0, 0.0, 0.0, 0.0, 1.0], null,
 		func card(cd:CardData) -> void:
@@ -881,7 +881,7 @@ static func register_all_cards() -> void:
 								2-(randi_range(0, 2)%2), false)
 			)
 	)
-	
+
 	register_card(&"HEAL", &"Heal", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [1.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -889,14 +889,14 @@ static func register_all_cards() -> void:
 			cd.add_spell_effect(&"[Spell] Steal life from nearby opponents", true,
 				func effect(ed:EventHook.EventData) -> void:
 					for player in Game.world.get_aoe_players(ed.player.global_position, ed.mult * 4.0 + 4.0, [ed.player]):
-						var amo := 6.0 * ed.mult
+						var amo := 16.0 * ed.mult
 						var de := DamageEvent.new(amo, Vector3.ZERO, DamageEvent.TYPE_MAGIC)
 						de.source_entity = ed.player
 						player.take_damage_seralized.rpc(de.seralize())
 						ed.player.health = minf(ed.player.health + amo*1.5, ed.player.max_health.value)
 			)
 	)
-	
+
 	register_card(&"SLOW", &"Slow", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [1.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -908,7 +908,7 @@ static func register_all_cards() -> void:
 						Network.slow_player.rpc_id(player.uuid, 0.75, 4.0, rt)
 			)
 	)
-	
+
 	register_card(&"WIND", &"Windwalker", &"",
 		DECK_SPELL, RARITY_RARE, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -920,7 +920,7 @@ static func register_all_cards() -> void:
 					ed.player.jump.mult_temp(1.3, 3.0, ed.mult)
 			)
 	)
-	
+
 	register_card(&"INSK", &"Ironskin", &"",
 		DECK_SPELL, RARITY_EPIC, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -933,7 +933,7 @@ static func register_all_cards() -> void:
 					ed.player.armor = p * ed.player.armor_density.value
 			)
 	)
-	
+
 	register_card(&"PULT", &"Magipult", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -947,7 +947,7 @@ static func register_all_cards() -> void:
 					ed.player.velocity = vel
 			)
 	)
-	
+
 	register_card(&"WARP", &"Warp", &"woosh!",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -960,7 +960,7 @@ static func register_all_cards() -> void:
 					ed.player.velocity = vel
 			)
 	)
-	
+
 	register_card(&"FIRE", &"Fireball", &"i cast. . . $sFIREBALL$d!",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -973,7 +973,7 @@ static func register_all_cards() -> void:
 						AltProjHandler.spawn(AltProjHandler.FIREBALL, trans, Vector3(0, 0, -25 * rt), ed.player)
 			)
 	)
-	
+
 	register_card(&"AGRV", &"Anti-Gravity Field", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -986,7 +986,7 @@ static func register_all_cards() -> void:
 					FieldHandler.spawn(FieldHandler.REVERSE_GRAV, trans, radius, 8.0, 0.5)
 			)
 	)
-	
+
 	register_card(&"WNDF", &"Wind Field", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -1000,7 +1000,7 @@ static func register_all_cards() -> void:
 					FieldHandler.spawn(FieldHandler.WIND, trans, radius, 8.0, rt * 2.0)
 			)
 	)
-	
+
 	register_card(&"IMPF", &"Implode Field", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -1015,7 +1015,7 @@ static func register_all_cards() -> void:
 					FieldHandler.spawn(FieldHandler.IMPLODE, trans, radius, 4.0, rt)
 			)
 	)
-	
+
 	register_card(&"RUSH", &"Rush Field", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -1030,7 +1030,7 @@ static func register_all_cards() -> void:
 					FieldHandler.spawn(FieldHandler.ACCELERATE, trans, radius, 4.0, rt*1.25)
 			)
 	)
-	
+
 	register_card(&"EXTP", &"Explosive Trap", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -1045,7 +1045,7 @@ static func register_all_cards() -> void:
 					FieldHandler.spawn(FieldHandler.MINE, trans, radius, 15.0, rt)
 			)
 	)
-	
+
 	register_card(&"SHWV", &"Shockwave", &"",
 		DECK_SPELL, RARITY_RARE, STYLE_BASIC, [1.0, 0.0, 0.0, 0.0, 0.0, 1.0], null,
 		func card(cd:CardData) -> void:
@@ -1057,11 +1057,11 @@ static func register_all_cards() -> void:
 					var radius := (ed.mult ** 0.5) * 8
 					VFXHandler.spawn(VFXHandler.SPELL_SHOCKWAVE, pos, [radius])
 					var objects := Game.world.get_aoe_objects(pos, radius, [ed.player.get_rid()])
-					
+
 					for obj in objects:
 						var dir := pos.direction_to(obj.global_position)
 						dir *= radius * 4.0
-						
+
 						if obj is Player:
 							var de := DamageEvent.new(4.0 * ed.mult, dir, DamageEvent.TYPE_MAGIC)
 							de.source_entity = ed.player
@@ -1073,8 +1073,8 @@ static func register_all_cards() -> void:
 			)
 	)
 	#endregion
-	
-	
+
+
 	#region deck player
 	register_card(&"IMPL", &"Impact Plates", &"",
 		DECK_PLAYER, RARITY_EPIC, STYLE_BASIC, [.77, 0.0, 0.0, 0.0, 0.0, 0.0], DRAW_ONCE,
@@ -1089,7 +1089,7 @@ static func register_all_cards() -> void:
 					ed.damage.amount *= 0.8 ** ed.mult
 			)
 	)
-	
+
 	register_card(&"FFCH", &"Fat Fucking Chud", &"",
 		DECK_PLAYER, RARITY_RARE, STYLE_BASIC, [0.0, 1.0, -0.5, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -1098,7 +1098,7 @@ static func register_all_cards() -> void:
 			cd.mult(cd.player.jump, 0.86)
 			cd.mult(cd.player.accel, 0.86)
 	)
-	
+
 	register_card(&"GTYK", &"Get Yoked", &"",
 		DECK_PLAYER, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1107,7 +1107,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.player.max_stamina, 1.0)
 			cd.add(cd.player.melee_damage, 15.0)
 	)
-	
+
 	register_card(&"UTLI", &"Ultralight", &"Now with 10% more Speed per Speed!",
 		DECK_PLAYER, RARITY_COMMON, STYLE_BASIC, [0.0, -0.5, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1118,7 +1118,7 @@ static func register_all_cards() -> void:
 					ed.damage.knockback *= 1.5 ** ed.mult
 			)
 	)
-	
+
 	register_card(&"BRDN", &"Burden Breaker", &"",
 		DECK_PLAYER, RARITY_EPIC, STYLE_BASIC, [0.0, -0.5, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1127,7 +1127,7 @@ static func register_all_cards() -> void:
 			cd.add_description(&"Uncapped maximum speed", true)
 			cd.mult(cd.player.accel, 0.5)
 	)
-	
+
 	register_card(&"LGDY", &"Leg Day", &"Never skip!",
 		DECK_PLAYER, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 1.0, 0.0, 0.0, 0.2], null,
 		func card(cd:CardData) -> void:
@@ -1135,7 +1135,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.player.speed, 2.5)
 			cd.add(cd.player.melee_damage, 15.0)
 	)
-	
+
 	register_card(&"BRAM", &"Battering Ram", &"Never skip!",
 		DECK_PLAYER, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 1.0, 0.0, 0.0, 0.2], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1144,14 +1144,14 @@ static func register_all_cards() -> void:
 			cd.add(cd.player.melee_damage, 30.0)
 			cd.mult(cd.player.accel, 0.8)
 	)
-	
+
 	register_card(&"SCRF", &"Sacrifice", &"",
 		DECK_PLAYER, RARITY_RARE, STYLE_BASIC, [0.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add_description(&"Remove one card from your deck\nMust be done manually, before card is picked", true)
 			cd.mult(cd.player.max_health, 1.25)
 	)
-	
+
 	register_card(&"INDS", &"Industrious", &"",
 		DECK_PLAYER, RARITY_COMMON, STYLE_BASIC, [0.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
@@ -1159,21 +1159,21 @@ static func register_all_cards() -> void:
 			cd.add(cd.player.max_health, 10)
 			cd.mult(cd.player.speed, 1.10)
 	)
-	
+
 	register_card(&"GRHM", &"Growth Hormones", &"get big.",
 		DECK_PLAYER, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 1.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.player.max_health, 35)
 			cd.add(cd.proj.scale, 1.2)
 	)
-	
+
 	register_card(&"VTLP", &"Vertical Leap", &"",
 		DECK_PLAYER, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.player.max_jumps, 1)
 			cd.add(cd.player.jump, 2.0)
 	)
-	
+
 	register_card(&"CMPS", &"Composed", &"",
 		DECK_PLAYER, RARITY_COMMON, STYLE_BASIC, [1.0, 0.0, 0.0, 0.0, 1.0, 1.0], null,
 		func card(cd:CardData) -> void:
@@ -1181,21 +1181,21 @@ static func register_all_cards() -> void:
 			cd.mult(cd.gun.fire_rate, 1.27)
 			cd.mult(cd.player.speed, 0.85)
 	)
-	
+
 	register_card(&"BING", &"Boing", &"",
 		DECK_PLAYER, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 1.0, 0.0, 0.0, 1.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.player.jump, 2.0)
 			cd.add(cd.proj.knockback, 6.0)
 	)
-	
+
 	register_card(&"OEDG", &"On Edge", &"",
 		DECK_PLAYER, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 1.0, 0.0, 0.0, 0.7], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.player.accel, 1.5)
 			cd.add(cd.gun.reload_time, -0.15)
 	)
-	
+
 	register_card(&"ANXS", &"Anxious", &"",
 		DECK_PLAYER, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 1.0, 0.0, 0.0, 0.8], null,
 		func card(cd:CardData) -> void:
@@ -1203,14 +1203,14 @@ static func register_all_cards() -> void:
 			cd.add(cd.gun.fire_rate, 0.5)
 			cd.add(cd.gun.inaccuracy, 4)
 	)
-	
+
 	register_card(&"HYPL", &"Hyperlight", &"",
 		DECK_GUN, RARITY_COMMON, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
 			cd.add(cd.player.armor_regen, 6.0)
 			cd.add(cd.player.speed, 3)
 	)
-	
+
 	register_card(&"TANK", &"Tank", &"",
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1218,7 +1218,7 @@ static func register_all_cards() -> void:
 			cd.add(cd.player.armor_regen, 2.0)
 			cd.add(cd.player.speed, -4)
 	)
-	
+
 	register_card(&"MNTN", &"Mountain", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1226,7 +1226,7 @@ static func register_all_cards() -> void:
 			cd.mult(cd.player.armor_regen, 0.0)
 			cd.mult(cd.player.speed, 0.75)
 	)
-	
+
 	register_card(&"12GS", &"12-Gauge Shoes", &"this is a great idea!",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1240,7 +1240,7 @@ static func register_all_cards() -> void:
 					Game.world.create_explosion(ed.position, rt * boost, rt * 0.2 * boost, rt * boost, [], ed.player)
 			)
 	)
-	
+
 	register_card(&"RFTA", &"Reflective Armor", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1257,7 +1257,7 @@ static func register_all_cards() -> void:
 						AltProjHandler.spawn(AltProjHandler.CACTUS, trans, Vector3(0, 0, -50), ed.player)
 			)
 	)
-	
+
 	register_card(&"OVCA", &"Overcharged Armor", &"",
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1269,11 +1269,11 @@ static func register_all_cards() -> void:
 					var radius := (ed.mult ** 0.5) * 32
 					VFXHandler.spawn(VFXHandler.SPELL_SHOCKWAVE, pos, [radius])
 					var objects := Game.world.get_aoe_objects(pos, radius, [ed.player.get_rid()])
-					
+
 					for obj in objects:
 						var dir := pos.direction_to(obj.global_position)
 						dir *= radius * 2.0
-						
+
 						if obj is Player:
 							var de := DamageEvent.new(24.0 * ed.mult, dir, DamageEvent.TYPE_MAGIC)
 							de.source_entity = ed.player
@@ -1284,7 +1284,7 @@ static func register_all_cards() -> void:
 							(obj as RigidBody3D).apply_central_impulse.rpc(dir * 2.0)
 			)
 	)
-	
+
 	register_card(&"MRFA", &"Micro-Refractive Armor", &"",
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1294,7 +1294,7 @@ static func register_all_cards() -> void:
 					ed.damage.amount = 0
 			)
 	)
-	
+
 	register_card(&"HPRA", &"Hyper Armor", &"",
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1306,7 +1306,7 @@ static func register_all_cards() -> void:
 					ed.player.jump.mult_temp(1.25, 3.0, ed.mult)
 			)
 	)
-	
+
 	register_card(&"ARCY", &"Armor Recycler", &"",
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1317,7 +1317,7 @@ static func register_all_cards() -> void:
 					ed.gun.fire_rate.mult_temp(1.3, 3.0, ed.mult)
 			)
 	)
-	
+
 	register_card(&"CATA", &"Catalytic Armor", &"",
 		DECK_GUN, RARITY_RARE, STYLE_BASIC, [0.0, 0.0, 0.0, -0.5, 0.75, 1.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
@@ -1328,7 +1328,7 @@ static func register_all_cards() -> void:
 			)
 	)
 	#endregion
-	
+
 	@warning_ignore_restore("unused_parameter")
 	_temp_player = null
 
@@ -1358,8 +1358,8 @@ class CardData:
 	var use_spell_selection: bool = false
 	var positive_desc: Array[StringName]
 	var negative_desc: Array[StringName]
-	
-	
+
+
 	static func from_player(p: Player, add_dummy_spell: bool = false) -> CardData:
 		var cd := CardData.new()
 		cd.player = p
@@ -1367,17 +1367,17 @@ class CardData:
 		cd.proj = cd.gun.pproj
 		if add_dummy_spell: cd.selected_spell = Spell.new()
 		return cd
-	
-	
+
+
 	func format(f: float) -> String:
 		return (&"%s%s" % [(&"+" if f>0.0 else &""), f]).trim_suffix(&".0")
-	
-	
+
+
 	func add_description(desc: StringName, is_good: bool, priority: bool = false) -> void:
 		var arr := positive_desc if is_good else negative_desc
 		arr.insert(0 if priority else arr.size(), desc)
-	
-	
+
+
 	func get_description(flavor: StringName) -> StringName:
 		var dsc: StringName = &""
 		if !flavor.is_empty():
@@ -1388,13 +1388,13 @@ class CardData:
 		if !negative_desc.is_empty():
 			dsc += &"[color=#f55]%s\n" % (&"\n".join(negative_desc))
 		return dsc.trim_suffix(&"\n")
-	
-	
+
+
 	func add(stat:Stat, amount:float, add_desc: bool = true) -> void:
 		stat.adder += amount * n
 		if add_desc: add_description(&"%s %s" % [format(amount), stat.name], (stat.is_good) == (amount >= 0.0))
-	
-	
+
+
 	func mult(stat:Stat, amount:float, add_desc: bool = true) -> void:
 		stat.multiplier *= amount ** n
 		if !add_desc: return
@@ -1402,13 +1402,13 @@ class CardData:
 			add_description(&"%s%% %s" % [format(100*(amount-1.0)), stat.name], (stat.is_good) == (amount >= 1.0))
 		else: # formatted as x2.5 Stat
 			add_description(&"%s %s" % [format(amount).replace(&"+", &"x"), stat.name], stat.is_good)
-	
-	
+
+
 	func add_effect(desc: StringName, is_good: bool, hook: EventHook, effect: Callable) -> void:
 		hook.add_effect(n, effect)
 		if !desc.is_empty(): add_description(desc, is_good, true)
-	
-	
+
+
 	func add_spell_effect(desc: StringName, is_good: bool, effect: Callable) -> void:
 		use_spell_selection = true
 		if !desc.is_empty(): add_description(desc, is_good, true)
@@ -1423,13 +1423,13 @@ class RarityEval:
 	var evals: Array[RarityEval] = []
 	var card_ids: Array[StringName] = []
 	var cards: Array[Card] = []
-	
-	
+
+
 	func _init(mode_: int, invert: bool = false) -> void:
 		mode = mode_
 		inverted = invert
-	
-	
+
+
 	func update_draw_once(id: StringName) -> bool:
 		var ido := false
 		for i in evals.size():
@@ -1439,21 +1439,21 @@ class RarityEval:
 			else:
 				ido = ido || evals[i].update_draw_once(id)
 		return ido
-	
-	
+
+
 	func add_requirement(req: Variant) -> void:
 		if req is RarityEval:
 			evals.append(req)
 		if req is StringName || req is String:
 			card_ids.append(req as StringName)
-	
-	
+
+
 	func can_draw(player: Player) -> bool:
 		if !card_ids.is_empty():
 			for id in card_ids:
 				cards.append(Card.get_card(id))
 			card_ids.clear()
-		
+
 		match mode:
 			MODE_ALL:
 				var re_all := evals.all(func(re:RarityEval)->bool:return re.can_draw(player))
