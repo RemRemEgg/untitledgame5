@@ -963,9 +963,9 @@ static func register_all_cards() -> void:
 			cd.add_spell_effect(&"[Spell] Cast many small fireballs", true,
 				func effect(ed:EventHook.EventData) -> void:
 					var rt := ed.mult ** 0.4
-					for i in (rt * 3.5)+1:
-						var trans := Util.trans_inaccuracy(ed.player.camera.global_transform, 0.1 + rt*0.12)
-						AltProjHandler.spawn(AltProjHandler.FIREBALL, trans, Vector3(0, 0, -25 * rt), ed.player)
+					for i in (rt * 2.5)+1:
+						var trans := Util.trans_inaccuracy(ed.player.camera.global_transform, 0.1 + rt*0.1)
+						AltProjHandler.spawn(AltProjHandler.FIREBALL, trans, Vector3(0, 0, -30 * rt), ed.player)
 			)
 	)
 

@@ -616,7 +616,9 @@ func exit_spectator() -> void:
 @rpc("any_peer", "call_local", "reliable")
 func _on_player_kill() -> void:
 	sync_kd.rpc(kills + 1, deaths)
-	health += 0.5 * (max_health.value - health)
+	health += 0.6 * (max_health.value - health)
+	armor += 0.6 * (armor_density.value - armor)
+	armor_regen_delay = 0.0
 @rpc("authority", "call_local", "reliable")
 func sync_kd(k: int, d: int) -> void:
 	kills = k

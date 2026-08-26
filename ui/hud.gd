@@ -161,7 +161,9 @@ class PlayerTracker extends Control:
 		var biortho := Game.player.camera.global_basis.y
 		
 		for player in players:
-			if !player.linked_player || player.linked_player == Game.player: continue
+			if !player.linked_player\
+				|| player.linked_player == Game.player\
+				|| player.linked_player.is_spectator: continue
 			
 			var dir := player.linked_player.global_position - Game.player.global_position
 			var dist := dir.length()
