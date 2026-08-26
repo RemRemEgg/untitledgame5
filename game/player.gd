@@ -11,6 +11,7 @@ var uuid: int = 0
 var camera: Camera3D
 var player_model: PlayerModel
 const NODEPTH_ALPHA: float = 0.25
+@onready var collider: CollisionShape3D = $collider as CollisionShape3D
 @onready var hud: HUD
 @onready var cards_menu: CardsMenu = $camera/ui3d_container/ui3d_vp/cards_menu as CardsMenu
 @onready var proj_spawner: MultiplayerSpawner = $proj_spawner as MultiplayerSpawner
@@ -41,13 +42,13 @@ func set_data(data: Network.PlayerInfo) -> void:
 	camera = $camera as Camera3D
 	camera.current = true
 	player_model = $player_model as PlayerModel
-	
+
 	var col := (data.color + Color.WHITE*0.25) / 1.25
 	var mat := player_model.material as StandardMaterial3D
 	mat.albedo_color = data.color
 	mat.emission = data.color
 	(mat.next_pass as ShaderMaterial).set_shader_parameter(&"color", Vector3(col.r, col.g, col.b))
-	
+
 	($nametag as Label3D).visible = false
 	hud = $camera/hud as HUD
 	uuid = data.uuid
@@ -129,14 +130,14 @@ func reset_stats() -> void:
 		deck_weights[deck] = 1.0
 	rarity_weights = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 	card_draw_mod = 0
-	
+
 	full_auto = false
 	for stat in all_stats:
 		stat.reset_value()
-	
+
 	for hook in all_hooks:
 		hook.clear_effects()
-	
+
 	procgun.reset_stats()
 	spell_1.reset_stats()
 	spell_2.reset_stats()
@@ -145,7 +146,7 @@ func reset_stats() -> void:
 func calculate_stats() -> void:
 	for stat in all_stats:
 		stat.calculate_value()
-	
+
 	procgun.calculate_stats()
 	spell_1.calculate_stats()
 	spell_2.calculate_stats()
@@ -158,12 +159,12 @@ func _ready() -> void:
 	procgun.pproj = pproj
 	reset_stats()
 	calculate_stats()
-	
+
 	melee_shape = SphereShape3D.new()
 	melee_psqp = PhysicsShapeQueryParameters3D.new()
 	melee_psqp.exclude = melee_exclude
 	melee_psqp.shape = melee_shape
-	
+
 	slide_shape = CapsuleShape3D.new()
 	slide_shape.radius = 1.3
 	slide_shape.height = 4.2
@@ -171,23 +172,23 @@ func _ready() -> void:
 	slide_psqp.exclude = [get_rid()]
 	slide_psqp.shape = slide_shape
 	slide_psqp.collision_mask = World.MASK_ALL
-	
+
 	Network.add_proj_spawner(proj_spawner, true)
 
 
 func _process(delta: float) -> void:
 	for stat in all_stats:
 		stat.update(delta)
-	
+
 	spell_1.process(self, delta)
 	spell_2.process(self, delta)
-	
+
 	# inputs & fov
 	is_floor = is_on_floor()
 	is_use = Input.is_action_pressed(&"use")
 	is_use_alt = Input.is_action_pressed(&"use_alt")
 	camera.fov = move_toward(camera.fov, (40.0) if (is_use_alt) else (115.0), delta*800.0)
-	
+
 	# during world loading
 	if stasis:
 		velocity = Vector3.ZERO
@@ -197,14 +198,14 @@ func _process(delta: float) -> void:
 	# during game, while dead
 	if is_spectator:
 		return spectator_process(delta)
-	
+
 	# sliding
 	if Input.is_action_pressed(&"slide"):
 		slide_vfx_timer -= delta
 		var dss := get_world_3d().direct_space_state
 		slide_psqp.transform = global_transform.translated(Vector3(0.0, -0.15, 0.0))
 		slide_psqp.exclude = [get_rid()]
-		
+
 		for i in 2:
 			var rest := dss.get_rest_info(slide_psqp)
 			if rest:
@@ -212,10 +213,10 @@ func _process(delta: float) -> void:
 				var cid := rest[&"collider_id"] as int
 				var colc := instance_from_id(cid) as PhysicsBody3D
 				slide_psqp.exclude = [get_rid(), colc.get_rid()]
-				
+
 				var dot := minf(velocity.dot(normal), 0.0)
 				if normal.dot(Vector3.UP) >= 0.5 && dot < 0.0: is_floor = true
-				
+
 				velocity -= dot * normal
 				if slide_vfx_timer <= 0.0:
 					VFXHandler.spawn(VFXHandler.PLAYER_SLIDE, rest[&"point"] + normal*0.1, [uuid, velocity])
@@ -223,7 +224,7 @@ func _process(delta: float) -> void:
 				velocity += normal * delta * 32.0
 			else: break
 		if slide_vfx_timer == 0.0: slide_vfx_timer = 0.5
-	
+
 	stamina = minf(stamina + delta * (2.0 if is_floor else 0.8), max_stamina.value) # dash recharge
 	if armor_regen_delay <= 0.0: armor = minf(armor + delta*armor_regen.value, armor_density.value)
 	time_survived += delta
@@ -232,7 +233,7 @@ func _process(delta: float) -> void:
 	bounds_ignore -= delta
 	melee_timer -= delta
 	if is_floor: jumps = max_jumps.value_int
-	
+
 	# jumps
 	var g_mult := 1.0
 	jump_buffer -= delta
@@ -263,27 +264,27 @@ func _process(delta: float) -> void:
 			jump_buffer = -1.0
 			VFXHandler.spawn(VFXHandler.PLAYER_DUST, global_position-Vector3(0.0, 1.3, 0.0), [uuid])
 			SFXHandler.play_world(SFXHandler.JUMP, global_position-Vector3(0.0, 1.3, 0.0), 0.0)
-	
+
 	# high jump & gravity
 	if velocity.y > 0.0 && Input.is_action_pressed(&"jump"):
 		g_mult *= 0.65
 	velocity += Vector3(0.0, -32.0, 0.0) * delta * g_mult
-	
+
 	# handle movement
 	var input_dir := Input.get_vector(&"left", &"right", &"forward", &"backward")
 	if is_floor || input_dir:
 		var dir_3 := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		var intent := Vector2(dir_3.x, dir_3.z) # flattened & transformed input direction
 		movement_update_flat(self, intent, delta)
-	
+
 	# physics processing
 	var pvel := velocity
 	move_and_slide()
-	
+
 	# collisions
 	for col_idx in get_slide_collision_count():
 		var col := get_slide_collision(col_idx)
-		
+
 		# push objects
 		var colc := col.get_collider()
 		if colc is RigidBody3D:
@@ -293,16 +294,16 @@ func _process(delta: float) -> void:
 			if (colc as RigidBody3D).freeze: continue
 			var impact := -col.get_normal() * pvel.length()
 			(colc as RigidBody3D).apply_central_impulse.rpc(impact * 0.5)
-		
+
 		# push players
 		if colc is Player:
 			var impact := -col.get_normal() * pvel.length()
 			(colc as Player).take_damage_seralized.rpc(DamageEvent.new(0.0, impact * 0.45, DamageEvent.TYPE_MELEE).seralize())
-	
+
 	# melee
 	if melee_timer >= 0.0:
 		melee(pvel)
-	
+
 	# cast magic
 	if Input.is_action_just_pressed(&"magic_1") && ( (last_magic == 0 && magic_timer <= 0.75) || (magic_timer <= 0.0) ):
 		if spell_1.attempt_cast(self, last_magic == 0 && magic_timer > 0.0):
@@ -310,7 +311,7 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed(&"magic_2") && ( (last_magic == 1 && magic_timer <= 0.75) || (magic_timer <= 0.0) ):
 		if spell_2.attempt_cast(self, last_magic == 1 && magic_timer > 0.0):
 			last_magic = 1
-	
+
 	# fire gun
 	var b_trans := camera.global_transform
 	# TODO bullets dont clip camera. Fixed?
@@ -320,7 +321,7 @@ func _process(delta: float) -> void:
 	is_firing = (is_use) if full_auto else (Input.is_action_just_pressed(&"use"))
 	var update_gun: bool = is_firing && can_shoot && !Input.is_action_pressed(&"view_info") && !Console.visible
 	procgun.process(gun, b_trans, self, delta, update_gun)
-	
+
 	update_animation_data(delta)
 
 
@@ -328,7 +329,7 @@ func spectator_process(delta: float) -> void:
 	var input_dir := Input.get_vector(&"left", &"right", &"forward", &"backward")
 	var h_dir := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	var v_dir := Input.get_axis(&"slide", &"jump")
-	
+
 	global_position += Vector3(h_dir.x, v_dir, h_dir.z) * delta * (96.0 if Input.is_action_pressed(&"dash") else 32.0)
 
 
@@ -426,7 +427,7 @@ func melee(vel: Vector3) -> void: # TODO cleanup
 	var pos := global_position + (camera.global_basis * Vector3(0.0, 0.0, -1.3))
 	melee_psqp.transform.origin = pos
 	melee_psqp.exclude = melee_exclude
-	
+
 	# hit players
 	melee_psqp.collision_mask = 0b0010_0010
 	var bonus := velocity.length_squared()
@@ -445,12 +446,12 @@ func melee(vel: Vector3) -> void: # TODO cleanup
 			pl.take_damage_seralized.rpc(de.seralize())
 			hud.hit_marker_timer = 0.15
 			SFXHandler.play_world_local(SFXHandler.HIT, pl.global_position, -0.15, 1.0, true)
-		
+
 		var norm := (rest[&"normal"] as Vector3).slerp(camera.global_basis.z, 0.5)
 		var point := rest[&"point"] as Vector3
 		_melee_hit(vel, point, norm, colc)
 		return
-	
+
 	# hit objects
 	melee_psqp.collision_mask = 0b0001_0001
 	melee_shape.radius = 0.75
@@ -465,7 +466,7 @@ func _melee_test_objects(dss: PhysicsDirectSpaceState3D, vel: Vector3) -> bool:
 		var cid := rest[&"collider_id"] as int
 		var colc := instance_from_id(cid) as PhysicsBody3D
 		melee_exclude.append(colc.get_rid())
-		
+
 		if colc is LevelBody:
 			var dir := global_position.direction_to(colc.global_position) * 16.0
 			var ipos := rest.get(&"position", colc.global_position) as Vector3
@@ -477,11 +478,11 @@ func _melee_test_objects(dss: PhysicsDirectSpaceState3D, vel: Vector3) -> bool:
 				melee_timer = minf(0.3333, melee_timer + 0.1111)
 				animation_data[ANIM_MELEE] = 1.0 - (melee_timer * 3.0)
 				return true
-		
+
 		elif colc is RigidBody3D:
 			var dir := global_position.direction_to(colc.global_position) * melee_damage.value * 4.0
 			(colc as RigidBody3D).apply_central_impulse.rpc(dir + vel*1.2)
-		
+
 		var norm := (rest[&"normal"] as Vector3).slerp(camera.global_basis.z, 0.15)
 		var point := rest[&"point"] as Vector3
 		_melee_hit(vel, point, norm, colc)
@@ -496,13 +497,13 @@ func _melee_hit(vel: Vector3, pos: Vector3, normal: Vector3, pb3d: PhysicsBody3D
 		if velocity:
 			velocity *= 1.0 + maxf(velocity.normalized().dot(normal)*0.1, 0.0)
 	jumps = max_jumps.value_int
-	
+
 	var ed := EventHook.EventData.from_player(self)
 	ed.position = pos
 	ed.normal = normal
 	ed.hit_pb3d = pb3d
 	melee_hook.execute(ed)
-	
+
 	VFXHandler.spawn(VFXHandler.PLAYER_DUST, pos, [uuid, 4.0])
 	SFXHandler.play_world(SFXHandler.KICK, pos, -15)
 
@@ -526,23 +527,23 @@ func take_damage_seralized(data: Array[Variant]) -> void:
 
 func take_damage(de: DamageEvent) -> void:
 	de.target_entity = self
-	
+
 	var ed := EventHook.EventData.from_player(self)
 	ed.damage = de
 	damage_hook.execute(ed)
-	
+
 	velocity += de.knockback
-	
+
 	if is_immortal: return
 	if de.source_entity:
 		last_damage_uuid = de.source_uuid
 		last_damage_stamp = time_survived
-	
+
 	var hp := armor_density.value
 	hp = hp / (hp + 64)
 	var dr := lerpf(0.75, 1.0-hp, armor/armor_density.value)
 	var armor_broke := armor > 0.0 && armor-de.amount <= 0.0
-	
+
 	armor = maxf(armor - de.amount, 0.0)
 	if armor_broke:
 		ed = EventHook.EventData.from_player(self)
@@ -551,7 +552,7 @@ func take_damage(de: DamageEvent) -> void:
 	if armor > 0.0: de.amount *= dr
 	health -= de.amount
 	armor_regen_delay = 3.5
-	
+
 	VFXHandler.spawn(VFXHandler.PLAYER_DUST, global_position, [uuid])
 	SFXHandler.play_user(SFXHandler.HURT, -0.5)
 	hud.hurt_timer = 0.35
@@ -560,10 +561,10 @@ func take_damage(de: DamageEvent) -> void:
 			de.source_uuid = last_damage_uuid
 			de.source_entity = Network.player_from_uuid(de.source_uuid)
 		Network.death_message.rpc(de.seralize())
-		
+
 		if de.source_entity && de.source_entity is Player:
 			(de.source_entity as Player)._on_player_kill.rpc()
-		
+
 		Console.print(&"im so dead :c bleh")
 		death()
 
@@ -603,10 +604,12 @@ func respawn() -> void:
 func enter_spectator() -> void:
 	is_spectator = true
 	visible = false
+	collider.disabled = true
 @rpc("authority", "call_local", "reliable")
 func exit_spectator() -> void:
 	is_spectator = false
 	visible = true
+	collider.disabled = false
 	velocity = Vector3.ZERO
 
 
@@ -641,24 +644,24 @@ func add_spell_card(card: Card, spell: Spell, count: int = 1) -> void:
 func update_cards() -> void:
 	reset_stats()
 	var cd := Card.CardData.from_player(self)
-	
+
 	for card in cards: # for each card
 		if card.use_spell_selection: continue
 		cd.n = cards[card]
 		card.card_effect.call(cd)
-	
+
 	cd.selected_spell = spell_1
 	for card in spell_1.cards: # for each card spell 1
 		if !card.use_spell_selection: continue
 		cd.n = spell_1.cards[card]
 		card.card_effect.call(cd)
-	
+
 	cd.selected_spell = spell_2
 	for card in spell_2.cards: # for each card spell 2
 		if !card.use_spell_selection: continue
 		cd.n = spell_2.cards[card]
 		card.card_effect.call(cd)
-	
+
 	calculate_stats()
 	update_spider_graphs()
 	gun.clip = procgun.clip_size.value_int
@@ -675,7 +678,7 @@ var animation_data: Array[float] = [0.0, 0.0, 0.0, 2.0, 0.0, 0, 0.0, 0.5, 1.0, 0
 
 func update_animation_data(delta: float) -> void:
 	animation_data[ANIM_STATE] = (is_floor)
-	
+
 	animation_data[ANIM_VELOCITY] = velocity.length_squared()
 	animation_data[ANIM_DIRECTION] = Vector2(velocity.x, velocity.z).angle()
 	animation_data[ANIM_MELEE] += delta * 3.0

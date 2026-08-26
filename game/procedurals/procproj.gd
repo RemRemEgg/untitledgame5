@@ -36,6 +36,7 @@ func reset_stats() -> void:
 func calculate_stats() -> void:
 	for stat in all_stats:
 		stat.calculate_value()
+	
 
 ## Duration of the bullet. Default 1.0
 var time := Stat.new(&"Bullet Time", 1.0, 0.001, 15.0)

@@ -36,15 +36,21 @@ func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire:
 	for stat in all_stats:
 		stat.update(delta)
 	
+	
 	if gun.reload:
-		gun.reload -= delta
-		if gun.reload <= 0.0:
-			gun.reload = 0.0
-			gun.clip = clip_size.value_int
-			gun.fire_timer = 1.0
-		else:return
+		# allow interruping reload
+		if can_fire && gun.clip > 0:
+			gun.reload = 0
+		else: # keep reloading
+			gun.reload -= delta
+			if gun.reload <= 0.0:
+				gun.reload = 0.0
+				gun.clip = clip_size.value_int
+				gun.fire_timer = 1.0
+			else:return
 	
 	gun.fire_timer += delta * fire_rate.value
+	# when not firing, ready next bullet
 	if !can_fire:
 		gun.fire_timer = minf(gun.fire_timer, 1.0)
 		return
@@ -74,9 +80,7 @@ func process(gun: Gun, trans: Transform3D, ownr: Entity, delta: float, can_fire:
 
 
 func fire_one_bullet(trans: Transform3D, ownr: Entity, delta: float, strength: float) -> void:
-	var inacc_trans := trans \
-		.rotated_local(Vector3.FORWARD, randf_range(0, PI*2.0)) \
-		.rotated_local(Vector3.RIGHT, randf() * inaccuracy.value/200.0)
+	var inacc_trans := Util.trans_inaccuracy(trans, (inaccuracy.value + pellets.value)/200.0)
 	make_bullet(Vector3(0, 0, -b_speed.value), inacc_trans, ownr, delta, strength)
 
 
@@ -89,6 +93,7 @@ func make_bullet(vel: Vector3, trans: Transform3D, ownr: Entity, delta: float, s
 	
 	proj.strength = strength
 	proj.damage *= strength
+	proj.knockback *= 0.2
 	proj.ownr = ownr
 	proj.velocity = trans.basis * vel
 	pproj.update(proj, delta)

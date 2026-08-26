@@ -450,4 +450,15 @@ func spawn_levelbody(pos: Vector3, type: LevelBody.Type, is_static: bool = false
 func slow_player(amount: float, duration: float, n: float = 1.0) -> void:
 	Game.player.speed.mult_temp(amount, duration, n)
 
+
+@rpc("any_peer", "call_local", "reliable")
+func snare_player(mult: float) -> void:
+	var ed2 := 1.0 + (mult*2.0)
+	for x in ed2: for y in ed2+1: for z in ed2:
+		var target := Vector3(x-mult, y-0.5-mult, z-mult)
+		if !(is_zero_approx(target.x) && absf(target.y) <= 0.6 && is_zero_approx(target.z)):
+			Network.spawn_levelbody.rpc(Game.player.global_position + target,
+			2-(randi_range(0, 2)%2), false)
+
+
 #endregion

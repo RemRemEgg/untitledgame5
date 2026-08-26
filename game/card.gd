@@ -269,19 +269,19 @@ static func register_all_cards() -> void:
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, 1.0, 0.0], ALL(NOT(&"CRYS"), NOT(&"BRSS"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
 			cd.add_description(&"Align yourself with the rangers, finding gun cards more often", true)
-			cd.player.deck_weights[DECK_GUN] *= 1.4
+			cd.player.deck_weights[DECK_GUN] *= 1.6
 	)
 	register_card(&"CRYS", &"Crystal Ball", &"",
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [1.0, 0.0, 0.0, 0.0, 0.0, 1.0], ALL(NOT(&"GDBL"), NOT(&"BRSS"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
 			cd.add_description(&"Align yourself with the magicians, finding magic cards more often", true)
-			cd.player.deck_weights[DECK_MAGIC] *= 1.4
+			cd.player.deck_weights[DECK_MAGIC] *= 1.6
 	)
 	register_card(&"BRSS", &"Brass Nuckles", &"",
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 1.0, 1.0, 0.0, 0.0, 0.0], ALL(NOT(&"CRYS"), NOT(&"GDBL"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
 			cd.add_description(&"Align yourself with the monks, finding player cards more often", true)
-			cd.player.deck_weights[DECK_PLAYER] *= 1.4
+			cd.player.deck_weights[DECK_PLAYER] *= 1.6
 	)
 
 	register_card(&"PLRZ", &"Polarizer", &"",
@@ -352,9 +352,9 @@ static func register_all_cards() -> void:
 			cd.player.full_auto = true
 			cd.mult(cd.proj.damage, 0.25, false)
 			cd.add(cd.gun.inaccuracy, 8, false)
-			cd.add(cd.gun.clip_size, 14, false)
+			cd.add(cd.gun.clip_size, 12, false)
 			cd.add(cd.gun.fire_rate, 5, false)
-			cd.add(cd.gun.reload_time, 0.25, false)
+			cd.add(cd.gun.reload_time, 0.5, false)
 	)
 	register_card(&"STGN", &"Shotgun", &"1) Point 2) Click",
 		DECK_INIT, RARITY_UNUSUAL, STYLE_BASIC, [0.0, 0.0, 0.0, 0.5, 1.0, 0.0], null,
@@ -362,7 +362,7 @@ static func register_all_cards() -> void:
 			cd.mult(cd.proj.damage, 1.2, false)
 			cd.mult(cd.gun.inaccuracy, 3.0, false)
 			cd.add(cd.gun.fire_rate, -10.0, false)
-			cd.add(cd.gun.inaccuracy, 8.0, false)
+			cd.add(cd.gun.inaccuracy, 6.0, false)
 			cd.add(cd.gun.clip_size, -8, false)
 			cd.add(cd.gun.pellets, 6, false)
 			cd.add(cd.gun.reload_time, 1.0, false)
@@ -500,7 +500,7 @@ static func register_all_cards() -> void:
 		DECK_GUN, RARITY_EPIC, STYLE_BASIC, [0.0, 0.0, 0.0, 1.0, -0.2, 0.0], ALL(NOT(&"OFCM"), DRAW_ONCE),
 		func card(cd:CardData) -> void:
 			cd.mult(cd.proj.damage, 1.2)
-			cd.add(cd.gun.pellets, 8.0)
+			cd.add(cd.gun.pellets, 4.0)
 			cd.add(cd.gun.reload_time, 0.3)
 			cd.add(cd.gun.inaccuracy, 8.0)
 	)
@@ -873,12 +873,7 @@ static func register_all_cards() -> void:
 			cd.add_spell_effect(&"[Spell] Trap nearby enemies in blocks", true,
 				func effect(ed:EventHook.EventData) -> void:
 					for player in Game.world.get_aoe_players(ed.player.global_position, ed.mult * 4.0 + 4.0, [ed.player]):
-						var ed2 := 1.0 + (ed.multi*2.0)
-						for x in ed2: for y in ed2+1: for z in ed2:
-							var target := Vector3(x-ed.multi, y-0.5-ed.multi, z-ed.multi)
-							if !(is_zero_approx(target.x) && absf(target.y) <= 0.6 && is_zero_approx(target.z)):
-								Network.spawn_levelbody.rpc(player.global_position + target,
-								2-(randi_range(0, 2)%2), false)
+						Network.snare_player.rpc_id(player.uuid, ed.multi)
 			)
 	)
 
