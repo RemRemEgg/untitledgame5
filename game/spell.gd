@@ -3,9 +3,11 @@ extends RefCounted
 
 var spider: PackedFloat64Array = [1.0, 1.0, 1.0]
 var cards: Dictionary[Card, int]
-var hook: EventHook = EventHook.new()
+var cast_hook: EventHook = EventHook.new()
+var hold_hook: EventHook = EventHook.new()
 
 var charges: float = 0.0
+var hold_duration := 0.0
 
 ## Default 1.5
 var cooldown := Stat.new(&"Spell CD", 1.5, 0.01, 9e9, false)
@@ -20,7 +22,8 @@ func reset_stats() -> void:
 	for stat in all_stats:
 		stat.reset_value()
 	
-	hook.clear_effects()
+	cast_hook.clear_effects()
+	hold_hook.clear_effects()
 
 
 func calculate_stats() -> void:
@@ -52,16 +55,27 @@ func cast(player: Player, is_chain: bool) -> void:
 	var ed := EventHook.EventData.from_player(player)
 	ed.percent = 1.0 / max_charges.value
 	ed.spell = self
-	ed.is_chain = true
+	ed.is_chain = is_chain
 	player.spell_hook.execute(ed)
 	
 	ed.mult = potency.value * player.magic_potency.value
-	hook.execute(ed)
+	cast_hook.execute(ed)
+	hold_duration = 0.0
+
+
+func hold(player: Player, delta: float) -> void:
+	var ed := EventHook.EventData.from_player(player)
+	ed.percent = hold_duration
+	ed.spell = self
+	ed.mult = potency.value * player.magic_potency.value
+	ed.delta = delta
+	hold_hook.execute(ed)
+	hold_duration += delta
 
 
 func recalc_spider_graph(player: Player) -> void:
 	var spells := Stat.new(&"spells", 1)
-	spells.adder += hook.get_effect_count()
+	spells.adder += cast_hook.get_effect_count()
 	Util.calculate_spider(spider, [
 		[potency, player.magic_potency], # strength
 		[spells], # spells

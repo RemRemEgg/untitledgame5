@@ -54,7 +54,6 @@ var all_stats: Array[Stat] = [damage, scale, bounces, knockback, time]
 ## Hook for projectile hitting an object or entity, without bouncing
 ## [codeblock](ed:EventHook.EventData, pb3d:PhysicsBody3D)[/codeblock]
 var collide_hook := EventHook.new()
-## TODO seralize de for networking?
 ## Hook for projectile damaging entity
 ## [codeblock]func(n:int, bullet:Projectile, hit_player:Player) -> void:[/codeblock]
 var damage_hook := EventHook.new()
@@ -110,8 +109,6 @@ func process(proj: Projectile, delta: float) -> void:
 
 func update(proj: Projectile, delta: float) -> void:
 	var dss: PhysicsDirectSpaceState3D = Game.world.get_world_3d().direct_space_state
-	#TODO custom collision api?
-	#TODO pserver rids over refs? see psqp
 	
 	prqp.from = proj.global_position
 	prqp.to = prqp.from + proj.velocity*delta

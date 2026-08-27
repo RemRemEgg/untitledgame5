@@ -23,7 +23,7 @@ enum Type {
 		update_bodytype()
 		update_display()
 ## Health of the body, only used with bodytype.BREAKABLE. Default player health is 100.0
-@export var health: float = 40.0 #TODO scaling health
+@export var health: float = 40.0
 ## Fixer cannot run on anything besides [BoxMesh]. You must manually add collisions for other meshes.
 ##[br]Changing this mesh's data will modify the meshes of all levelbodies with the same mesh.
 ##[br]Change this body's scale, then level fix to make it unique.

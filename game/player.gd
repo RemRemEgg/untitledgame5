@@ -61,6 +61,7 @@ var card_draw_mod: int
 var stamina: float = 0.0
 var armor: float = 0.0
 var magic_timer: float = 0.0
+var is_holding_spell: bool = false
 var last_magic: int = 0
 var armor_regen_delay: float = 0.0
 var is_floor: bool = 0
@@ -78,7 +79,6 @@ var procgun: ProcGun
 var pproj: ProcProj
 var gun: Gun
 
-# TODO lifesteal, spread damage over mag?
 # max_health speed accel
 ## Default false
 var full_auto := false
@@ -180,14 +180,11 @@ func _process(delta: float) -> void:
 	for stat in all_stats:
 		stat.update(delta)
 
-	spell_1.process(self, delta)
-	spell_2.process(self, delta)
-
 	# inputs & fov
 	is_floor = is_on_floor()
 	is_use = Input.is_action_pressed(&"use")
 	is_use_alt = Input.is_action_pressed(&"use_alt")
-	camera.fov = move_toward(camera.fov, (40.0) if (is_use_alt) else (115.0), delta*800.0)
+	camera.fov = move_toward(camera.fov, (55.0) if (is_use_alt) else (115.0), delta*800.0)
 
 	# during world loading
 	if stasis:
@@ -304,24 +301,15 @@ func _process(delta: float) -> void:
 	if melee_timer >= 0.0:
 		melee(pvel)
 
-	# cast magic
-	if Input.is_action_just_pressed(&"magic_1") && ( (last_magic == 0 && magic_timer <= 0.75) || (magic_timer <= 0.0) ):
-		if spell_1.attempt_cast(self, last_magic == 0 && magic_timer > 0.0):
-			last_magic = 0
-	if Input.is_action_just_pressed(&"magic_2") && ( (last_magic == 1 && magic_timer <= 0.75) || (magic_timer <= 0.0) ):
-		if spell_2.attempt_cast(self, last_magic == 1 && magic_timer > 0.0):
-			last_magic = 1
 
 	# fire gun
 	var b_trans := camera.global_transform
-	# TODO bullets dont clip camera. Fixed?
-	# TODO make bullets fire from "gun"
 	b_trans.origin += Vector3(0.0, -0.1, 0.0)
-	# TODO fix input processing with menus during gameplay
 	is_firing = (is_use) if full_auto else (Input.is_action_just_pressed(&"use"))
 	var update_gun: bool = is_firing && can_shoot && !Input.is_action_pressed(&"view_info") && !Console.visible
 	procgun.process(gun, b_trans, self, delta, update_gun)
 
+	update_spells(delta)
 	update_animation_data(delta)
 
 
@@ -331,6 +319,35 @@ func spectator_process(delta: float) -> void:
 	var v_dir := Input.get_axis(&"slide", &"jump")
 
 	global_position += Vector3(h_dir.x, v_dir, h_dir.z) * delta * (96.0 if Input.is_action_pressed(&"dash") else 32.0)
+
+
+func update_spells(delta: float) -> void:
+	spell_1.process(self, delta)
+	spell_2.process(self, delta)
+	
+	var is_use_s1 := Input.is_action_pressed(&"magic_1")
+	var is_use_s2 := Input.is_action_pressed(&"magic_2")
+	
+	if is_use_s1:
+		if Input.is_action_just_pressed(&"magic_1") && ( (last_magic == 0 && magic_timer <= 0.75) || (magic_timer <= 0.0) ):
+			var cast_success := spell_1.attempt_cast(self, last_magic == 0 && magic_timer > 0.0)
+			if cast_success:
+				last_magic = 0
+				is_holding_spell = true
+		if is_holding_spell:
+			spell_1.hold(self, delta)
+		
+	elif is_use_s2:
+		if Input.is_action_just_pressed(&"magic_2") && ( (last_magic == 1 && magic_timer <= 0.75) || (magic_timer <= 0.0) ):
+			var cast_success := spell_2.attempt_cast(self, last_magic == 1 && magic_timer > 0.0)
+			if cast_success:
+				last_magic = 1
+				is_holding_spell = true
+		if is_holding_spell:
+			spell_2.hold(self, delta)
+			
+	else:
+		is_holding_spell = false
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -390,11 +407,11 @@ func _unhandled_key_input(event: InputEvent) -> void:
 				for i in 10: add_card(Card.ALL_CARDS.pick_random() as Card)
 			KEY_J when iek.pressed:
 				full_auto = !full_auto
-			KEY_A when iek.pressed:
+			KEY_X when iek.pressed:
 				var trans := camera.global_transform
-				var radius := 4.0
+				var radius := 8.0
 				trans.origin = global_position + camera.global_basis.z * -(radius + 4.0)
-				FieldHandler.spawn(FieldHandler.SHRINK, trans, radius, 12.0, 20.0)
+				FieldHandler.spawn(FieldHandler.ELECTRICITY, trans, radius, 10.0, 10.0)
 
 
 func dash() -> void:
@@ -422,7 +439,7 @@ func get_dash_power() -> float:
 	return minf(speed.value, accel.value/3.0)
 
 
-func melee(vel: Vector3) -> void: # TODO cleanup
+func melee(vel: Vector3) -> void:
 	var dss: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
 	var pos := global_position + (camera.global_basis * Vector3(0.0, 0.0, -1.3))
 	melee_psqp.transform.origin = pos
@@ -538,23 +555,26 @@ func take_damage(de: DamageEvent) -> void:
 	if de.source_entity:
 		last_damage_uuid = de.source_uuid
 		last_damage_stamp = time_survived
-
-	var hp := armor_density.value
-	hp = hp / (hp + 64)
-	var dr := lerpf(0.75, 1.0-hp, armor/armor_density.value)
+	
+	# calculate dr
+	var dr_mult := lerpf(0.05, 0.25, armor/armor_density.value)
+	if armor <= 0.0: dr_mult = 1.0
+	
+	# armor break & damage
 	var armor_broke := armor > 0.0 && armor-de.amount <= 0.0
-
 	armor = maxf(armor - de.amount, 0.0)
 	if armor_broke:
 		ed = EventHook.EventData.from_player(self)
 		ed.damage = de
 		armor_break_hook.execute(ed)
-	if armor > 0.0: de.amount *= dr
+	
+	# armor dr & health damage
+	de.amount *= dr_mult
 	health -= de.amount
 	armor_regen_delay = 3.5
 
 	VFXHandler.spawn(VFXHandler.PLAYER_DUST, global_position, [uuid])
-	SFXHandler.play_user(SFXHandler.HURT, -0.5)
+	SFXHandler.play_user(SFXHandler.HURT, -10.0 if de.is_dot else -0.5)
 	hud.hurt_timer = 0.35
 	if health <= 0.0 && !is_immortal:
 		if !de.source_uuid && (time_survived - last_damage_stamp) <= 4.0:
@@ -630,7 +650,7 @@ func sync_kd(k: int, d: int) -> void:
 func _card_adder(deck: Dictionary[Card, int], card: Card, count: int = 1, netsync: bool = true) -> void:
 	count = deck.get(card, 0) + count
 	deck[card] = count
-	if netsync: Network.update_card_picked.rpc(card.uuid, count) # TODO netsync cards
+	if netsync: Network.update_card_picked.rpc(card.uuid, count)
 	if count <= 0: deck.erase(card)
 
 
@@ -684,7 +704,7 @@ func update_animation_data(delta: float) -> void:
 	animation_data[ANIM_VELOCITY] = velocity.length_squared()
 	animation_data[ANIM_DIRECTION] = Vector2(velocity.x, velocity.z).angle()
 	animation_data[ANIM_MELEE] += delta * 3.0
-	animation_data[ANIM_MAGIC] = magic_timer
+	animation_data[ANIM_MAGIC] = maxf(magic_timer, 0.0) + float(is_holding_spell)
 	animation_data[ANIM_RELOAD] = (gun.reload*PI*2.0/procgun.reload_time.value) if (gun.reload) else (1.0-gun.fire_timer)**3.0*2.0
 	animation_data[ANIM_HEALTH] = health / max_health.value
 	animation_data[ANIM_HURT] = move_toward(animation_data[ANIM_HURT], health / max_health.value, delta*2.0)

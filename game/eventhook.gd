@@ -46,6 +46,7 @@ class EventData:
 	var mult: float = 1.0
 	var multi: int
 	var percent: float = 1.0
+	var delta: float = 0.0
 	
 	var player: Player
 	var gun: ProcGun

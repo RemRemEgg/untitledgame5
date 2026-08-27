@@ -107,8 +107,6 @@ func _draws_finished() -> void:
 
 
 func _process(delta: float) -> void:
-	#TODO custom flip anims based on rarity? at least more stylization based on rarity
-	#TODO better hitboxing, sometimes mouse isnt correct
 	var g_mouse := (get_global_mouse_position() / size) * 2.0 - Vector2.ONE
 	local_mouse = Vector3(g_mouse.x, -g_mouse.y * (size.y/size.x), 0.0) * 0.933 # why 0.933 idfk
 	
@@ -133,7 +131,7 @@ func _process(delta: float) -> void:
 					card_selected()
 
 
-func _input(event: InputEvent) -> void: # TODO cleanup
+func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var iemb := event as InputEventMouseButton
 		if animation_state == 1 && iemb.button_index == MOUSE_BUTTON_LEFT && iemb.pressed:
@@ -143,6 +141,7 @@ func _input(event: InputEvent) -> void: # TODO cleanup
 					animation_timer = 0.0
 					picked_card = i
 					Console.print(&"picked card %s" % selection[picked_card])
+					return
 	if Input.is_action_pressed(&"dbg_button"):
 		if Input.is_key_pressed(KEY_L): # hide without updating net state
 			visible = false

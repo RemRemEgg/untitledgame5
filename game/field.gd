@@ -7,6 +7,7 @@ var strength: float = 1.0
 var time: float
 var radius: float = 1.0
 var visuals: Array[Node3D]
+var delta_buffer := 0.0
 
 func _process(delta: float) -> void:
 	visuals.assign(visuals.filter(func(v:Node3D) -> bool: return v && is_instance_valid(v)))
@@ -21,6 +22,15 @@ func _process(delta: float) -> void:
 	time -= delta
 	if time <= 0.0:
 		if data.end_effect: data.end_effect.call(self)
-		
-		for v in visuals: if v: Util.remove_and_free(v)
-		Util.remove_and_free(self)
+		remove()
+
+
+@rpc("any_peer", "call_local", "reliable")
+func sync_time(new_time: float) -> void:
+	time = new_time
+
+
+@rpc("any_peer", "call_local", "reliable")
+func remove() -> void:
+	for v in visuals: if v: Util.remove_and_free(v)
+	Util.remove_and_free(self)

@@ -22,6 +22,7 @@ var source_uuid: int
 var amount: float
 var knockback: Vector3
 var type: int
+var is_dot: bool
 
 
 func _init(amount_: float, kb: Vector3 = Vector3.ZERO, type_: int = TYPE_UNKNOWN) -> void:
@@ -39,13 +40,20 @@ func set_type(type_: int) -> DamageEvent:
 	return self
 
 
+func set_dot(dot: bool = true) -> DamageEvent:
+	is_dot = dot
+	return self
+
+
+
 func seralize() -> Array[Variant]:
-	return [amount, knockback, type, source_uuid, target_uuid]
+	return [amount, knockback, type, source_uuid, target_uuid, is_dot]
 
 static func deseralize(data: Array[Variant]) -> DamageEvent:
 	var de := DamageEvent.new(data[0], data[1], data[2])
-	if data[3]: de.source_entity = Network.player_from_uuid(data[3])
-	if data[4]: de.target_entity = Network.player_from_uuid(data[4])
+	de.source_entity = Network.player_from_uuid(data[3])
+	de.target_entity = Network.player_from_uuid(data[4])
+	de.is_dot = bool(data[5])
 	return de
 
 

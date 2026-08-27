@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://ba2wio3qdfjj0"]
+[gd_scene format=3 uid="uid://dgp1xiqybws31"]
 
 [ext_resource type="Script" uid="uid://cm4gqancuf0sr" path="res://rooms/room.gd" id="1_gejwl"]
 [ext_resource type="PackedScene" uid="uid://bbxtopjn62dnf" path="res://rooms/bounds_visualizer.tscn" id="2_dg177"]

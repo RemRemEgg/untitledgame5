@@ -13,7 +13,7 @@ var load_call: Callable
 ## Enables auto setup options
 static var AUTO_SETUP: bool = false
 ## Game will fullscreen
-static var AUTO_FULLSCREEN: bool = false
+static var AUTO_FULLSCREEN: bool = true
 ## Local instances will connect to eachother
 static var AUTO_JOIN: bool = true
 ## Starts the game after clients are connected
@@ -74,7 +74,7 @@ func load_cards() -> void:
 
 func load_resources() -> void:
 	load_status += 1 +3+3+3
-	# TODO make more preloads into load
+	
 	Util.PLAYER_ICON_SCN = load("res://ui/player_icon.tscn") as PackedScene
 	VFXHandler.load_all_effects()
 	SFXHandler.load_all_sounds()
@@ -131,7 +131,6 @@ func parse_command(text: String) -> void:
 	self.print(&"> " + text)
 	for command in commands:
 		var args := Util.split_in_same_level(command, &" ")
-		#while args.size() > 0 && !args[0].is_empty(): args.pop_front() #TODO ???
 		run_command(args)
 
 var hit_error: bool = false

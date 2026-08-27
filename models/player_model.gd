@@ -124,7 +124,7 @@ func _process(delta: float) -> void:
 	var anim_mult := 2.0
 	magic.scale = Vector3.ONE
 	#if player.is_prep_cast: shoulderl.rotation.x = head.rotation.x - 1.4 + (shoulderl.rotation.x * 0.2)
-	if player.animation_data[Player.ANIM_MAGIC] >= 0.0: # during cast
+	if player.animation_data[Player.ANIM_MAGIC] > 0.0: # during cast
 		magic.scale = Vector3.ONE * 2.5
 		shoulderl.rotation.x = head.rotation.x - 1.4 + (shoulderl.rotation.x * 0.2)
 		anim_mult = 8.0

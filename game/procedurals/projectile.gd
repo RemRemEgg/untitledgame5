@@ -1,10 +1,6 @@
 class_name Projectile
 extends MeshInstance3D
 
-# TODO trail visuals update
-
-#var next: Projectile # ll # fuck you ll you aint even real
-
 static var PACKED := preload("uid://djlg0ybtmd4im")
 @onready var trail: Trail = $trail as Trail
 

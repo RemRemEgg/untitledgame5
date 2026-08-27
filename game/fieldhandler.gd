@@ -11,6 +11,7 @@ enum {
 	HEAL,
 	SPIN,
 	WIND,
+	ELECTRICITY,
 	_MAX_COUNT }
 
 
@@ -108,7 +109,7 @@ static func load_all_fields() -> void:
 					if field.time <= TRIGGER_DELAY: return
 					if body is Player:
 						if Game.world.has_line(field.global_position, body.global_position):
-							field.time = TRIGGER_DELAY
+							field.sync_time.rpc(TRIGGER_DELAY)
 				
 				fdata.end_effect = func end(field:Field) -> void:
 					var rt := field.strength ** 0.5
@@ -147,6 +148,14 @@ static func load_all_fields() -> void:
 						(body as Player).velocity += delta * field.strength * -field.global_basis.z
 					if body is LevelBody:
 						(body as LevelBody).apply_central_force(field.strength * -field.global_basis.z * 16.0)
+			
+			ELECTRICITY:
+				var fdata := load_field(&"electricity", i)
+				fdata.shape = SPHERE
+				fdata.spawn_effect = func spawn(field:Field) -> void:
+					var vfx := VFXHandler.spawn_local(VFXHandler.AREA_SPHERE, field.global_position, [Color.CORNFLOWER_BLUE, field.radius, field.time])
+					field.visuals.append(vfx)
+				fdata.body_effect = dot_effect
 		@warning_ignore_restore("unused_parameter")
 
 
@@ -197,3 +206,12 @@ class FieldData:
 		f.collision_mask = (0b0010_0010 * int(effect_players)) | (0b0001_0001 * int(effect_world))
 		
 		return f
+
+
+#region resued field functions
+static func dot_effect(field: Field, body: PhysicsBody3D, delta: float) -> void:
+	if body == Game.player:
+		if Util.accumulate_delta([field.delta_buffer], [delta]):
+			var de := DamageEvent.new(field.strength * delta).set_type(DamageEvent.TYPE_MAGIC).set_dot()
+			Game.player.take_damage(de)
+#endregion

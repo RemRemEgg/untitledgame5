@@ -33,7 +33,6 @@ var is_sudden_death: bool = false
 signal reset_sd()
 
 
-# TODO make part of startup
 static func _static_init() -> void:
 	for file_name in DirAccess.get_files_at(&"res://rooms/full"):
 		if file_name.get_extension() == &"tscn":
@@ -168,11 +167,14 @@ func load_levelgeo(sseed: int) -> void:
 
 
 func place_room(rooms_arr: Array[PackedScene], r_pos: Vector3, rng: RandomNumberGenerator) -> void:
+	print(&"wg: placed room")
 	var room := rooms_arr[rng.randi_range(0, rooms_arr.size()-1)].instantiate() as Room
 	room.name = &"room%d+_%+d_%+d" % [r_pos.x,r_pos.y,r_pos.z]
 	room.random_rotate(rng)
 	levelgeo.add_child(room)
 	room.position = r_pos
+	
+	print(&"wg: children %s"%room.get_child_count())
 
 
 func place_worldbound(pos: Vector3) -> void:

@@ -140,3 +140,13 @@ static func trans_inaccuracy(trans: Transform3D, spread: float) -> Transform3D:
 	return trans \
 		.rotated_local(Vector3.FORWARD, randf_range(0, PI*2.0)) \
 		.rotated_local(Vector3.RIGHT, randf() * spread)
+
+## Usage:
+## [codeblock]if accumulate_delta([delta_buffer], [delta]):[/codeblock]
+static func accumulate_delta(p_buffer: Array[float], p_delta: Array[float], cutoff: float = 1.0/8.0) -> bool:
+	p_buffer[0] += p_delta[0]
+	if p_buffer[0] >= cutoff:
+		p_delta[0] = p_buffer[0]
+		p_buffer[0] = 0.0
+		return true
+	return false

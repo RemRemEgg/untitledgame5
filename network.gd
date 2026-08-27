@@ -61,9 +61,9 @@ func _connected_to_server() -> void:
 	self_player.uuid = uuid
 	players_changed.emit()
 
-func _connection_failed() -> void:Console.print_err(&"connection failed")#TODO
+func _connection_failed() -> void:Console.print_err(&"connection failed")
 
-func _server_disconnected() -> void:Console.print(&"server disconnected")#TODO
+func _server_disconnected() -> void:Console.print(&"server disconnected")
 
 #endregion
 
@@ -264,7 +264,7 @@ func death_message(data: Array[Variant]) -> void:
 	var de := DamageEvent.deseralize(data)
 	var target := players[de.target_uuid].get_name_fancy()
 	var death_msg := de.get_death_message(target, (players[de.source_uuid].get_name_fancy() if de.source_uuid else ""))
-	Game.player.hud.add_chat_message(&"💀" + death_msg)
+	Game.player.hud.add_chat_message(&"💀 " + death_msg)
 
 @rpc("any_peer", "call_local", "reliable")
 func update_card_picked(card_uuid: StringName, count: int) -> void:
@@ -350,9 +350,9 @@ class PlayerInfo:
 
 var out_proj_spawner: MultiplayerSpawner
 func send_projectile(trans: Transform3D) -> Projectile:
-	# TODO sometimes returns null
 	var payload := [0, {"trans":trans, "uuid":uuid}]
 	var node := out_proj_spawner.spawn(payload)
+	# sometimes returns null
 	if !node:
 		Console.print_err(&"ops data; tree: %s, has_multiplayer: %s, is_auth: %s" % [out_proj_spawner.is_inside_tree(), multiplayer.has_multiplayer_peer(), out_proj_spawner.is_multiplayer_authority()])
 		Game.player.hud.add_chat_message(&"[color=red]Failed to create projectile[/color]")
@@ -361,9 +361,9 @@ func send_projectile(trans: Transform3D) -> Projectile:
 
 
 func send_alt_projectile(trans: Transform3D) -> Projectile:
-	# TODO sometimes returns null
 	var payload := [1, {"trans":trans, "uuid":uuid}]
 	var node := out_proj_spawner.spawn(payload)
+	# sometimes returns null
 	if !node:
 		Console.print_err(&"alt ops data; tree: %s, has_multiplayer: %s, is_auth: %s" % [out_proj_spawner.is_inside_tree(), multiplayer.has_multiplayer_peer(), out_proj_spawner.is_multiplayer_authority()])
 		Game.player.hud.add_chat_message(&"[color=red]Failed to create alt projectile[/color]")

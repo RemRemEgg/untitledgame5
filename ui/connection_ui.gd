@@ -30,4 +30,4 @@ func _join_game() -> void:
 	var ip := ($vbox/join_ip as LineEdit).text
 	Console.print(&"joining game ip:%s" % ip)
 	var e := Network.start_client(ip)
-	if !e: Network.change_to_state(Network.NS_LOBBY) # TODO fix
+	if !e: Network.change_to_state(Network.NS_LOBBY)
