@@ -851,10 +851,10 @@ static func register_all_cards() -> void:
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [1.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.selected_spell.cooldown, 0.25)
-			cd.add_spell_cast_effect(&"[Spell] Places a wall infront of you", true,
+			cd.add_spell_cast_effect(&"[Spell] [Instant] Places a wall infront of you", true,
 				func effect(ed:EventHook.EventData) -> void:
 					var trans := ed.player.camera.global_transform
-					var mi := roundi(ed.mult * 2)
+					var mi := roundi(ed.mult * 2.25)
 					trans.basis.x *= -1.0 # ???
 					trans.basis.y *= -1.0 # parts of matrix are inverted?
 					for x in (1.0+mi*2.0): for y in (1.0+mi*2.0):
@@ -867,37 +867,10 @@ static func register_all_cards() -> void:
 		DECK_SPELL, RARITY_RARE, STYLE_BASIC, [1.0, 0.0, 0.0, 0.0, 0.0, 1.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.selected_spell.cooldown, 1)
-			cd.add_spell_cast_effect(&"[Spell] Trap nearby enemies in blocks", true,
+			cd.add_spell_cast_effect(&"[Spell] [Instant] Trap nearby enemies in blocks", true,
 				func effect(ed:EventHook.EventData) -> void:
 					for player in Game.world.get_aoe_players(ed.player.global_position, ed.mult * 4.0 + 4.0, [ed.player]):
 						Network.snare_player.rpc_id(player.uuid, ed.multi)
-			)
-	)
-
-	register_card(&"HEAL", &"Heal", &"",
-		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [1.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
-		func card(cd:CardData) -> void:
-			cd.add(cd.selected_spell.cooldown, 2.0)
-			cd.add_spell_cast_effect(&"[Spell] Steal life from nearby opponents", true,
-				func effect(ed:EventHook.EventData) -> void:
-					for player in Game.world.get_aoe_players(ed.player.global_position, ed.mult * 4.0 + 4.0, [ed.player]):
-						var amo := 16.0 * ed.mult
-						var de := DamageEvent.new(amo, Vector3.ZERO, DamageEvent.TYPE_MAGIC)
-						de.source_entity = ed.player
-						player.take_damage_seralized.rpc(de.seralize())
-						ed.player.health = minf(ed.player.health + amo*1.5, ed.player.max_health.value)
-			)
-	)
-
-	register_card(&"SLOW", &"Slow", &"",
-		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [1.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
-		func card(cd:CardData) -> void:
-			cd.add(cd.selected_spell.cooldown, 2.0)
-			cd.add_spell_cast_effect(&"[Spell] Slow nearby opponents", true,
-				func effect(ed:EventHook.EventData) -> void:
-					var rt := ed.mult ** 0.5
-					for player in Game.world.get_aoe_players(ed.player.global_position, rt * 6.0 + 3.0, [ed.player]):
-						Network.slow_player.rpc_id(player.uuid, 0.75, 4.0, rt)
 			)
 	)
 
@@ -905,7 +878,7 @@ static func register_all_cards() -> void:
 		DECK_SPELL, RARITY_RARE, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.selected_spell.cooldown, 2.0)
-			cd.add_spell_cast_effect(&"[Spell] Increased agility for a short time", true,
+			cd.add_spell_cast_effect(&"[Spell] [Instant] Increased agility for a short time", true,
 				func effect(ed:EventHook.EventData) -> void:
 					ed.player.speed.mult_temp(1.3, 3.0, ed.mult)
 					ed.player.accel.mult_temp(1.3, 3.0, ed.mult)
@@ -917,7 +890,7 @@ static func register_all_cards() -> void:
 		DECK_SPELL, RARITY_EPIC, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
 			cd.add(cd.selected_spell.cooldown, 4.0)
-			cd.add_spell_cast_effect(&"[Spell] Increased armor density and regen for a short time", true,
+			cd.add_spell_cast_effect(&"[Spell] [Instant] Increased armor density and regen for a short time", true,
 				func effect(ed:EventHook.EventData) -> void:
 					var p := ed.player.armor / ed.player.armor_density.value
 					ed.player.armor_density.mult_temp(2.0, 4.0, ed.mult)
@@ -926,25 +899,25 @@ static func register_all_cards() -> void:
 			)
 	)
 
-	register_card(&"PULT", &"Magipult", &"",
-		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
-		func card(cd:CardData) -> void:
-			cd.add(cd.selected_spell.cooldown, 0.75)
-			cd.add_spell_cast_effect(&"[Spell] Launch yourself forward", true,
-				func effect(ed:EventHook.EventData) -> void:
-					var vel := ed.player.velocity
-					ed.player.velocity = -ed.player.camera.global_basis.z * 96.0 * ed.mult
-					vel += ed.player.velocity * ed.player.get_dash_power() * ed.mult * (3 / 100.0)
-					ed.player.move_and_slide()
-					ed.player.velocity = vel
-			)
-	)
+	#register_card(&"PULT", &"Magipult", &"",
+		#DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
+		#func card(cd:CardData) -> void:
+			#cd.add(cd.selected_spell.cooldown, 0.75)
+			#cd.add_spell_cast_effect(&"[Spell] Launch yourself forward", true,
+				#func effect(ed:EventHook.EventData) -> void:
+					#var vel := ed.player.velocity
+					#ed.player.velocity = -ed.player.camera.global_basis.z * 96.0 * ed.mult
+					#vel += ed.player.velocity * ed.player.get_dash_power() * ed.mult * (3 / 100.0)
+					#ed.player.move_and_slide()
+					#ed.player.velocity = vel
+			#)
+	#)
 
 	register_card(&"WARP", &"Warp", &"woosh!",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.selected_spell.cooldown, 0.5)
-			cd.add_spell_cast_effect(&"[Spell] Teleport forward", true,
+			cd.add_spell_cast_effect(&"[Spell] [Instant] Teleport forward", true,
 				func effect(ed:EventHook.EventData) -> void:
 					var vel := ed.player.velocity
 					ed.player.velocity = -ed.player.camera.global_basis.z * 48.0 * ed.mult
@@ -953,37 +926,38 @@ static func register_all_cards() -> void:
 			)
 	)
 
-	register_card(&"FIRE", &"Fireball", &"i cast. . . $sFIREBALL$d!",
-		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
-		func card(cd:CardData) -> void:
-			cd.add(cd.selected_spell.cooldown, 0.75)
-			cd.add_spell_cast_effect(&"[Spell] Cast many small fireballs", true,
-				func effect(ed:EventHook.EventData) -> void:
-					var rt := ed.mult ** 0.4
-					for i in (rt * 2.5)+1:
-						var trans := Util.trans_inaccuracy(ed.player.camera.global_transform, 0.1 + rt*0.1)
-						AltProjHandler.spawn(AltProjHandler.FIREBALL, trans, Vector3(0, 0, -30 * rt), ed.player)
-			)
-	)
+	#register_card(&"FIRE", &"Fireball", &"i cast. . . $sFIREBALL$d!",
+		#DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
+		#func card(cd:CardData) -> void:
+			#cd.add(cd.selected_spell.cooldown, 0.75)
+			#cd.add_spell_cast_effect(&"[Spell] [Projectile] Cast many small fireballs", true,
+				#func effect(ed:EventHook.EventData) -> void:
+					#var rt := ed.mult ** 0.4
+					#for i in (rt * 2.5)+1:
+						#var trans := Util.trans_inaccuracy(ed.player.camera.global_transform, 0.1 + rt*0.1)
+						#AltProjHandler.spawn(AltProjHandler.FIREBALL, trans, Vector3(0, 0, -30 * rt), ed.player)
+			#)
+	#)
 
-	register_card(&"AGRV", &"Anti-Gravity Field", &"",
+	register_card(&"SRGF", &"Super Reverse-Gravity", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.selected_spell.cooldown, 0.25)
-			cd.add_spell_cast_effect(&"[Spell] Spawn an anti-gravity field", true,
+			cd.add_spell_cast_effect(&"[Spell] [Field] Spawn an upwards-gravity field", true,
 				func effect(ed:EventHook.EventData) -> void:
 					var trans := Transform3D.IDENTITY
-					var radius := 12.0 * ed.mult
+					var rt := ed.mult ** 0.5
+					var radius := 12.0 * rt
 					trans.origin = ed.player.global_position + ed.player.camera.global_basis.z * -0.5*(radius + 4.0)
-					FieldHandler.spawn(FieldHandler.REVERSE_GRAV, trans, radius, 8.0, 0.5)
+					FieldHandler.spawn(FieldHandler.REVERSE_GRAV, trans, radius, 8.0, rt)
 			)
 	)
 
-	register_card(&"WNDF", &"Wind Field", &"",
+	register_card(&"STRM", &"Windstorm", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.selected_spell.cooldown, 0.25)
-			cd.add_spell_cast_effect(&"[Spell] Spawn a wind field that pushes objects", true,
+			cd.add_spell_cast_effect(&"[Spell] [Field] Spawn a windstorm that pushes objects", true,
 				func effect(ed:EventHook.EventData) -> void:
 					var trans := ed.player.camera.global_transform
 					var rt := ed.mult ** 0.5
@@ -993,29 +967,48 @@ static func register_all_cards() -> void:
 			)
 	)
 
-	register_card(&"IMPF", &"Black Hole", &"",
+	register_card(&"BKHL", &"Black Hole", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.selected_spell.cooldown, 0.25)
 			cd.add_spell_hold_effect(&"[Spell] [Held] Suck nearby players in", true,
 				func effect(ed:EventHook.EventData) -> void:
+					if floori(ed.percent * 8.0) == floori((ed.percent + ed.delta) * 8.0): return
 					var rt := ed.mult ** 0.5
-					var de := DamageEvent.new(0.0, Vector3.ZERO, DamageEvent.TYPE_MAGIC).set_dot()
-					var players := Game.world.get_aoe_players(ed.position, rt * 16.0, [ed.player])
+					var radius := rt * 24.0
+					VFXHandler.spawn(VFXHandler.SPELL_BLACK_HOLE, ed.position, [radius])
+					var players := Game.world.get_aoe_players(ed.position, radius, [ed.player])
 					for player in players:
-						if Game.world.has_line(ed.position, player.position) &&\
-							floori(ed.percent * 8.0) != floori((ed.percent + ed.delta)):
-								var dir := player.global_position.direction_to(ed.position) * rt * ed.delta * 50.0
-								de.set_knockback(dir)
-								player.take_damage_seralized.rpc(player.uuid, de.seralize())
+						if Game.world.has_line(ed.position, player.position):
+							var dir := ed.position-player.global_position
+							var length := dir.length()
+							dir *= (1.0-(length/radius)) * rt * 8.0 / (length)
+							player.take_knockback.rpc_id(player.uuid, dir)
 			)
 	)
 
-	register_card(&"RUSH", &"Rush Field", &"",
+	register_card(&"HEAL", &"Heal", &"",
+		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [1.0, 1.0, 0.0, 0.0, 0.0, 0.0], null,
+		func card(cd:CardData) -> void:
+			cd.add(cd.selected_spell.cooldown, 2.0)
+			cd.add_spell_hold_effect(&"[Spell] [Held] Steal life from nearby opponents", true,
+				func effect(ed:EventHook.EventData) -> void:
+					if floori(ed.percent * 4.0) == floori((ed.percent + ed.delta) * 4.0): return
+					var rt := ed.mult ** 0.5
+					for player in Game.world.get_aoe_players(ed.player.global_position, rt * 4.0 + 4.0, [ed.player]):
+						if Game.world.has_line(ed.position, player.position):
+							var de := DamageEvent.new(rt * 2.0, Vector3.ZERO, DamageEvent.TYPE_MAGIC).set_dot()
+							de.source_entity = ed.player
+							player.take_damage_seralized.rpc(de.seralize())
+							ed.player.health = minf(ed.player.health + rt*4.0, ed.player.max_health.value)
+			)
+	)
+	
+	register_card(&"RUSH", &"Rush", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.selected_spell.cooldown, 0.25)
-			cd.add_spell_cast_effect(&"[Spell] Spawn a field that accelerates players", true,
+			cd.add_spell_cast_effect(&"[Spell] [Field] Spawn a field that accelerates players", true,
 				func effect(ed:EventHook.EventData) -> void:
 					var trans := Transform3D.IDENTITY
 					trans.origin = ed.position
@@ -1030,13 +1023,13 @@ static func register_all_cards() -> void:
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
 			cd.add(cd.selected_spell.cooldown, 0.25)
-			cd.add_spell_cast_effect(&"[Spell] Spawn an explosive trap", true,
+			cd.add_spell_cast_effect(&"[Spell] [Field] Spawn an explosive trap", true,
 				func effect(ed:EventHook.EventData) -> void:
 					var trans := Transform3D.IDENTITY
 					trans.origin = ed.position
 					var rt := sqrt(ed.mult)
 					var radius := 12.0 * rt
-					trans.origin = ed.player.global_position + ed.player.camera.global_basis.z * -0.5*(radius + 8.0)
+					trans.origin = ed.player.global_position + -ed.player.camera.global_basis.z * 0.5*(radius + 8.0)
 					FieldHandler.spawn(FieldHandler.MINE, trans, radius, 15.0, rt)
 			)
 	)
@@ -1049,7 +1042,7 @@ static func register_all_cards() -> void:
 				func effect(ed:EventHook.EventData) -> void:
 					var pos := ed.player.global_position + Vector3(0.0, -0.15, 0.0)
 					# scales the cross sectional area of the sphere
-					var radius := (ed.mult ** 0.5) * 8
+					var radius := (ed.mult ** 0.5) * 16.0
 					VFXHandler.spawn(VFXHandler.SPELL_SHOCKWAVE, pos, [radius])
 					var objects := Game.world.get_aoe_objects(pos, radius, [ed.player.get_rid()])
 
@@ -1415,7 +1408,7 @@ class CardData:
 		use_spell_selection = true
 		if !desc.is_empty(): add_description(desc, is_good, true)
 		if !selected_spell: return
-		selected_spell.cast_hook.add_effect(n, effect)
+		selected_spell.hold_hook.add_effect(n, effect)
 
 
 class RarityEval:

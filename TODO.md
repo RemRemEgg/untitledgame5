@@ -30,6 +30,7 @@
 - [Projectiles clip through walls]
 - custom collision api? would speed up raycast
 - pserver rids over refs? see psqp, also perf boost
+- [OCFM breacks scav]
 
 
 ## Spells & Magic

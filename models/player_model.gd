@@ -54,6 +54,8 @@ func _ready() -> void:
 	
 	if player.uuid == Network.uuid:
 		head.transparency = 1.0
+		torso.transparency = 0.95
+		pelvis.transparency = 0.95
 	
 	var gun_scn := load("res://game/gun_model.tscn") as PackedScene
 	gun = gun_scn.instantiate() as Node3D

@@ -13,7 +13,7 @@ var load_call: Callable
 ## Enables auto setup options
 static var AUTO_SETUP: bool = false
 ## Game will fullscreen
-static var AUTO_FULLSCREEN: bool = true
+static var AUTO_FULLSCREEN: bool = false
 ## Local instances will connect to eachother
 static var AUTO_JOIN: bool = true
 ## Starts the game after clients are connected

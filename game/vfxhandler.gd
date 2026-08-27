@@ -12,6 +12,7 @@ enum {
 	PLAYER_DUST, ## <uuid> [scale]
 	PLAYER_SLIDE, ## <uuid> <velocity>
 	SPELL_SHOCKWAVE, ## <scale>
+	SPELL_BLACK_HOLE, ## <scale>
 	_MAX_COUNT }
 
 
@@ -29,6 +30,7 @@ static func load_all_effects() -> void:
 			PLAYER_DUST: load_effect(&"particle_burst", i)
 			PLAYER_SLIDE: load_effect(&"player_slide", i)
 			SPELL_SHOCKWAVE: load_effect(&"shockwave", i)
+			SPELL_BLACK_HOLE: load_effect(&"black_hole", i)
 
 
 static func load_effect(effect_id: StringName, i: int) -> void:
@@ -118,5 +120,10 @@ static func spawn_local(effect_id: int, pos: Vector3, data: Array) -> Node3D:
 			vfx.scale = Vector3.ONE * 0.01
 			tween.tween_property(vfx, ^"scale", Vector3.ONE * data[0], 0.4)
 			tween.finished.connect(vfx.queue_free)
+		
+		SPELL_BLACK_HOLE:
+			vfx = quick_setup(effect_id, pos) as GPUParticles3D
+			setup_particle(vfx)
+			vfx.scale *= data[0]
 	
 	return vfx

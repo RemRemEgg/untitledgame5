@@ -322,11 +322,11 @@ func spectator_process(delta: float) -> void:
 
 
 func update_spells(delta: float) -> void:
-	spell_1.process(self, delta)
-	spell_2.process(self, delta)
-	
 	var is_use_s1 := Input.is_action_pressed(&"magic_1")
 	var is_use_s2 := Input.is_action_pressed(&"magic_2")
+	
+	if !is_use_s1: spell_1.process(self, delta)
+	if !is_use_s2: spell_2.process(self, delta)
 	
 	if is_use_s1:
 		if Input.is_action_just_pressed(&"magic_1") && ( (last_magic == 0 && magic_timer <= 0.75) || (magic_timer <= 0.0) ):
@@ -549,7 +549,7 @@ func take_damage(de: DamageEvent) -> void:
 	ed.damage = de
 	damage_hook.execute(ed)
 
-	velocity += de.knockback
+	take_knockback(de.knockback)
 
 	if is_immortal: return
 	if de.source_entity:
@@ -587,6 +587,11 @@ func take_damage(de: DamageEvent) -> void:
 
 		Console.print(&"im so dead :c bleh")
 		death()
+
+
+@rpc("any_peer", "call_local", "reliable")
+func take_knockback(knockback: Vector3) -> void:
+	velocity += knockback
 
 
 func on_round_end(won: bool) -> void:

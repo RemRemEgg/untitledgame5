@@ -181,6 +181,8 @@ anti_aliasing/screen_space_roughness_limiter/enabled=false
 scaling_3d/scale=0.7999999999999999
 environment/glow/upscale_mode=0
 anti_aliasing/quality/use_taa=true
+occlusion_culling/simulation/position_steps=2
+occlusion_culling/simulation/velocity_steps=10
 
 [shader_globals]
 

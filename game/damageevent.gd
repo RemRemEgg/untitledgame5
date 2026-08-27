@@ -31,7 +31,7 @@ func _init(amount_: float, kb: Vector3 = Vector3.ZERO, type_: int = TYPE_UNKNOWN
 	type = type_
 
 func set_knockback(kb: Vector3, add: bool = false) -> DamageEvent:
-	knockback = (knockback + kb) if (add) else (knockback)
+	knockback = (knockback + kb) if (add) else (kb)
 	return self
 
 
