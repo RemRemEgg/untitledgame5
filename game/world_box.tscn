@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://o6uolq8s7wlq" path="res://textures/3d/prototype_harmful.png" id="3_8olbw"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_pyo22"]
-size = Vector3(64, 64, 64)
+size = Vector3(48, 48, 48)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g4a3c"]
 render_priority = 0
@@ -20,7 +20,7 @@ shader_parameter/scale = Vector3(0.25, 0.25, 0.25)
 shader_parameter/offset = Vector3(0, 0, 0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_l2xtu"]
-size = Vector3(64, 64, 64)
+size = Vector3(48, 48, 48)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ail48"]
 properties/0/path = NodePath(".:position")

@@ -5,14 +5,13 @@
 [ext_resource type="PackedScene" uid="uid://cb5fuxbpu7mb6" path="res://rooms/roomgeo/light_orb.tscn" id="3_bpwc1"]
 [ext_resource type="PackedScene" uid="uid://b5r0t8pi8r5fv" path="res://game/levelbody.tscn" id="3_iofc4"]
 [ext_resource type="Material" uid="uid://cpnpb6gvn4xc5" path="res://shaders/tile.res" id="5_f20cw"]
-[ext_resource type="Material" uid="uid://bgesf51sw86dh" path="res://shaders/world/solid_triplanar_fast.res" id="6_2ru6x"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_cnehl"]
-radius = 24.0
-height = 48.0
+radius = 16.0
+height = 32.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_cnehl"]
-radius = 24.0
+radius = 16.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_8012k"]
 size = Vector3(16, 4, 16)
@@ -31,7 +30,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
 
 [node name="levelbody4" parent="." unique_id=371467810 instance=ExtResource("3_iofc4")]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
-collision_mask = 17
 mass = 102.39999
 gravity_scale = 0.0
 freeze = false
@@ -41,17 +39,13 @@ material = ExtResource("5_f20cw")
 shape = SubResource("SphereShape3D_cnehl")
 
 [node name="levelbody59" parent="." unique_id=1096154872 instance=ExtResource("3_iofc4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 28, 0)
-collision_mask = 17
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0)
 mass = 204.8
 mesh = SubResource("BoxMesh_8012k")
-material = ExtResource("6_2ru6x")
 shape = SubResource("BoxShape3D_7es8x")
 
 [node name="levelbody60" parent="." unique_id=593829918 instance=ExtResource("3_iofc4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -28, 0)
-collision_mask = 17
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20, 0)
 mass = 204.8
 mesh = SubResource("BoxMesh_8012k")
-material = ExtResource("6_2ru6x")
 shape = SubResource("BoxShape3D_7es8x")

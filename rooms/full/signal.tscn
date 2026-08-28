@@ -7,18 +7,6 @@
 [ext_resource type="Material" uid="uid://bgesf51sw86dh" path="res://shaders/world/solid_triplanar_fast.res" id="4_ifcgq"]
 [ext_resource type="PackedScene" uid="uid://yey26rf0blrh" path="res://rooms/roomgeo/curve_inner_4x4.tscn" id="6_h7pl1"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_kxpco"]
-size = Vector3(26.508999, 12, 3.9999998)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_h7pl1"]
-size = Vector3(26.508999, 12, 3.9999998)
-
-[sub_resource type="BoxMesh" id="BoxMesh_sbaus"]
-size = Vector3(26.509, 44, 4)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_f306c"]
-size = Vector3(26.509, 44, 4)
-
 [sub_resource type="BoxMesh" id="BoxMesh_yngcx"]
 size = Vector3(19.88, 28, 4)
 
@@ -65,70 +53,6 @@ script = ExtResource("1_r6ole")
 
 [node name="light_orb2" parent="." unique_id=499662067 instance=ExtResource("3_mi6vf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.0718393, 0)
-
-[node name="levelbody55" parent="." unique_id=1940539988 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 21.21, 16, 21.21)
-collision_mask = 17
-mass = 254.48637
-mesh = SubResource("BoxMesh_kxpco")
-material = ExtResource("4_ifcgq")
-shape = SubResource("BoxShape3D_h7pl1")
-
-[node name="levelbody56" parent="." unique_id=1096154872 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30)
-collision_mask = 17
-mass = 933.1168
-mesh = SubResource("BoxMesh_sbaus")
-material = ExtResource("4_ifcgq")
-shape = SubResource("BoxShape3D_f306c")
-
-[node name="levelbody57" parent="." unique_id=15173174 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -21.21, 16, 21.21)
-collision_mask = 17
-mass = 254.48637
-mesh = SubResource("BoxMesh_kxpco")
-material = ExtResource("4_ifcgq")
-shape = SubResource("BoxShape3D_h7pl1")
-
-[node name="levelbody58" parent="." unique_id=1334225486 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -21.21, 16, -21.21)
-collision_mask = 17
-mass = 254.48637
-mesh = SubResource("BoxMesh_kxpco")
-material = ExtResource("4_ifcgq")
-shape = SubResource("BoxShape3D_h7pl1")
-
-[node name="levelbody59" parent="." unique_id=192410805 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -30, 0, 0)
-collision_mask = 17
-mass = 933.1168
-mesh = SubResource("BoxMesh_sbaus")
-material = ExtResource("4_ifcgq")
-shape = SubResource("BoxShape3D_f306c")
-
-[node name="levelbody60" parent="." unique_id=1334185027 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9073486e-06, 0, -30)
-collision_mask = 17
-mass = 933.1168
-mesh = SubResource("BoxMesh_sbaus")
-material = ExtResource("4_ifcgq")
-shape = SubResource("BoxShape3D_f306c")
-
-[node name="levelbody61" parent="." unique_id=249833967 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 21.21, 16, -21.21)
-collision_mask = 17
-mass = 254.48637
-mesh = SubResource("BoxMesh_kxpco")
-material = ExtResource("4_ifcgq")
-shape = SubResource("BoxShape3D_h7pl1")
-
-[node name="levelbody62" parent="." unique_id=808769312 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 30, 0, 0)
-collision_mask = 17
-mass = 933.1168
-mesh = SubResource("BoxMesh_sbaus")
-material = ExtResource("4_ifcgq")
-shape = SubResource("BoxShape3D_f306c")
 
 [node name="levelbody64" parent="." unique_id=169064140 instance=ExtResource("3_2y6vj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4, 22)
@@ -227,7 +151,7 @@ material = ExtResource("4_ifcgq")
 shape = SubResource("BoxShape3D_daps6")
 
 [node name="levelbody79" parent="." unique_id=1059894252 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 25.9, 0)
+transform = Transform3D(-3.278354e-08, 0, 0.75, 0, 0.75, 0, -0.75, 0, -3.278354e-08, 0, 20.9125, 0)
 collision_mask = 17
 mass = 204.8
 mesh = SubResource("PrismMesh_2y6vj")
@@ -235,7 +159,7 @@ material = ExtResource("4_ifcgq")
 shape = SubResource("ConvexPolygonShape3D_ifcgq")
 
 [node name="levelbody86" parent="." unique_id=1521080007 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26, 0)
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 20.9875, 0)
 collision_mask = 17
 mass = 204.8
 mesh = SubResource("PrismMesh_2y6vj")
@@ -259,7 +183,7 @@ material = ExtResource("4_ifcgq")
 shape = SubResource("BoxShape3D_58uc7")
 
 [node name="levelbody81" parent="." unique_id=134737036 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(-7.5497915e-08, -8.742276e-08, -1, -1.509958e-07, -1, 8.742278e-08, -1, 1.509958e-07, 7.54979e-08, 0, -25.9, 0)
+transform = Transform3D(-5.662343e-08, -6.556707e-08, -0.75, -1.1324685e-07, -0.75, 6.556708e-08, -0.74999994, 1.13246855e-07, 5.6623428e-08, 0, -20.9125, 0)
 collision_mask = 17
 mass = 204.8
 mesh = SubResource("PrismMesh_s3y7m")
@@ -267,7 +191,7 @@ material = ExtResource("4_ifcgq")
 shape = SubResource("ConvexPolygonShape3D_ifcgq")
 
 [node name="levelbody89" parent="." unique_id=1711044499 instance=ExtResource("3_2y6vj")]
-transform = Transform3D(1, 0, 0, 0, -1, 1.509958e-07, 0, -1.509958e-07, -1, 0, -26, 0)
+transform = Transform3D(0.75, 0, 0, 0, -0.74999994, 1.13246855e-07, 0, -1.1324684e-07, -0.75, 0, -20.9875, 0)
 collision_mask = 17
 mass = 204.8
 mesh = SubResource("PrismMesh_s3y7m")
@@ -275,32 +199,32 @@ material = ExtResource("4_ifcgq")
 shape = SubResource("ConvexPolygonShape3D_ifcgq")
 
 [node name="curve_inner_4x4" parent="." unique_id=935370396 instance=ExtResource("6_h7pl1")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -12, -14, -12)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -12, -6, -12)
 
 [node name="curve_inner_4x5" parent="." unique_id=2021885791 instance=ExtResource("6_h7pl1")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -12, 2, -12)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -12, 10, -12)
 collision_mask = 17
 
 [node name="curve_inner_4x6" parent="." unique_id=1564669727 instance=ExtResource("6_h7pl1")]
-transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 12, -14, -12)
+transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 12, -6, -12)
 collision_mask = 17
 
 [node name="curve_inner_4x7" parent="." unique_id=2017265657 instance=ExtResource("6_h7pl1")]
-transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 12, 2, -12)
+transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 12, 10, -12)
 collision_mask = 17
 
 [node name="curve_inner_4x8" parent="." unique_id=1765482750 instance=ExtResource("6_h7pl1")]
-transform = Transform3D(-1, 8.742278e-08, -3.821371e-15, 0, -4.371139e-08, -1, -8.742278e-08, -1, 4.371139e-08, 12, -14, 12)
+transform = Transform3D(-1, 8.742278e-08, -3.821371e-15, 0, -4.371139e-08, -1, -8.742278e-08, -1, 4.371139e-08, 12, -6, 12)
 collision_mask = 17
 
 [node name="curve_inner_4x9" parent="." unique_id=1271314959 instance=ExtResource("6_h7pl1")]
-transform = Transform3D(-1, 8.742278e-08, -3.821371e-15, 0, -4.371139e-08, -1, -8.742278e-08, -1, 4.371139e-08, 12, 2, 12)
+transform = Transform3D(-1, 8.742278e-08, -3.821371e-15, 0, -4.371139e-08, -1, -8.742278e-08, -1, 4.371139e-08, 12, 10, 12)
 collision_mask = 17
 
 [node name="curve_inner_4x10" parent="." unique_id=800887067 instance=ExtResource("6_h7pl1")]
-transform = Transform3D(1.3113416e-07, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, 1.3113416e-07, -5.7320566e-15, -12, -14, 12)
+transform = Transform3D(1.3113416e-07, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, 1.3113416e-07, -5.7320566e-15, -12, -6, 12)
 collision_mask = 17
 
 [node name="curve_inner_4x11" parent="." unique_id=272487311 instance=ExtResource("6_h7pl1")]
-transform = Transform3D(1.3113416e-07, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, 1.3113416e-07, -5.7320566e-15, -12, 2, 12)
+transform = Transform3D(1.3113416e-07, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, 1.3113416e-07, -5.7320566e-15, -12, 10, 12)
 collision_mask = 17

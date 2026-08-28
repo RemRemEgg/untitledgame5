@@ -4,7 +4,19 @@
 [ext_resource type="PackedScene" uid="uid://bbxtopjn62dnf" path="res://rooms/bounds_visualizer.tscn" id="2_g2cag"]
 [ext_resource type="PackedScene" uid="uid://yey26rf0blrh" path="res://rooms/roomgeo/curve_inner_4x4.tscn" id="3_8i3y2"]
 [ext_resource type="PackedScene" uid="uid://dntn1tynce3gv" path="res://rooms/roomgeo/solid_1x4x4.tscn" id="4_g2cag"]
-[ext_resource type="PackedScene" uid="uid://b4deotux8v8mm" path="res://rooms/roomgeo/solid_1x8x8.tscn" id="5_8ynd7"]
+[ext_resource type="PackedScene" uid="uid://b5r0t8pi8r5fv" path="res://game/levelbody.tscn" id="5_8ynd7"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_8ynd7"]
+size = Vector3(4, 16, 16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ksomg"]
+size = Vector3(4, 16, 16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rrhdr"]
+size = Vector3(48, 1, 48)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4yo1d"]
+size = Vector3(48, 1, 48)
 
 [node name="room" type="Node3D" unique_id=1177707274]
 script = ExtResource("1_8i3y2")
@@ -12,74 +24,47 @@ script = ExtResource("1_8i3y2")
 [node name="bounds_visualizer" parent="." unique_id=204469094 instance=ExtResource("2_g2cag")]
 
 [node name="curve_inner_4x4" parent="." unique_id=1096154872 instance=ExtResource("3_8i3y2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, -20, 8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, -15, 16)
 
 [node name="solid_2x2" parent="." unique_id=929933588 instance=ExtResource("4_g2cag")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, -20, 8)
-
-[node name="curve_inner_4x5" parent="." unique_id=1764044659 instance=ExtResource("3_8i3y2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, -20, 24)
-collision_mask = 17
-
-[node name="solid_2x6" parent="." unique_id=1766297253 instance=ExtResource("4_g2cag")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, -20, 24)
-collision_mask = 17
-
-[node name="curve_inner_4x6" parent="." unique_id=1125952219 instance=ExtResource("3_8i3y2")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 20, -20, 24)
-collision_mask = 17
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, -15, 16)
+mass = 204.8
+mesh = SubResource("BoxMesh_8ynd7")
+shape = SubResource("BoxShape3D_ksomg")
 
 [node name="curve_inner_4x7" parent="." unique_id=1003898143 instance=ExtResource("3_8i3y2")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 20, -20, 8)
-collision_mask = 17
-
-[node name="curve_inner_4x9" parent="." unique_id=639763592 instance=ExtResource("3_8i3y2")]
-transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 24, -20, -8)
+transform = Transform3D(-1, 0, 1.509958e-07, 0, 1, 0, -1.509958e-07, 0, -1, 12, -15, 16)
 collision_mask = 17
 
 [node name="curve_inner_4x10" parent="." unique_id=1496256200 instance=ExtResource("3_8i3y2")]
-transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 8, -20, -8)
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 16, -15, 0)
 collision_mask = 17
 
 [node name="curve_inner_4x11" parent="." unique_id=990175648 instance=ExtResource("3_8i3y2")]
-transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -8, -20, -8)
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -15, 0)
 collision_mask = 17
 
 [node name="curve_inner_4x12" parent="." unique_id=1596615503 instance=ExtResource("3_8i3y2")]
-transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -24, -20, -8)
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, -16, -15, 0)
 collision_mask = 17
 
 [node name="curve_inner_4x13" parent="." unique_id=1802812855 instance=ExtResource("3_8i3y2")]
-transform = Transform3D(-2.1855693e-07, 0, -1, 0, 1, 0, 1, 0, -2.1855693e-07, -24, -20, -24)
+transform = Transform3D(-1.6292068e-07, 0, -1, 0, 1, 0, 1, 0, -1.6292068e-07, -16, -15, -16)
 collision_mask = 17
 
 [node name="curve_inner_4x14" parent="." unique_id=740524247 instance=ExtResource("3_8i3y2")]
-transform = Transform3D(-2.1855693e-07, 0, -1, 0, 1, 0, 1, 0, -2.1855693e-07, 24, -20, -24)
-collision_mask = 17
-
-[node name="solid_2x7" parent="." unique_id=1057394289 instance=ExtResource("4_g2cag")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, -20, 24)
+transform = Transform3D(-1.6292068e-07, 0, -1, 0, 1, 0, 1, 0, -1.6292068e-07, 16, -15, -16)
 collision_mask = 17
 
 [node name="solid_2x8" parent="." unique_id=537175307 instance=ExtResource("4_g2cag")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, -20, 8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, -15, 16)
 collision_mask = 17
+mass = 204.8
+mesh = SubResource("BoxMesh_8ynd7")
+shape = SubResource("BoxShape3D_ksomg")
 
-[node name="solid_2x3" parent="." unique_id=906914974 instance=ExtResource("4_g2cag")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, -20, 8)
-collision_mask = 17
-
-[node name="solid_2x4" parent="." unique_id=1549114315 instance=ExtResource("5_8ynd7")]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -16, -30, 16)
-
-[node name="solid_2x5" parent="." unique_id=1947896882 instance=ExtResource("5_8ynd7")]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 16, -30, 16)
-collision_mask = 17
-
-[node name="solid_2x9" parent="." unique_id=1492134101 instance=ExtResource("5_8ynd7")]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -16, -30, -16)
-collision_mask = 17
-
-[node name="solid_2x10" parent="." unique_id=80108052 instance=ExtResource("5_8ynd7")]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 16, -30, -16)
-collision_mask = 17
+[node name="levelbody" parent="." unique_id=614312436 instance=ExtResource("5_8ynd7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -23.5, 0)
+mass = 460.8
+mesh = SubResource("BoxMesh_rrhdr")
+shape = SubResource("BoxShape3D_4yo1d")

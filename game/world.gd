@@ -102,7 +102,7 @@ func change_level(sseed: int, stasis_pos: Vector3) -> void:
 	# shrink old level
 	levelgeo.process_mode = Node.PROCESS_MODE_DISABLED
 	var tween := create_tween()
-	tween.tween_property(levelgeo, "position:y", 256, 2.5)
+	tween.tween_property(levelgeo, "position:y", +192, 2.5)
 	await tween.finished
 	
 	# setup new level
@@ -110,7 +110,7 @@ func change_level(sseed: int, stasis_pos: Vector3) -> void:
 	
 	# grow new level
 	levelgeo.rotation.y = -PI
-	levelgeo.position.y = -256
+	levelgeo.position.y = -192
 	tween = create_tween()
 	tween.tween_property(levelgeo, "position:y", 0.0, 2.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	await tween.finished
@@ -139,7 +139,7 @@ func load_levelgeo(sseed: int) -> void:
 	var is_half_filled := false
 	for x in 8: for z in 8: for y in 5:
 		var i_pos := Vector3i(x, y, z) # room id
-		var r_pos := (Vector3(x-3.5, (y-2.25), z-3.5) * 64.0) # world pos
+		var r_pos := (Vector3(x-3.5, (y-2.25), z-3.5) * 48.0) # world pos
 		if _is_room(i_pos):
 			if !is_half_filled: # tile is completely open
 				if rng.randf() <= 0.25: # place half tile
@@ -151,10 +151,10 @@ func load_levelgeo(sseed: int) -> void:
 			
 			if is_half_filled: # tile has half full on bottom
 				if !_is_room(i_pos + Vector3i(0, 1, 0)) || rng.randf() <= 0.25: # fill remaining area
-					place_room(half_rooms, r_pos + Vector3(0.0, 32.0, 0.0), rng)
+					place_room(half_rooms, r_pos + Vector3(0.0, 24.0, 0.0), rng)
 					is_half_filled = false
 				else: # add full room
-					place_room(full_rooms, r_pos + Vector3(0.0, 32.0, 0.0), rng)
+					place_room(full_rooms, r_pos + Vector3(0.0, 24.0, 0.0), rng)
 					is_half_filled = true
 			
 			if rng.randf() <= 0.1:
@@ -188,12 +188,12 @@ func place_random_field(pos: Vector3, rng: RandomNumberGenerator) -> void:
 	var trans := Transform3D.IDENTITY
 	trans.origin = pos
 	match rng.randi_range(0, 5):
-		0: FieldHandler.spawn_local(FieldHandler.REVERSE_GRAV, trans, 31.0, 60.0, 0.5)
-		1: FieldHandler.spawn_local(FieldHandler.ACCELERATE, trans, 31.0, 60.0, 2.0)
-		2: FieldHandler.spawn_local(FieldHandler.SHRINK, trans, 31.0, 30.0, 1.0)
-		3: FieldHandler.spawn_local(FieldHandler.IMPLODE, trans, 31.0, 60.0, 1.0)
-		4: FieldHandler.spawn_local(FieldHandler.MINE, trans, 31.0, 60.0, 2.0)
-		5: FieldHandler.spawn_local(FieldHandler.HEAL, trans, 31.0, 30.0, 1.0)
+		0: FieldHandler.spawn_local(FieldHandler.REVERSE_GRAV, trans, 23.0, 60.0, 0.5)
+		1: FieldHandler.spawn_local(FieldHandler.ACCELERATE, trans, 23.0, 60.0, 2.0)
+		2: FieldHandler.spawn_local(FieldHandler.SHRINK, trans, 23.0, 30.0, 1.0)
+		3: FieldHandler.spawn_local(FieldHandler.IMPLODE, trans, 23.0, 60.0, 1.0)
+		4: FieldHandler.spawn_local(FieldHandler.MINE, trans, 23.0, 60.0, 2.0)
+		5: FieldHandler.spawn_local(FieldHandler.HEAL, trans, 23.0, 30.0, 1.0)
 
 
 func _is_room(pos: Vector3i) -> bool:

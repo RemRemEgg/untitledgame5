@@ -187,7 +187,7 @@ script = ExtResource("1_g3n6k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 0)
 
 [node name="levelbody61" parent="." unique_id=1911959076 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -21.92, -23, 21.92)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, -16.65916, -16.775192, 16.65439)
 collision_mask = 17
 mass = 148.45596
 health = 50.0
@@ -196,7 +196,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_dspti")
 
 [node name="levelbody62" parent="." unique_id=1492117778 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 21.92, -23, -21.925)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, 16.65924, -16.775192, -16.66781)
 collision_mask = 17
 mass = 148.45596
 health = 50.0
@@ -205,7 +205,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_dspti")
 
 [node name="levelbody63" parent="." unique_id=1259250675 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 21.92, -23, 21.92)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 16.65924, -16.775192, 16.65439)
 collision_mask = 17
 mass = 148.45596
 health = 50.0
@@ -214,7 +214,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_dspti")
 
 [node name="levelbody64" parent="." unique_id=1949002026 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -21.92, -23, -21.92)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, -16.65916, -16.775192, -16.66401)
 collision_mask = 17
 mass = 148.45596
 health = 50.0
@@ -223,7 +223,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_dspti")
 
 [node name="levelbody66" parent="." unique_id=2094901962 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, -9, 0)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, -23.55996, -6.2751923, -0.0048100036)
 collision_mask = 17
 mass = 148.456
 health = 50.0
@@ -232,7 +232,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ysjg1")
 
 [node name="levelbody67" parent="." unique_id=513174457 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, -8.982, 0)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 23.56004, -6.261692, -0.0048100036)
 collision_mask = 17
 mass = 148.456
 health = 50.0
@@ -241,7 +241,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ysjg1")
 
 [node name="levelbody68" parent="." unique_id=1208549594 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, -9, 31)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 4.002094e-05, -6.2751923, 23.55519)
 collision_mask = 17
 mass = 148.456
 health = 50.0
@@ -250,7 +250,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ysjg1")
 
 [node name="levelbody69" parent="." unique_id=2124683399 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, -9, -31)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 4.002094e-05, -6.2751923, -23.56481)
 collision_mask = 17
 mass = 148.456
 health = 50.0
@@ -259,7 +259,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ysjg1")
 
 [node name="levelbody159" parent="." unique_id=2073784121 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -31, 4, -1.7881393e-07)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -23.55996, 3.4748082, -0.0048101386)
 collision_mask = 17
 mass = 78.4
 freeze = false
@@ -270,7 +270,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_fymk8")
 
 [node name="levelbody207" parent="." unique_id=1096154872 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -31, -16)
+transform = Transform3D(0.76, 0, 0, 0, -3.3220655e-08, -0.75, 0, 0.76, -3.278354e-08, 4.002094e-05, -22.77519, -12.16481)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -279,7 +279,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody208" parent="." unique_id=880236966 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.7071068, 0.70710677, -3.090862e-08, 0, -4.371139e-08, -1, -0.70710677, 0.7071068, -3.090862e-08, -11.31, -31, -11.31)
+transform = Transform3D(0.5205974, 0.6448309, -2.3181464e-08, 0, -3.9861664e-08, -0.75, -0.5205974, 0.64483094, -2.3181464e-08, -8.59556, -22.77519, -8.60041)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -288,7 +288,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_g3n6k")
 
 [node name="levelbody209" parent="." unique_id=993428617 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-1, -1.509958e-07, 6.600236e-15, 0, -4.371139e-08, -1, 1.509958e-07, -1, 4.371139e-08, 0, -31, 16)
+transform = Transform3D(-0.76, -1.14756794e-07, 4.950177e-15, 0, -3.322065e-08, -0.75, 1.1475681e-07, -0.75999993, 3.278354e-08, 4.002094e-05, -22.77519, 12.155191)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -297,7 +297,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_g3n6k")
 
 [node name="levelbody210" parent="." unique_id=1284427075 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, -16, -31, 0)
+transform = Transform3D(-3.3220655e-08, 0.76, -3.278354e-08, 0, -3.3220655e-08, -0.75, -0.76, -3.3220655e-08, 1.4330142e-15, -12.159959, -22.77519, -0.0048100036)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -306,7 +306,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_g3n6k")
 
 [node name="levelbody211" parent="." unique_id=1423325413 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 16, -31, 0)
+transform = Transform3D(-3.3220655e-08, -0.76, 3.278354e-08, 0, -3.3220655e-08, -0.75, 0.76, -3.3220655e-08, 1.4330142e-15, 12.16004, -22.77519, -0.0048100036)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -315,7 +315,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody212" parent="." unique_id=602244506 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0.70710677, -3.090862e-08, 0, -4.371139e-08, -1, -0.70710677, -0.70710677, 3.090862e-08, -11.31, -31, 11.31)
+transform = Transform3D(-0.48504266, 0.69209844, -2.3181464e-08, 0, -4.2783615e-08, -0.75, -0.48504266, -0.69209844, 2.3181464e-08, -8.59556, -22.77519, 8.59079)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -324,7 +324,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_g3n6k")
 
 [node name="levelbody213" parent="." unique_id=424647233 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, -0.70710677, 3.090862e-08, 11.31, -31, 11.31)
+transform = Transform3D(-0.48504266, -0.6920983, 2.3181464e-08, 0, -4.278361e-08, -0.75, 0.48504266, -0.6920983, 2.3181464e-08, 8.59564, -22.77519, 8.59079)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -333,7 +333,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_g3n6k")
 
 [node name="levelbody215" parent="." unique_id=892364522 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -1, -16)
+transform = Transform3D(0.76, 0, 0, 0, -3.3220655e-08, -0.75, 0, 0.76, -3.278354e-08, 4.002094e-05, -0.2751919, -12.16481)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -342,7 +342,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody216" parent="." unique_id=1959370213 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.7071068, 0.70710677, -3.090862e-08, 0, -4.371139e-08, -1, -0.70710677, 0.7071068, -3.090862e-08, -11.31, -1, -11.31)
+transform = Transform3D(0.5205974, 0.6448309, -2.3181464e-08, 0, -3.9861664e-08, -0.75, -0.5205974, 0.64483094, -2.3181464e-08, -8.59556, -0.2751919, -8.60041)
 collision_mask = 17
 mass = 204.79993
 bodytype = 2
@@ -352,7 +352,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody217" parent="." unique_id=2107874089 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-1, -1.509958e-07, 6.600236e-15, 0, -4.371139e-08, -1, 1.509958e-07, -1, 4.371139e-08, 0, -1, 16)
+transform = Transform3D(-0.76, -1.14756794e-07, 4.950177e-15, 0, -3.322065e-08, -0.75, 1.1475681e-07, -0.75999993, 3.278354e-08, 4.002094e-05, -0.2751919, 12.155191)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -361,7 +361,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody214" parent="." unique_id=611910174 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.7071067, -0.7071069, 3.0908623e-08, 0, -4.371139e-08, -1, 0.7071069, 0.7071067, -3.0908616e-08, 11.31, -31, -11.31)
+transform = Transform3D(0.6920984, -0.4850427, 2.3181467e-08, 0, -2.9983998e-08, -0.75, 0.6920985, 0.4850426, -2.3181462e-08, 8.59564, -22.77519, -8.60041)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -370,7 +370,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody218" parent="." unique_id=1721442642 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, -16, -1, 0)
+transform = Transform3D(-3.3220655e-08, 0.76, -3.278354e-08, 0, -3.3220655e-08, -0.75, -0.76, -3.3220655e-08, 1.4330142e-15, -12.159959, -0.2751919, -0.0048100036)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -379,7 +379,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody219" parent="." unique_id=897368954 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 16, -1, 0)
+transform = Transform3D(-3.3220655e-08, -0.76, 3.278354e-08, 0, -3.3220655e-08, -0.75, 0.76, -3.3220655e-08, 1.4330142e-15, 12.16004, -0.2751919, -0.0048100036)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -388,7 +388,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody220" parent="." unique_id=717533718 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0.70710677, -3.090862e-08, 0, -4.371139e-08, -1, -0.70710677, -0.70710677, 3.090862e-08, -11.31, -1, 11.31)
+transform = Transform3D(-0.48504266, 0.69209844, -2.3181464e-08, 0, -4.2783615e-08, -0.75, -0.48504266, -0.69209844, 2.3181464e-08, -8.59556, -0.2751919, 8.59079)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -397,7 +397,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody221" parent="." unique_id=1891231033 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, -0.70710677, 3.090862e-08, 11.31, -1, 11.31)
+transform = Transform3D(-0.48504266, -0.6920983, 2.3181464e-08, 0, -4.278361e-08, -0.75, 0.48504266, -0.6920983, 2.3181464e-08, 8.59564, -0.2751919, 8.59079)
 collision_mask = 17
 mass = 204.79993
 bodytype = 2
@@ -407,7 +407,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody222" parent="." unique_id=32572696 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.7071067, -0.7071069, 3.0908623e-08, 0, -4.371139e-08, -1, 0.7071069, 0.7071067, -3.0908616e-08, 11.31, -1, -11.31)
+transform = Transform3D(0.6920984, -0.4850427, 2.3181467e-08, 0, -2.9983998e-08, -0.75, 0.6920985, 0.4850426, -2.3181462e-08, 8.59564, -0.2751919, -8.60041)
 collision_mask = 17
 mass = 204.79993
 health = 50.0
@@ -416,7 +416,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody223" parent="." unique_id=143875970 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 0, -5, 0)
+transform = Transform3D(0.7881567, 0, 0.26952934, 0, 0.75, 0, -0.32646522, 0, 0.6507013, 4.002094e-05, -3.2751923, -0.0048100036)
 collision_mask = 17
 mass = 3999.9993
 health = 50.0
@@ -425,7 +425,7 @@ is_harmful = true
 shape = SubResource("BoxShape3D_ukvhv")
 
 [node name="levelbody224" parent="." unique_id=2065289116 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.38268343, 0, 0.9238795, 0, 1, 0, -0.9238795, 0, 0.38268343, 0, -5, 0)
+transform = Transform3D(0.26952928, 0, 0.7881567, 0, 0.75, 0, -0.6507012, 0, 0.32646522, 4.002094e-05, -3.2751923, -0.0048100036)
 collision_mask = 17
 mass = 4000.0
 health = 50.0
@@ -434,7 +434,7 @@ is_harmful = true
 shape = SubResource("BoxShape3D_7kh5v")
 
 [node name="levelbody71" parent="." unique_id=462139190 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 21.92, -9, 21.92)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 16.65924, -6.2751923, 16.65439)
 collision_mask = 17
 mass = 148.45596
 health = 50.0
@@ -443,7 +443,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_dspti")
 
 [node name="levelbody72" parent="." unique_id=1356068794 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -21.9, -9, 21.92)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, -16.643959, -6.2751923, 16.65439)
 collision_mask = 17
 mass = 148.45596
 health = 50.0
@@ -452,7 +452,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_dspti")
 
 [node name="levelbody73" parent="." unique_id=412499990 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, 21.92, -9, -21.92)
+transform = Transform3D(-0.6920983, 0, -0.48504266, 0, 0.75, 0, 0.6920983, 0, -0.48504266, 16.65924, -6.2751923, -16.66401)
 collision_mask = 17
 mass = 148.45598
 health = 50.0
@@ -461,7 +461,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_bw5ix")
 
 [node name="levelbody225" parent="." unique_id=1690060901 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.7071067, 0, -0.7071069, 0, 1, 0, 0.7071069, 0, 0.7071067, -21.92, -9, -21.92)
+transform = Transform3D(0.6920984, 0, -0.4850427, 0, 0.75, 0, 0.6920985, 0, 0.4850426, -16.65916, -6.2751923, -16.66401)
 collision_mask = 17
 mass = 148.45598
 health = 50.0
@@ -470,7 +470,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_bw5ix")
 
 [node name="levelbody39" parent="." unique_id=372892272 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -7.8, -24.5, 7.8)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, -5.92796, -17.900192, 5.92319)
 collision_mask = 17
 mass = 23.423117
 health = 50.0
@@ -479,7 +479,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_1el6t")
 
 [node name="levelbody40" parent="." unique_id=855912032 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -17, 13)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, -12.275193, 9.875191)
 collision_mask = 17
 mass = 23.423117
 health = 50.0
@@ -488,7 +488,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_1el6t")
 
 [node name="levelbody47" parent="." unique_id=503005882 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 7.8, -9.5, 7.8)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, 5.92804, -6.6501923, 5.92319)
 collision_mask = 17
 mass = 23.423115
 health = 50.0
@@ -497,7 +497,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_h14w4")
 
 [node name="levelbody48" parent="." unique_id=1157204854 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 13, -17, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 9.88004, -12.275193, -0.0048100036)
 collision_mask = 17
 mass = 23.423117
 health = 50.0
@@ -506,7 +506,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_1el6t")
 
 [node name="levelbody49" parent="." unique_id=1878952627 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -17, -13)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, -12.275193, -9.88481)
 collision_mask = 17
 mass = 23.423117
 health = 50.0
@@ -515,7 +515,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_1el6t")
 
 [node name="levelbody50" parent="." unique_id=290654208 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 9, -24.5, -9)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, 6.84004, -17.900192, -6.84481)
 collision_mask = 17
 mass = 23.423111
 health = 50.0
@@ -524,7 +524,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ldf02")
 
 [node name="levelbody51" parent="." unique_id=1927875140 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -13, -17, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -9.87996, -12.275193, -0.0048100036)
 collision_mask = 17
 mass = 23.423117
 health = 50.0
@@ -533,7 +533,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_1el6t")
 
 [node name="levelbody52" parent="." unique_id=1896044821 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -9, -9.5, -9)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, -6.83996, -6.6501923, -6.84481)
 collision_mask = 17
 mass = 23.423115
 health = 50.0
@@ -542,7 +542,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_h14w4")
 
 [node name="levelbody65" parent="." unique_id=1612977349 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, -16, 0)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 14.440041, -11.525193, -0.0048100036)
 collision_mask = 17
 mass = 148.45598
 health = 50.0
@@ -551,7 +551,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ql521")
 
 [node name="levelbody70" parent="." unique_id=1686268252 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, -16, 19)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 4.002094e-05, -11.525193, 14.43519)
 collision_mask = 17
 mass = 148.45598
 health = 50.0
@@ -560,7 +560,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ql521")
 
 [node name="levelbody74" parent="." unique_id=1960985928 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, -16, 0)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, -14.43996, -11.525193, -0.0048100036)
 collision_mask = 17
 mass = 148.45598
 health = 50.0
@@ -569,7 +569,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ql521")
 
 [node name="levelbody75" parent="." unique_id=581060170 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, -16, -19)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 4.002094e-05, -11.525193, -14.44481)
 collision_mask = 17
 mass = 148.45598
 health = 50.0
@@ -578,7 +578,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ql521")
 
 [node name="levelbody76" parent="." unique_id=1421231184 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 25.75, -23, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 19.57004, -16.775192, -0.0048100036)
 collision_mask = 17
 mass = 35.0
 health = 50.0
@@ -587,7 +587,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_pr81r")
 
 [node name="levelbody77" parent="." unique_id=910507172 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -25.75, -23, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -19.569962, -16.775192, -0.0048100036)
 collision_mask = 17
 mass = 35.0
 health = 50.0
@@ -596,7 +596,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_pr81r")
 
 [node name="levelbody78" parent="." unique_id=426861029 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -23, 25.75)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, -16.775192, 19.56519)
 collision_mask = 17
 mass = 35.0
 health = 50.0
@@ -605,7 +605,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_pr81r")
 
 [node name="levelbody79" parent="." unique_id=400404118 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -23, -25.75)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, -16.775192, -19.574812)
 collision_mask = 17
 mass = 35.0
 health = 50.0
@@ -614,7 +614,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_pr81r")
 
 [node name="levelbody80" parent="." unique_id=726706091 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 16.02, -9.005, 16.02)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 12.1752405, -6.278942, 12.170391)
 collision_mask = 17
 mass = 24.695992
 health = 50.0
@@ -623,7 +623,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_i7nfj")
 
 [node name="levelbody81" parent="." unique_id=1512368037 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -16.02, -9.005, -16.02)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, -12.175159, -6.278942, -12.180011)
 collision_mask = 17
 mass = 24.695992
 health = 50.0
@@ -632,7 +632,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_i7nfj")
 
 [node name="levelbody82" parent="." unique_id=754731549 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -16.02, -9.005, 16.02)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, -12.175159, -6.278942, 12.170391)
 collision_mask = 17
 mass = 24.695992
 health = 50.0
@@ -641,7 +641,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_i7nfj")
 
 [node name="levelbody83" parent="." unique_id=664861559 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 16.02, -9.005, -16.02)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, 12.1752405, -6.278942, -12.180011)
 collision_mask = 17
 mass = 24.69599
 health = 50.0
@@ -650,7 +650,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_emmum")
 
 [node name="levelbody53" parent="." unique_id=929482311 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15.5, -24.75)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, -11.150193, -18.81481)
 collision_mask = 17
 mass = 55.818
 health = 50.0
@@ -659,7 +659,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_kksjq")
 
 [node name="levelbody54" parent="." unique_id=462726980 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15.5, 24.75)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, -11.150193, 18.80519)
 collision_mask = 17
 mass = 55.818
 health = 50.0
@@ -668,7 +668,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_kksjq")
 
 [node name="levelbody56" parent="." unique_id=1884720210 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -24.75, -15.5, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -18.80996, -11.150193, -0.0048100036)
 collision_mask = 17
 mass = 55.818
 health = 50.0
@@ -677,7 +677,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_kksjq")
 
 [node name="levelbody57" parent="." unique_id=174042095 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 24.75, -15.5, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 18.81004, -11.150193, -0.0048100036)
 collision_mask = 17
 mass = 55.818
 health = 50.0
@@ -686,7 +686,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_kksjq")
 
 [node name="levelbody55" parent="." unique_id=1198201300 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12, -24.75)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, -8.525192, -18.81481)
 collision_mask = 17
 mass = 151.2
 health = 50.0
@@ -695,7 +695,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_hruw4")
 
 [node name="levelbody58" parent="." unique_id=358560897 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12, 24.75)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, -8.525192, 18.80519)
 collision_mask = 17
 mass = 151.2
 health = 50.0
@@ -704,7 +704,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_hruw4")
 
 [node name="levelbody59" parent="." unique_id=933851996 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 24.75, -12, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 18.81004, -8.525192, -0.0048100036)
 collision_mask = 17
 mass = 151.2
 health = 50.0
@@ -713,7 +713,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_hruw4")
 
 [node name="levelbody60" parent="." unique_id=796580986 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -24.75, -12, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -18.80996, -8.525192, -0.0048100036)
 collision_mask = 17
 mass = 151.2
 health = 50.0
@@ -722,7 +722,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_hruw4")
 
 [node name="levelbody161" parent="." unique_id=204244747 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -21.9, 3.5, 21.9)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, -16.643959, 3.099808, 16.639189)
 collision_mask = 17
 mass = 68.59998
 freeze = false
@@ -733,7 +733,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_xqkrm")
 
 [node name="levelbody162" parent="." unique_id=2107092202 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31, 4, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 23.56004, 3.4748082, -0.0048100036)
 collision_mask = 17
 mass = 78.4
 freeze = false
@@ -744,7 +744,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_fymk8")
 
 [node name="levelbody163" parent="." unique_id=1931216535 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 21.9, 3.5, -21.9)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 16.64404, 3.099808, -16.64881)
 collision_mask = 17
 mass = 68.59998
 freeze = false
@@ -755,7 +755,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_xqkrm")
 
 [node name="levelbody164" parent="." unique_id=1366120139 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 3.4748082, 23.55519)
 collision_mask = 17
 mass = 78.4
 freeze = false
@@ -766,7 +766,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_fymk8")
 
 [node name="levelbody165" parent="." unique_id=1482929229 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 3.4748082, -23.56481)
 collision_mask = 17
 mass = 78.4
 freeze = false
@@ -777,7 +777,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_fymk8")
 
 [node name="levelbody226" parent="." unique_id=707923367 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 21, -16)
+transform = Transform3D(0.76, 0, 0, 0, -3.3220655e-08, -0.75, 0, 0.76, -3.278354e-08, 4.002094e-05, 16.224808, -12.16481)
 collision_mask = 17
 mass = 204.79993
 bodytype = 2
@@ -787,7 +787,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody227" parent="." unique_id=734624717 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.7071068, 0.70710677, -3.090862e-08, 0, -4.371139e-08, -1, -0.70710677, 0.7071068, -3.090862e-08, -11.31, 21, -11.31)
+transform = Transform3D(0.5205974, 0.6448309, -2.3181464e-08, 0, -3.9861664e-08, -0.75, -0.5205974, 0.64483094, -2.3181464e-08, -8.59556, 16.224808, -8.60041)
 collision_mask = 17
 mass = 204.79993
 bodytype = 2
@@ -797,7 +797,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody228" parent="." unique_id=1383326605 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-1, -1.509958e-07, 6.600236e-15, 0, -4.371139e-08, -1, 1.509958e-07, -1, 4.371139e-08, 0, 21, 16)
+transform = Transform3D(-0.76, -1.14756794e-07, 4.950177e-15, 0, -3.322065e-08, -0.75, 1.1475681e-07, -0.75999993, 3.278354e-08, 4.002094e-05, 16.224808, 12.155191)
 collision_mask = 17
 mass = 204.79993
 bodytype = 2
@@ -807,7 +807,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody230" parent="." unique_id=1289650483 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, -16, 21, 0)
+transform = Transform3D(-3.3220655e-08, 0.76, -3.278354e-08, 0, -3.3220655e-08, -0.75, -0.76, -3.3220655e-08, 1.4330142e-15, -12.159959, 16.224808, -0.0048100036)
 collision_mask = 17
 mass = 204.79993
 bodytype = 2
@@ -817,7 +817,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody231" parent="." unique_id=1805382761 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 16, 21, 0)
+transform = Transform3D(-3.3220655e-08, -0.76, 3.278354e-08, 0, -3.3220655e-08, -0.75, 0.76, -3.3220655e-08, 1.4330142e-15, 12.16004, 16.224808, -0.0048100036)
 collision_mask = 17
 mass = 204.79993
 bodytype = 2
@@ -827,7 +827,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody232" parent="." unique_id=2127385607 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0.70710677, -3.090862e-08, 0, -4.371139e-08, -1, -0.70710677, -0.70710677, 3.090862e-08, -11.31, 21, 11.31)
+transform = Transform3D(-0.48504266, 0.69209844, -2.3181464e-08, 0, -4.2783615e-08, -0.75, -0.48504266, -0.69209844, 2.3181464e-08, -8.59556, 16.224808, 8.59079)
 collision_mask = 17
 mass = 204.79993
 bodytype = 2
@@ -837,7 +837,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody233" parent="." unique_id=102347309 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, -0.70710677, 3.090862e-08, 11.31, 21, 11.31)
+transform = Transform3D(-0.48504266, -0.6920983, 2.3181464e-08, 0, -4.278361e-08, -0.75, 0.48504266, -0.6920983, 2.3181464e-08, 8.59564, 16.224808, 8.59079)
 collision_mask = 17
 mass = 204.79993
 bodytype = 2
@@ -847,7 +847,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody234" parent="." unique_id=1216105152 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.7071067, -0.7071069, 3.0908623e-08, 0, -4.371139e-08, -1, 0.7071069, 0.7071067, -3.0908616e-08, 11.31, 21, -11.31)
+transform = Transform3D(0.6920984, -0.4850427, 2.3181467e-08, 0, -2.9983998e-08, -0.75, 0.6920985, 0.4850426, -2.3181462e-08, 8.59564, 16.224808, -8.60041)
 collision_mask = 17
 mass = 204.79993
 bodytype = 2
@@ -857,7 +857,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("ConvexPolygonShape3D_hruw4")
 
 [node name="levelbody41" parent="." unique_id=2125690808 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -11.41, 10, 11.41)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, -8.67156, 7.9748077, 8.66679)
 collision_mask = 17
 mass = 346.30386
 health = 50.0
@@ -866,7 +866,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ycteg")
 
 [node name="levelbody42" parent="." unique_id=1836488925 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 16)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 3.4748082, 12.155191)
 collision_mask = 17
 mass = 346.304
 health = 50.0
@@ -875,7 +875,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_fqg4g")
 
 [node name="levelbody85" parent="." unique_id=900014426 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 16, 4, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 12.16004, 3.4748082, -0.0048100036)
 collision_mask = 17
 mass = 346.304
 health = 50.0
@@ -884,7 +884,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_fqg4g")
 
 [node name="levelbody86" parent="." unique_id=1242513757 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 11.41, 10, -11.41)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 8.67164, 7.9748077, -8.67641)
 collision_mask = 17
 mass = 346.30386
 health = 50.0
@@ -893,7 +893,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_ycteg")
 
 [node name="levelbody87" parent="." unique_id=1031011849 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -16, 4, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -12.159959, 3.4748082, -0.0048100036)
 collision_mask = 17
 mass = 346.304
 health = 50.0
@@ -902,7 +902,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_fqg4g")
 
 [node name="levelbody43" parent="." unique_id=1847175555 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -16)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 3.4748082, -12.16481)
 collision_mask = 17
 mass = 346.304
 health = 50.0
@@ -911,7 +911,7 @@ material = ExtResource("5_k4hhn")
 shape = SubResource("BoxShape3D_fqg4g")
 
 [node name="levelbody178" parent="." unique_id=119466463 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -31, 23, -1.7881393e-07)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -23.55996, 17.724808, -0.0048101386)
 collision_mask = 17
 mass = 19.6
 freeze = false
@@ -923,7 +923,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ummbi")
 
 [node name="levelbody179" parent="." unique_id=1185126464 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -21.9, 23, -21.9)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, -16.643959, 17.724808, -16.64881)
 collision_mask = 17
 mass = 19.599995
 freeze = false
@@ -935,7 +935,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_y2h88")
 
 [node name="levelbody180" parent="." unique_id=698187723 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31, 23, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 23.56004, 17.724808, -0.0048100036)
 collision_mask = 17
 mass = 19.6
 freeze = false
@@ -947,7 +947,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ummbi")
 
 [node name="levelbody181" parent="." unique_id=1330879672 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 21.9, 24.885841, 21.9)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, 16.64404, 19.139189, 16.639189)
 collision_mask = 17
 mass = 19.599993
 freeze = false
@@ -959,7 +959,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_abw3p")
 
 [node name="levelbody182" parent="." unique_id=1637039850 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23, 31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 17.724808, 23.55519)
 collision_mask = 17
 mass = 19.6
 freeze = false
@@ -971,7 +971,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ummbi")
 
 [node name="levelbody183" parent="." unique_id=1799408799 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23, -31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 17.724808, -23.56481)
 collision_mask = 17
 mass = 19.6
 freeze = false
@@ -983,7 +983,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ummbi")
 
 [node name="levelbody184" parent="." unique_id=1362532612 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -31, 27, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -23.55996, 20.724808, -0.0048100036)
 collision_mask = 17
 mass = 14.4
 freeze = false
@@ -995,7 +995,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_tmuhw")
 
 [node name="levelbody185" parent="." unique_id=1072234237 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31, 27, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 23.56004, 20.724808, -0.0048100036)
 collision_mask = 17
 mass = 14.4
 freeze = false
@@ -1007,7 +1007,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_tmuhw")
 
 [node name="levelbody186" parent="." unique_id=253318843 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -21.9, 27, -21.9)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, -16.643959, 20.724808, -16.64881)
 collision_mask = 17
 mass = 14.399995
 freeze = false
@@ -1019,7 +1019,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_hg24k")
 
 [node name="levelbody187" parent="." unique_id=2082204127 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27, 31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 20.724808, 23.55519)
 collision_mask = 17
 mass = 14.4
 freeze = false
@@ -1031,7 +1031,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_tmuhw")
 
 [node name="levelbody188" parent="." unique_id=300000572 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 21.9, 27, 21.9)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, 16.64404, 20.724808, 16.639189)
 collision_mask = 17
 mass = 14.399995
 freeze = false
@@ -1043,7 +1043,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_hg24k")
 
 [node name="levelbody189" parent="." unique_id=1201409329 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27, -31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 20.724808, -23.56481)
 collision_mask = 17
 mass = 14.4
 freeze = false
@@ -1055,7 +1055,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_tmuhw")
 
 [node name="levelbody190" parent="." unique_id=802916879 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25, -31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 19.224808, -23.56481)
 collision_mask = 17
 mass = 19.6
 freeze = false
@@ -1067,7 +1067,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ummbi")
 
 [node name="levelbody191" parent="." unique_id=1153857878 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -31, 25, -1.7881393e-07)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -23.55996, 19.224808, -0.0048101386)
 collision_mask = 17
 mass = 19.6
 freeze = false
@@ -1079,7 +1079,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ummbi")
 
 [node name="levelbody192" parent="." unique_id=250287067 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -21.9, 25, -21.9)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, -16.643959, 19.224808, -16.64881)
 collision_mask = 17
 mass = 19.599993
 freeze = false
@@ -1091,7 +1091,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_abw3p")
 
 [node name="levelbody193" parent="." unique_id=1552914999 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31, 25, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 23.56004, 19.224808, -0.0048100036)
 collision_mask = 17
 mass = 19.6
 freeze = false
@@ -1103,7 +1103,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ummbi")
 
 [node name="levelbody194" parent="." unique_id=1763759171 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 21.9, 23, 21.9)
+transform = Transform3D(0.48504266, 0, 0.6920983, 0, 0.75, 0, -0.48504266, 0, 0.6920983, 16.64404, 17.724808, 16.639189)
 collision_mask = 17
 mass = 19.599993
 freeze = false
@@ -1115,7 +1115,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_abw3p")
 
 [node name="levelbody195" parent="." unique_id=2014703082 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25, 31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 19.224808, 23.55519)
 collision_mask = 17
 mass = 19.6
 freeze = false
@@ -1127,7 +1127,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ummbi")
 
 [node name="levelbody167" parent="." unique_id=467435039 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31, 14, 9.25)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 23.56004, 10.974808, 7.02519)
 collision_mask = 17
 mass = 28.8
 freeze = false
@@ -1138,7 +1138,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_n834f")
 
 [node name="levelbody175" parent="." unique_id=1533577232 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31, 14, -9.25)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 23.56004, 10.974808, -7.03481)
 collision_mask = 17
 mass = 28.8
 freeze = false
@@ -1149,7 +1149,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_n834f")
 
 [node name="levelbody196" parent="." unique_id=748186161 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31, 17, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, 23.56004, 13.224808, -0.0048100036)
 collision_mask = 17
 mass = 30.0
 freeze = false
@@ -1160,7 +1160,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ghi74")
 
 [node name="levelbody166" parent="." unique_id=582236582 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 28.45, 17.006, -15.35)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 21.622042, 13.229308, -11.670811)
 collision_mask = 17
 mass = 14.399996
 freeze = false
@@ -1171,7 +1171,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_5rt5u")
 
 [node name="levelbody168" parent="." unique_id=1654162799 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 15.35, 17.006, -28.45)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 11.66604, 13.229308, -21.62681)
 collision_mask = 17
 mass = 14.399996
 freeze = false
@@ -1182,7 +1182,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_5rt5u")
 
 [node name="levelbody169" parent="." unique_id=244238674 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -31, 14, 9.25)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -23.55996, 10.974808, 7.02519)
 collision_mask = 17
 mass = 28.8
 freeze = false
@@ -1193,7 +1193,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_n834f")
 
 [node name="levelbody176" parent="." unique_id=190942550 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -31, 14, -9.25)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -23.55996, 10.974808, -7.03481)
 collision_mask = 17
 mass = 28.8
 freeze = false
@@ -1204,7 +1204,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_n834f")
 
 [node name="levelbody197" parent="." unique_id=463746352 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -31, 17, 0)
+transform = Transform3D(-3.3220655e-08, 0, 0.76, 0, 0.75, 0, -0.76, 0, -3.3220655e-08, -23.55996, 13.224808, -0.0048100036)
 collision_mask = 17
 mass = 30.0
 freeze = false
@@ -1215,7 +1215,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ghi74")
 
 [node name="levelbody170" parent="." unique_id=110648592 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.25, 14, 31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 7.0300403, 10.974808, 23.55519)
 collision_mask = 17
 mass = 28.8
 freeze = false
@@ -1226,7 +1226,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_n834f")
 
 [node name="levelbody177" parent="." unique_id=1226779629 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.25, 14, 31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, -7.02996, 10.974808, 23.55519)
 collision_mask = 17
 mass = 28.8
 freeze = false
@@ -1237,7 +1237,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_n834f")
 
 [node name="levelbody198" parent="." unique_id=1254324499 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17, 31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 13.224808, 23.55519)
 collision_mask = 17
 mass = 30.0
 freeze = false
@@ -1248,7 +1248,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ghi74")
 
 [node name="levelbody171" parent="." unique_id=1572645097 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.25, 14, -31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 7.0300403, 10.974808, -23.56481)
 collision_mask = 17
 mass = 28.8
 freeze = false
@@ -1259,7 +1259,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_n834f")
 
 [node name="levelbody199" parent="." unique_id=1378169940 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.25, 14, -31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, -7.02996, 10.974808, -23.56481)
 collision_mask = 17
 mass = 28.8
 freeze = false
@@ -1270,7 +1270,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_n834f")
 
 [node name="levelbody200" parent="." unique_id=649618910 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17, -31)
+transform = Transform3D(0.76, 0, 0, 0, 0.75, 0, 0, 0, 0.76, 4.002094e-05, 13.224808, -23.56481)
 collision_mask = 17
 mass = 30.0
 freeze = false
@@ -1281,7 +1281,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_ghi74")
 
 [node name="levelbody172" parent="." unique_id=1213344787 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -21.9, 10.5, 21.9)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, -16.643959, 8.349808, 16.639189)
 collision_mask = 17
 mass = 68.59998
 freeze = false
@@ -1292,7 +1292,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_xqkrm")
 
 [node name="levelbody173" parent="." unique_id=68829097 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 21.9, 10.5, -21.9)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 16.64404, 8.349808, -16.64881)
 collision_mask = 17
 mass = 68.59998
 freeze = false
@@ -1303,7 +1303,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_xqkrm")
 
 [node name="levelbody174" parent="." unique_id=2092268016 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -28.45, 17.006, 15.35)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, -21.621962, 13.229308, 11.661191)
 collision_mask = 17
 mass = 14.399996
 freeze = false
@@ -1314,7 +1314,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_5rt5u")
 
 [node name="levelbody201" parent="." unique_id=1479702043 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -15.35, 17.006, 28.45)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, -11.66596, 13.229308, 21.617191)
 collision_mask = 17
 mass = 14.399996
 freeze = false
@@ -1325,7 +1325,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_5rt5u")
 
 [node name="levelbody202" parent="." unique_id=918310671 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 21.9, 23, -21.9)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 16.64404, 17.724808, -16.64881)
 collision_mask = 17
 mass = 19.599993
 freeze = false
@@ -1337,7 +1337,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_abw3p")
 
 [node name="levelbody203" parent="." unique_id=273805368 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 21.9, 27, -21.9)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 16.64404, 20.724808, -16.64881)
 collision_mask = 17
 mass = 14.399995
 freeze = false
@@ -1349,7 +1349,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_b0dc3")
 
 [node name="levelbody204" parent="." unique_id=1763129717 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 21.9, 25, -21.9)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, 16.64404, 19.224808, -16.64881)
 collision_mask = 17
 mass = 19.599993
 freeze = false
@@ -1361,7 +1361,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_abw3p")
 
 [node name="levelbody205" parent="." unique_id=820353655 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -21.9, 23, 21.9)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, -16.643959, 17.724808, 16.639189)
 collision_mask = 17
 mass = 19.599993
 freeze = false
@@ -1373,7 +1373,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_abw3p")
 
 [node name="levelbody206" parent="." unique_id=154749604 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -21.9, 27, 21.9)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, -16.643959, 20.724808, 16.639189)
 collision_mask = 17
 mass = 14.399995
 freeze = false
@@ -1385,7 +1385,7 @@ material = ExtResource("6_fymk8")
 shape = SubResource("BoxShape3D_b0dc3")
 
 [node name="levelbody229" parent="." unique_id=979147009 instance=ExtResource("4_ysjg1")]
-transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -21.9, 25, 21.9)
+transform = Transform3D(-0.48504266, 0, 0.69209844, 0, 0.75, 0, -0.48504266, 0, -0.69209844, -16.643959, 19.224808, 16.639189)
 collision_mask = 17
 mass = 19.599993
 freeze = false

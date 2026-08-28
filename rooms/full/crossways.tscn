@@ -33,25 +33,25 @@ size = Vector3(16, 2, 36)
 size = Vector3(16, 2, 36)
 
 [sub_resource type="BoxMesh" id="BoxMesh_l1dy7"]
-size = Vector3(3.9999998, 1, 25.999998)
+size = Vector3(3.9999995, 1, 15.999999)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7qxim"]
-size = Vector3(3.9999998, 1, 25.999998)
+size = Vector3(3.9999995, 1, 15.999999)
 
 [sub_resource type="BoxMesh" id="BoxMesh_hya0u"]
-size = Vector3(4, 1, 26)
+size = Vector3(4, 1, 16)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_d6wts"]
-size = Vector3(4, 1, 26)
+size = Vector3(4, 1, 16)
 
 [sub_resource type="BoxMesh" id="BoxMesh_cmhty"]
-size = Vector3(3.9999995, 1, 25.999996)
+size = Vector3(3.9999993, 1, 15.999999)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lretc"]
-size = Vector3(3.9999995, 1, 25.999996)
+size = Vector3(3.9999993, 1, 15.999999)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ekm4x"]
-size = Vector3(24, 64, 2)
+size = Vector3(16, 48, 2)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dy2c8"]
 render_priority = 0
@@ -66,31 +66,31 @@ shader_parameter/scale = Vector3(0.25, 0.25, 0.25)
 shader_parameter/offset = Vector3(0, 0, 0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_322dm"]
-size = Vector3(24, 64, 2)
+size = Vector3(16, 48, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vwhp5"]
-size = Vector3(15.999998, 16, 1)
+size = Vector3(15.999998, 5, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_djavw"]
-size = Vector3(15.999998, 16, 1)
+size = Vector3(15.999998, 5, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_f8lle"]
-size = Vector3(15.999998, 15.999999, 0.99999994)
+size = Vector3(15.999998, 5, 0.99999994)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uyge2"]
-size = Vector3(15.999998, 15.999999, 0.99999994)
+size = Vector3(15.999998, 5, 0.99999994)
 
 [sub_resource type="BoxMesh" id="BoxMesh_icdmr"]
-size = Vector3(16, 16.000002, 1.0000001)
+size = Vector3(16, 7, 1.0000001)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_430t3"]
-size = Vector3(16, 16.000002, 1.0000001)
+size = Vector3(16, 7, 1.0000001)
 
 [sub_resource type="BoxMesh" id="BoxMesh_fag4x"]
-size = Vector3(4, 64, 4)
+size = Vector3(4, 48, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mmcro"]
-size = Vector3(4, 64, 4)
+size = Vector3(4, 48, 4)
 
 [node name="room" type="Node3D" unique_id=1177707274]
 script = ExtResource("1_2fejp")
@@ -104,7 +104,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -18, 0)
 
 [node name="levelbody16" parent="." unique_id=1096154872 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -31, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -23, 0)
 collision_mask = 17
 mass = 255.99992
 mesh = SubResource("BoxMesh_dahlj")
@@ -112,7 +112,7 @@ material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_4leag")
 
 [node name="levelbody17" parent="." unique_id=1340763362 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, -16, 0)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, -13, 0)
 collision_mask = 17
 mass = 230.4
 mesh = SubResource("BoxMesh_gfcgr")
@@ -120,9 +120,9 @@ material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_skcvv")
 
 [node name="levelbody22" parent="." unique_id=310414745 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, 21, -23.5, -21)
+transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, 17, -23.5, -17)
 collision_mask = 17
-mass = 20.799997
+mass = 12.799997
 bodytype = 2
 health = 100.0
 mesh = SubResource("BoxMesh_l1dy7")
@@ -130,9 +130,9 @@ material = ExtResource("6_rlmfm")
 shape = SubResource("BoxShape3D_7qxim")
 
 [node name="levelbody23" parent="." unique_id=1555118517 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, -19.942226, -23.5, 19.985863)
+transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, -17, -23.5, 17)
 collision_mask = 17
-mass = 20.799997
+mass = 12.799997
 bodytype = 2
 health = 100.0
 mesh = SubResource("BoxMesh_l1dy7")
@@ -140,9 +140,9 @@ material = ExtResource("6_rlmfm")
 shape = SubResource("BoxShape3D_7qxim")
 
 [node name="levelbody24" parent="." unique_id=25474430 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, -20, -23.5, -20)
+transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, -17, -23.5, -17)
 collision_mask = 17
-mass = 20.8
+mass = 12.8
 bodytype = 2
 health = 100.0
 mesh = SubResource("BoxMesh_hya0u")
@@ -150,9 +150,9 @@ material = ExtResource("6_rlmfm")
 shape = SubResource("BoxShape3D_d6wts")
 
 [node name="levelbody25" parent="." unique_id=1183433785 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, 21, -23.5, 21)
+transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, 17, -23.5, 17)
 collision_mask = 17
-mass = 20.8
+mass = 12.8
 bodytype = 2
 health = 100.0
 mesh = SubResource("BoxMesh_hya0u")
@@ -160,9 +160,9 @@ material = ExtResource("6_rlmfm")
 shape = SubResource("BoxShape3D_d6wts")
 
 [node name="levelbody36" parent="." unique_id=1132231972 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, 21, 3.5, -21)
+transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, 17, 3.5, -17)
 collision_mask = 17
-mass = 20.799997
+mass = 12.799997
 bodytype = 2
 health = 100.0
 mesh = SubResource("BoxMesh_l1dy7")
@@ -170,9 +170,9 @@ material = ExtResource("6_rlmfm")
 shape = SubResource("BoxShape3D_7qxim")
 
 [node name="levelbody37" parent="." unique_id=342572537 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, -19.942226, 3.5, 19.985863)
+transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, -17, 3.5, 17)
 collision_mask = 17
-mass = 20.799995
+mass = 12.799997
 bodytype = 2
 health = 100.0
 mesh = SubResource("BoxMesh_cmhty")
@@ -180,9 +180,9 @@ material = ExtResource("6_rlmfm")
 shape = SubResource("BoxShape3D_lretc")
 
 [node name="levelbody38" parent="." unique_id=886702593 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, -20, 3.5, -20)
+transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, -17, 3.5, -17)
 collision_mask = 17
-mass = 20.8
+mass = 12.8
 bodytype = 2
 health = 100.0
 mesh = SubResource("BoxMesh_hya0u")
@@ -190,9 +190,9 @@ material = ExtResource("6_rlmfm")
 shape = SubResource("BoxShape3D_d6wts")
 
 [node name="levelbody39" parent="." unique_id=1094478634 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, 21, 3.5, 21)
+transform = Transform3D(0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, 0.7071068, 17, 3.5, 17)
 collision_mask = 17
-mass = 20.8
+mass = 12.8
 bodytype = 2
 health = 100.0
 mesh = SubResource("BoxMesh_hya0u")
@@ -200,39 +200,39 @@ material = ExtResource("6_rlmfm")
 shape = SubResource("BoxShape3D_d6wts")
 
 [node name="levelbody20" parent="." unique_id=1834218032 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 9)
 collision_mask = 17
-mass = 614.4
+mass = 307.2
 mesh = SubResource("BoxMesh_ekm4x")
 material = SubResource("ShaderMaterial_dy2c8")
 shape = SubResource("BoxShape3D_322dm")
 
 [node name="levelbody27" parent="." unique_id=1998739357 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 9, 0, -20)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 9, 0, -16)
 collision_mask = 17
-mass = 614.4
+mass = 307.2
 mesh = SubResource("BoxMesh_ekm4x")
 material = SubResource("ShaderMaterial_dy2c8")
 shape = SubResource("BoxShape3D_322dm")
 
 [node name="levelbody13" parent="." unique_id=517467950 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-1, 2.2670613e-07, 4.371137e-08, -7.549788e-08, -0.49999988, 0.8660255, 2.1818897e-07, 0.8660255, 0.49999988, 0.01, -27.453144, -25.345999)
+transform = Transform3D(-1, 2.2670613e-07, 4.371137e-08, -7.549788e-08, -0.49999988, 0.8660255, 2.1818897e-07, 0.8660255, 0.49999988, 0.010000907, -21.453144, -21.881897)
 collision_mask = 17
-mass = 51.199993
+mass = 15.999998
 mesh = SubResource("BoxMesh_vwhp5")
 material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_djavw")
 
 [node name="levelbody12" parent="." unique_id=599282868 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(1, 0, 0, 0, -0.49999985, 0.8660255, 0, -0.8660255, -0.49999985, 0.01, -27.437313, 25.326635)
+transform = Transform3D(1, 0, 0, 0, -0.49999985, 0.8660255, 0, -0.8660255, -0.49999985, 0.01, -21.437313, 21.862534)
 collision_mask = 17
-mass = 51.19999
+mass = 15.999997
 mesh = SubResource("BoxMesh_f8lle")
 material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_uyge2")
 
 [node name="levelbody33" parent="." unique_id=267856700 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 collision_mask = 17
 mass = 255.99992
 mesh = SubResource("BoxMesh_dahlj")
@@ -240,39 +240,39 @@ material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_4leag")
 
 [node name="levelbody34" parent="." unique_id=1682045551 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-1, 2.2670613e-07, 4.371137e-08, -7.549788e-08, -0.49999988, 0.8660255, 2.1818897e-07, 0.8660255, 0.49999988, 0.01, -0.45314407, -25.345999)
+transform = Transform3D(-1, 2.2670613e-07, 4.371137e-08, -7.549788e-08, -0.49999988, 0.8660255, 2.1818897e-07, 0.8660255, 0.49999988, 0.010000907, 0.5468564, -21.881897)
 collision_mask = 17
-mass = 51.199993
+mass = 15.999998
 mesh = SubResource("BoxMesh_vwhp5")
 material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_djavw")
 
 [node name="levelbody35" parent="." unique_id=2063917257 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(1, 0, 0, 0, -0.49999985, 0.8660255, 0, -0.8660255, -0.49999985, 0.01, -0.43731308, 25.326635)
+transform = Transform3D(1, 0, 0, 0, -0.49999985, 0.8660255, 0, -0.8660255, -0.49999985, 0.01, 0.81268775, 22.295547)
 collision_mask = 17
-mass = 51.19999
+mass = 15.999997
 mesh = SubResource("BoxMesh_f8lle")
 material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_uyge2")
 
 [node name="levelbody14" parent="." unique_id=1271450606 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(2.936869e-07, 0.8660255, 0.49999988, -7.549788e-08, -0.49999988, 0.8660255, 1, -2.9208928e-07, -8.146032e-08, 24.836376, -19.44545, 0.01)
+transform = Transform3D(2.936869e-07, 0.8660255, 0.49999988, -7.549788e-08, -0.49999988, 0.8660255, 1, -2.9208928e-07, -8.146032e-08, 21.372274, -14.44545, 0.010001169)
 collision_mask = 17
-mass = 51.199993
+mass = 15.999998
 mesh = SubResource("BoxMesh_vwhp5")
 material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_djavw")
 
 [node name="levelbody15" parent="." unique_id=1807361030 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-3.254734e-07, -0.8660255, -0.49999988, -7.549788e-08, -0.49999988, 0.8660255, -1, 3.196172e-07, 9.735357e-08, -24.809101, -19.44545, 0.01)
+transform = Transform3D(-3.254734e-07, -0.8660255, -0.49999988, -7.549788e-08, -0.49999988, 0.8660255, -1, 3.196172e-07, 9.735357e-08, -21.345, -14.44545, 0.009998721)
 collision_mask = 17
-mass = 51.200012
+mass = 22.400003
 mesh = SubResource("BoxMesh_icdmr")
 material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_430t3")
 
 [node name="levelbody30" parent="." unique_id=576649383 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 11, 0)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 15, 0)
 collision_mask = 17
 mass = 230.4
 mesh = SubResource("BoxMesh_gfcgr")
@@ -280,65 +280,65 @@ material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_skcvv")
 
 [node name="levelbody31" parent="." unique_id=196219372 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(2.936869e-07, 0.8660255, 0.49999988, -7.549788e-08, -0.49999988, 0.8660255, 1, -2.9208928e-07, -8.146032e-08, 24.836376, 7.55455, 0.01)
+transform = Transform3D(2.936869e-07, 0.8660255, 0.49999988, -7.549788e-08, -0.49999988, 0.8660255, 1, -2.9208928e-07, -8.146032e-08, 20.939262, 13.80455, 0.010001314)
 collision_mask = 17
-mass = 51.199993
+mass = 15.999998
 mesh = SubResource("BoxMesh_vwhp5")
 material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_djavw")
 
 [node name="levelbody32" parent="." unique_id=1816128660 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-3.254734e-07, -0.8660255, -0.49999988, -7.549788e-08, -0.49999988, 0.8660255, -1, 3.196172e-07, 9.735357e-08, -24.809101, 7.55455, 0.01)
+transform = Transform3D(-3.254734e-07, -0.8660255, -0.49999988, -7.549788e-08, -0.49999988, 0.8660255, -1, 3.196172e-07, 9.735357e-08, -20.911985, 13.80455, 0.009998562)
 collision_mask = 17
-mass = 51.200012
+mass = 22.400003
 mesh = SubResource("BoxMesh_icdmr")
 material = SubResource("ShaderMaterial_rlmfm")
 shape = SubResource("BoxShape3D_430t3")
 
 [node name="levelbody21" parent="." unique_id=1094800556 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -9)
 collision_mask = 17
-mass = 614.4
+mass = 307.2
 mesh = SubResource("BoxMesh_ekm4x")
 material = SubResource("ShaderMaterial_dy2c8")
 shape = SubResource("BoxShape3D_322dm")
 
 [node name="levelbody28" parent="." unique_id=152175097 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -9, 0, -20)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -9, 0, -16)
 collision_mask = 17
-mass = 614.4
+mass = 307.2
 mesh = SubResource("BoxMesh_ekm4x")
 material = SubResource("ShaderMaterial_dy2c8")
 shape = SubResource("BoxShape3D_322dm")
 
 [node name="levelbody26" parent="." unique_id=2114350340 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 9)
 collision_mask = 17
-mass = 614.4
+mass = 307.2
 mesh = SubResource("BoxMesh_ekm4x")
 material = SubResource("ShaderMaterial_dy2c8")
 shape = SubResource("BoxShape3D_322dm")
 
 [node name="levelbody29" parent="." unique_id=1760030189 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, -9)
 collision_mask = 17
-mass = 614.4
+mass = 307.2
 mesh = SubResource("BoxMesh_ekm4x")
 material = SubResource("ShaderMaterial_dy2c8")
 shape = SubResource("BoxShape3D_322dm")
 
 [node name="levelbody40" parent="." unique_id=965109559 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 9, 0, 20)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 9, 0, 16)
 collision_mask = 17
-mass = 614.4
+mass = 307.2
 mesh = SubResource("BoxMesh_ekm4x")
 material = SubResource("ShaderMaterial_dy2c8")
 shape = SubResource("BoxShape3D_322dm")
 
 [node name="levelbody41" parent="." unique_id=230011297 instance=ExtResource("3_bvi5m")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -9, 0, 20)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -9, 0, 16)
 collision_mask = 17
-mass = 614.4
+mass = 307.2
 mesh = SubResource("BoxMesh_ekm4x")
 material = SubResource("ShaderMaterial_dy2c8")
 shape = SubResource("BoxShape3D_322dm")
@@ -346,7 +346,7 @@ shape = SubResource("BoxShape3D_322dm")
 [node name="levelbody45" parent="." unique_id=61403414 instance=ExtResource("3_bvi5m")]
 transform = Transform3D(0.7071067, 0, -0.7071068, 0, 1, 0, 0.7071068, 0, 0.7071067, 0, 0, 0)
 collision_mask = 17
-mass = 204.8
+mass = 153.6
 mesh = SubResource("BoxMesh_fag4x")
 material = SubResource("ShaderMaterial_dy2c8")
 shape = SubResource("BoxShape3D_mmcro")
