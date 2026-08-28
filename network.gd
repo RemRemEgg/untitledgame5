@@ -18,6 +18,11 @@ func _ready() -> void:
 	multiplayer.connection_failed.connect(_connection_failed)
 	multiplayer.server_disconnected.connect(_server_disconnected)
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		Console.print(&"game closing!")
+		if multiplayer.multiplayer_peer:
+			multiplayer.multiplayer_peer.close()
 
 
 #region server exclusive #######################################

@@ -27,7 +27,7 @@
 ## Guns & Projectiles
 - [Bullet trails dont sync the last position they went to (temp fix added)]
 - [Bullets dont fire from gun (visual)]
-- [Projectiles clip through walls]
+- [Projectiles clip through walls, sometimes]
 - custom collision api? would speed up raycast
 - pserver rids over refs? see psqp, also perf boost
 - [OCFM breacks scav]
@@ -44,7 +44,6 @@
 
 
 ## Cards
-- [Mimic can target init cards]
 - make rarer cards visually more unique, custom flip anims?
 - change draw once into max draws
 - Remove card spider graphs

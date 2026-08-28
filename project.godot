@@ -171,6 +171,12 @@ dbg_button={
 3d_physics/layer_2="player"
 3d_physics/layer_3="enemies"
 
+[network]
+
+limits/tcp/connect_timeout_seconds=60
+limits/unix/connect_timeout_seconds=60
+limits/packet_peer_stream/max_buffer_po2=32
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

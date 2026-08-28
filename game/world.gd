@@ -167,7 +167,6 @@ func load_levelgeo(sseed: int) -> void:
 
 
 func place_room(rooms_arr: Array[PackedScene], r_pos: Vector3, rng: RandomNumberGenerator) -> void:
-	print(&"wg: placed room")
 	var room := rooms_arr[rng.randi_range(0, rooms_arr.size()-1)].instantiate() as Room
 	room.name = &"room%d+_%+d_%+d" % [r_pos.x,r_pos.y,r_pos.z]
 	room.random_rotate(rng)

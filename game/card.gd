@@ -322,7 +322,7 @@ static func register_all_cards() -> void:
 		var draws: Array[Card] = []
 		while draws.size() < 4:
 			var rng_card := all_rng_cards[randi_range(0, all_rng_cards.size()-1)]
-			if !draws.has(rng_card):
+			if !draws.has(rng_card) && rng_card.deck != DECK_INIT && rng_card.deck != DECK_ARTIFACT:
 				draws.append(rng_card)
 		for draw in draws:
 			cdd.add_forced_card(draw)
@@ -331,7 +331,7 @@ static func register_all_cards() -> void:
 		DECK_ARTIFACT, RARITY_ARTIFACT, STYLE_BASIC, [0.0, 1.0, 1.0, 0.0, 0.0, 0.0], DRAW_ONCE,
 		func card(cd:CardData) -> void:
 			cd.add_description(&"When drawing cards, draw one more", true)
-			cd.player.card_draw_mod += 1
+			cd.player.card_draw_mod += cd.n
 	)
 	#endregion
 
@@ -1003,7 +1003,7 @@ static func register_all_cards() -> void:
 							ed.player.health = minf(ed.player.health + rt*3.5, ed.player.max_health.value)
 			)
 	)
-	
+
 	register_card(&"RUSH", &"Rush", &"",
 		DECK_SPELL, RARITY_UNUSUAL, STYLE_BASIC, [-0.2, 0.0, 1.0, 0.0, 0.0, 0.0], null,
 		func card(cd:CardData) -> void:
