@@ -982,7 +982,7 @@ static func register_all_cards() -> void:
 						if Game.world.has_line(ed.position, player.position):
 							var dir := ed.position-player.global_position
 							var length := dir.length()
-							dir *= (1.0-(length/radius)) * rt * 8.0 / (length)
+							dir *= (1.0-(length/radius)) * rt * 6.0 / (length)
 							player.take_knockback.rpc_id(player.uuid, dir)
 			)
 	)
@@ -993,14 +993,14 @@ static func register_all_cards() -> void:
 			cd.add(cd.selected_spell.cooldown, 2.0)
 			cd.add_spell_hold_effect(&"[Spell] [Held] Steal life from nearby opponents", true,
 				func effect(ed:EventHook.EventData) -> void:
-					if floori(ed.percent * 4.0) == floori((ed.percent + ed.delta) * 4.0): return
+					if floori(ed.percent * 2.0) == floori((ed.percent + ed.delta) * 2.0): return
 					var rt := ed.mult ** 0.5
 					for player in Game.world.get_aoe_players(ed.player.global_position, rt * 4.0 + 4.0, [ed.player]):
 						if Game.world.has_line(ed.position, player.position):
 							var de := DamageEvent.new(rt * 2.0, Vector3.ZERO, DamageEvent.TYPE_MAGIC).set_dot()
 							de.source_entity = ed.player
 							player.take_damage_seralized.rpc(de.seralize())
-							ed.player.health = minf(ed.player.health + rt*4.0, ed.player.max_health.value)
+							ed.player.health = minf(ed.player.health + rt*3.5, ed.player.max_health.value)
 			)
 	)
 	
